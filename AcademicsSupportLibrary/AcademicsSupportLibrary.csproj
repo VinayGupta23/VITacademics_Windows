@@ -5,7 +5,7 @@
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7c33b608-c522-44f7-ad99-a6dffea77988}</ProjectGuid>
+    <ProjectGuid>{7C33B608-C522-44F7-AD99-A6DFFEA77988}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AcademicsSupportLibrary</RootNamespace>
@@ -41,7 +41,11 @@
     <TargetPlatform Include="Windows, Version=8.1" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DataModel\Course.cs" />
+    <Compile Include="DataModel\DataComponents.cs" />
+    <Compile Include="ContentService\JsonParser.cs" />
+    <Compile Include="ContentService\NetworkService.cs" />
+    <Compile Include="DataModel\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
@@ -52,5 +56,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
 </Project>
