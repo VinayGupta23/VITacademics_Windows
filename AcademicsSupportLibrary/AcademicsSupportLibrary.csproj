@@ -41,6 +41,7 @@
     <TargetPlatform Include="Windows, Version=8.1" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentService\ResponseStatus.cs" />
     <Compile Include="DataModel\Course.cs" />
     <Compile Include="DataModel\DataComponents.cs" />
     <Compile Include="ContentService\JsonParser.cs" />

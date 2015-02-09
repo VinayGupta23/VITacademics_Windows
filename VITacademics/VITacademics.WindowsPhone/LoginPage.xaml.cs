@@ -9,7 +9,6 @@ using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -110,9 +109,12 @@ namespace VITacademics
             // loginButton.IsEnabled = state;
         }
 
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-
+            // loginButton.IsEnabled = false;
+            // disable UI buttons and fields.
+            // Attempt CreateUser and show message.
+            // Enable buttons after attempting login.
         }
     }
 

@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Academics.DataModel
 {
-
+    // Structs/Classes for Attendance, Marks etc.
 }
