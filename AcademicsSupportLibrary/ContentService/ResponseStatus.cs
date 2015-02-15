@@ -25,7 +25,7 @@ namespace Academics.ContentService
         /// </summary>
         TemporaryError = 3,
         /// <summary>
-        /// Server errors such as "Unavailable" or "Gateway Timeout".
+        /// Server errors such as "Unavailable", "Database Error" or "Gateway Timeout".
         /// </summary>
         ServerError = 4,
         /// <summary>
@@ -33,13 +33,17 @@ namespace Academics.ContentService
         /// </summary>
         SessionTimeout = 5,
         /// <summary>
-        /// The provided Json string was in an invalid format.
+        /// The data was either in an invalid format or corrupted.
         /// </summary>
-        JsonFormatError = 6,
+        InvalidData = 6,
+        /// <summary>
+        /// The requested resource does not exist or is unavailable.
+        /// </summary>
+        NoData = 7,
         /// <summary>
         /// An unknown error occured.
         /// </summary>
-        UnknownError = 7
+        UnknownError = 8
     }
 
     /// <summary>

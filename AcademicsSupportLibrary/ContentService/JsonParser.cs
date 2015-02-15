@@ -35,7 +35,9 @@ namespace Academics.ContentService
                     case 13:
                         statusCode = StatusCode.TemporaryError;
                         break;
+                    case 89:
                     case 97:
+                    case 98:
                         statusCode = StatusCode.ServerError;
                         break;
                     default:
@@ -46,7 +48,7 @@ namespace Academics.ContentService
             }
             catch
             {
-                return StatusCode.JsonFormatError;
+                return StatusCode.InvalidData;
             }
         }
     }

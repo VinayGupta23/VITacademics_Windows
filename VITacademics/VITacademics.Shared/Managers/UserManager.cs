@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 
 
-namespace VITacademics
+namespace VITacademics.Managers
 {
     /// <summary>
     /// Maintains the current user, and provides functionality to request and load user data, store credentials and cache content.
@@ -45,15 +45,15 @@ namespace VITacademics
         }
 
         /// <summary>
-        /// Checks and assigns the current user if stored credentials are found and valid, otherwise assigns null. 
+        /// Assigns the current user and logs in if stored credentials are found and valid, otherwise assigns null. 
         /// </summary>
         /// <remarks>
         /// If the stored credentials are corrupted, the Credential Locker is cleared.
         /// </remarks>
         /// <returns>
-        /// Indicates success if true is returned.
+        /// Indicates success if true is returned, status code contains login status.
         /// </returns>
-        public static bool TryLoadSavedUser()
+        public static async Task<Response<bool>> TryLoginSavedUser()
         {
             PasswordCredential credential = GetStoredCredential();
 
@@ -67,7 +67,9 @@ namespace VITacademics
 
                     CurrentUser = new User(credential.UserName, dob, campus);
                     Folder = ApplicationData.Current.LocalFolder;
-                    return true;
+
+                    StatusCode code = await NetworkService.TryLoginAsync(CurrentUser);
+                    return new Response<bool>(code, true);
                 }
                 catch
                 {
@@ -78,7 +80,7 @@ namespace VITacademics
             // Failed to find user.
             CurrentUser = null;
             Folder = null;
-            return false;
+            return new Response<bool>(StatusCode.NoData, false);
         }
 
         /// <summary>
@@ -98,41 +100,30 @@ namespace VITacademics
         }
 
         /// <summary>
-        /// Attempts to login using passed user credentials and assigns the current user on success. If login fails, the user is set to null and a specific status code is returned.
+        /// Attempts to login using passed user credentials and assigns the current user on success. If login fails a specific status code is returned.
         /// </summary>
         /// <remarks>
-        /// Note: Any existing credentials in the Locker are overwritten on success, if the call requested to save credentials.
+        /// Note: Any existing credentials in the Locker are overwritten on success.
         /// </remarks>
-        /// <param name="isTemporarySession">
-        /// False if user credentials must be saved in the Locker and app data must be stored (cached).
-        /// </param>
-        public static async Task<StatusCode> CreateNewUserAsync(string regNo, DateTimeOffset dateOfBirth, string campus, bool isTemporarySession)
+        public static async Task<StatusCode> CreateNewUserAsync(string regNo, DateTimeOffset dateOfBirth, string campus)
         {
             User user = new User(regNo, dateOfBirth, campus);
             StatusCode status = await NetworkService.TryLoginAsync(user);
 
             if (status == StatusCode.Success)
             {
-                if (isTemporarySession == false)
+                DeleteSavedUser();
+                try
                 {
-                    DeleteSavedUser();
-                    try
-                    {
-                        // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}{Campus}"
-                        new PasswordVault().Add(
-                            new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
-                    }
-                    catch { }
-                    Folder = ApplicationData.Current.LocalFolder;
+                    // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}{Campus}"
+                    new PasswordVault().Add(
+                        new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
                 }
-                else
-                {
-                    Folder = ApplicationData.Current.TemporaryFolder;
-                }
+                catch { }
+
+                Folder = ApplicationData.Current.LocalFolder;
                 CurrentUser = user;
             }
-            else
-                CurrentUser = null;
 
             return status;
         }

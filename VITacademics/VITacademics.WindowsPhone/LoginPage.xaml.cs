@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
+using VITacademics.Managers;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -19,17 +20,11 @@ namespace VITacademics
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LoginPage : Page
+    public sealed partial class LoginPage : Page, IManageable
     {
         private bool _isRegNoValid;
         private string _regNo;
 
-        // Use a check box (Like "Remember Me"). If this is a temporary session, store all data to the TempFolder only.
-        public bool ShouldSaveCredentials
-        {
-            get;
-            set;
-        }
         public string Campus
         {
             get;
@@ -55,7 +50,7 @@ namespace VITacademics
         {
             this.InitializeComponent();
             this.DataContext = this;
-
+            
             UpdateLoginButtonState();
             // Set upper limit for DateTime picker.
         }
@@ -67,7 +62,7 @@ namespace VITacademics
         /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-
+            PageManager.RegisterPage(this);
         }
 
         private void ValidateRegNo()
@@ -115,6 +110,21 @@ namespace VITacademics
             // disable UI buttons and fields.
             // Attempt CreateUser and show message.
             // Enable buttons after attempting login.
+        }
+
+        public Dictionary<string, object> SaveState()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadState(Dictionary<string, object> lastState)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AllowAppExit()
+        {
+            throw new NotImplementedException();
         }
     }
 
