@@ -12,17 +12,10 @@ namespace Academics.ContentService
     /// </summary>
     public static class NetworkService
     {
-        public enum Options
-        {
-            RefreshCourses,
-            CompleteData
-        }
-
         private const string BASE_URI_STRING = "http://vitacademics-dev.herokuapp.com";
         private const string LOGIN_STRING_FORMAT = "/api/v2/{0}/login?regno={1}&dob={2}";
-        private const string REGISTER_STRING_FORMAT = "/api/v2/{0}/register?regno={1}&dob={2}";
         private const string REFRESH_STRING_FORMAT = "/api/v2/{0}/refresh?regno={1}&dob={2}";
-        // To be changed
+        // To be changed, this is for Windows on desktop.
         private const string WP_USER_AGENT = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)";
         private const int MAX_ATTEMPTS = 2;
 
@@ -79,7 +72,7 @@ namespace Academics.ContentService
 
         static NetworkService()
         {
-            // Prevent caching of data locally to avoid errors and ensure fresh data every request.
+            // Prevent caching of data locally to avoid errors and ensure fresh data on every request.
             HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
             filter.CacheControl.ReadBehavior = Windows.Web.Http.Filters.HttpCacheReadBehavior.MostRecent;
             filter.CacheControl.WriteBehavior = Windows.Web.Http.Filters.HttpCacheWriteBehavior.NoCache;
@@ -132,21 +125,16 @@ namespace Academics.ContentService
         /// <returns>
         /// A response containing status code and content. Returns the Json string as the content on success, otherwise the content is null.
         /// </returns>
-        public static async Task<Response<string>> TryGetDataAsync(User user, Options getDataOption)
+        public static async Task<Response<string>> TryGetDataAsync(User user)
         {
-            string relativeUriFormat;
-            if (getDataOption == Options.CompleteData)
-                relativeUriFormat = REGISTER_STRING_FORMAT;
-            else
-                relativeUriFormat = REFRESH_STRING_FORMAT;
 
-            Response<string> response = await GetResponse(relativeUriFormat, user);
+            Response<string> response = await GetResponse(REFRESH_STRING_FORMAT, user);
 
             if (response.Code == StatusCode.SessionTimeout)
             {
                 StatusCode loginStatus = await TryLoginAsync(user);
                 if (loginStatus == StatusCode.Success)
-                    response = await GetResponse(relativeUriFormat, user);
+                    response = await GetResponse(REFRESH_STRING_FORMAT, user);
                 else
                     response = new Response<string>(loginStatus, null);
             }

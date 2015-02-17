@@ -28,6 +28,10 @@ namespace VITacademics.Managers
             private set;
         }
 
+        /// <summary>
+        /// Checks if credentials are saved in the Credential Locker and returns the credentials if found, otherwise returns null.
+        /// </summary>
+        /// <returns></returns>
         private static PasswordCredential GetStoredCredential()
         {
             try
@@ -42,6 +46,17 @@ namespace VITacademics.Managers
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Checks if any user crdentials are stored in the Locker.
+        /// </summary>
+        /// <returns>
+        /// Returns true if yes, otherwise returns false.
+        /// </returns>
+        public static bool DoesUserExist()
+        {
+            return (GetStoredCredential() != null);
         }
 
         /// <summary>

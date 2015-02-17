@@ -43,7 +43,11 @@ namespace Academics.ContentService
         /// <summary>
         /// An unknown error occured.
         /// </summary>
-        UnknownError = 8
+        UnknownError = 8,
+        /// <summary>
+        /// The server or provider is undergoing maintenance.
+        /// </summary>
+        UnderMaintenance = 9
     }
 
     /// <summary>

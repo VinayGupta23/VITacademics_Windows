@@ -27,13 +27,13 @@ namespace VITacademics.Managers
             }
         }
 
-        public static async Task<bool> TryWriteAsync(StorageFile file, object contentGraph)
+        public static async Task<bool> TryWriteAsync(StorageFile file, object contentGraph, params Type[] knownTypes)
         {
             Stream writeStream = null;
             bool result = false;
             try
             {
-                DataContractSerializer serializer = new DataContractSerializer(contentGraph.GetType());
+                DataContractSerializer serializer = new DataContractSerializer(contentGraph.GetType(), knownTypes);
                 writeStream = await file.OpenStreamForWriteAsync();
                 serializer.WriteObject(writeStream, contentGraph);
                 result = true;
@@ -59,13 +59,13 @@ namespace VITacademics.Managers
             }
         }
 
-        public static async Task<T> TryReadAsync<T>(StorageFile file) where T : class
+        public static async Task<T> TryReadAsync<T>(StorageFile file, params Type[] knownTypes) where T : class
         {
             Stream readStream = null;
             T content = null;
             try
             {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(T));
+                DataContractSerializer serializer = new DataContractSerializer(typeof(T), knownTypes);
                 readStream = await file.OpenStreamForReadAsync();
                 content = serializer.ReadObject(readStream) as T;
             }

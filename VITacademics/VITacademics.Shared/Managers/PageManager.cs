@@ -27,20 +27,25 @@ namespace VITacademics.Managers
     /// 
     ///     1. Implement interface <see cref="IManageable"/>.
     ///     2. Override the <see cref="OnNavigatedTo"/> method in the page as follows:
-    ///     <code>
-    ///     protected override void OnNavigatedTo(NavigationEventArgs e)
-    ///     {
-    ///         PageManager.RegisterPage(this);
+    ///        <code>
+    ///        protected override void OnNavigatedTo(NavigationEventArgs e)
+    ///        {
+    ///            PageManager.RegisterPage(this);
     ///
-    ///         // Perform other actions here.
-    ///     }
-    ///     </code>
+    ///            // Perform other actions here.
+    ///        }
+    ///        </code>
+    ///     3. Any navigation between pages must take place through the static wrapper methods,
+    ///        namely <see cref="NavigateTo"/> and <see cref="NavigateBack"/>
     ///</remarks>
     public static class PageManager
     {
         private const string NAV_FILE_NAME = "NavHistory.xml";
         private const string STATE_FILE_NAME = "SessionState.xml";
-        private static readonly StorageFolder Folder = ApplicationData.Current.LocalFolder;
+        private const string LAST_DATE_SETTINGS_KEY = "lastDate_sessionState";
+
+        private static readonly StorageFolder _folder = ApplicationData.Current.LocalFolder;
+        private static readonly ApplicationDataContainer _localSettings = ApplicationData.Current.LocalSettings;
 
         private static Page _currentPage;
         private static Dictionary<string, object> _pageState;
@@ -55,6 +60,7 @@ namespace VITacademics.Managers
             get;
             set;
         }
+
         public static bool CanNavigateBack
         {
             get
@@ -62,9 +68,21 @@ namespace VITacademics.Managers
                 return RootFrame.CanGoBack;
             }
         }
+        /// <summary>
+        /// Gets the last point of time the session state was saved, in UTC format. If unavailable, gets the default value of the data type.
+        /// </summary>
+        public static DateTimeOffset LastSessionSavedDate
+        {
+            get;
+            private set;
+        }
 
         static PageManager()
         {
+            if (_localSettings.Values.ContainsKey(LAST_DATE_SETTINGS_KEY))
+                LastSessionSavedDate = (DateTimeOffset)_localSettings.Values[LAST_DATE_SETTINGS_KEY];
+            else
+                LastSessionSavedDate = default(DateTimeOffset);
 
 #if WINDOWS_PHONE_APP
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
@@ -130,11 +148,11 @@ namespace VITacademics.Managers
         /// The type of navigation to use.
         /// </param>
         /// <remarks>
-        /// This method calls SaveState() on the current page to cache and page specific state.
+        /// This method calls SaveState() on the current page to store page specific state.
         /// </remarks>
         public static void NavigateTo(Type pageType, object parameter, NavigationType type)
         {
-
+            _pageState = null;
             if (type == NavigationType.Default)
             {
                 Dictionary<string, object> pageState = (_currentPage as IManageable).SaveState();
@@ -166,7 +184,7 @@ namespace VITacademics.Managers
         }
 
         /// <summary>
-        /// Call this method to save the navigation history along with session state locally.
+        /// Call this method to save the navigation history along with session state locally. On failure, the Last Saved date is set to default (of the data type).
         /// </summary>
         /// <returns></returns>
         public static async Task SaveSessionState()
@@ -174,17 +192,21 @@ namespace VITacademics.Managers
             try
             {
                 PageStates.Add((_currentPage as IManageable).SaveState());
-                StorageFile navFile = await Folder.CreateFileAsync(NAV_FILE_NAME, CreationCollisionOption.ReplaceExisting);
-                StorageFile stateFile = await Folder.CreateFileAsync(STATE_FILE_NAME, CreationCollisionOption.ReplaceExisting);
-                await StorageHelper.TryWriteAsync(navFile, RootFrame.GetNavigationState());
-                await StorageHelper.TryWriteAsync(stateFile, PageStates);
+                StorageFile navFile = await _folder.CreateFileAsync(NAV_FILE_NAME, CreationCollisionOption.ReplaceExisting);
+                StorageFile stateFile = await _folder.CreateFileAsync(STATE_FILE_NAME, CreationCollisionOption.ReplaceExisting);
+                bool result = true;
+                result &= await StorageHelper.TryWriteAsync(navFile, RootFrame.GetNavigationState());
+                result &= await StorageHelper.TryWriteAsync(stateFile, PageStates);
+                if (result == true)
+                    _localSettings.Values[LAST_DATE_SETTINGS_KEY] = DateTimeOffset.UtcNow;
+                else
+                    _localSettings.Values[LAST_DATE_SETTINGS_KEY] = default(DateTimeOffset);
             }
-            catch
-            { }
+            catch { }
         }
 
         /// <summary>
-        /// Use this method to restore session state and navigation histoy. This method should be called after Initialize()./>
+        /// Use this method to restore session state and navigation history. This method should only be called if Initialize() has already been executed./>
         /// </summary>
         /// <returns>
         /// True if app state was successfully restored.
@@ -193,8 +215,8 @@ namespace VITacademics.Managers
         {
             try
             {
-                StorageFile navFile = await Folder.GetFileAsync(NAV_FILE_NAME);
-                StorageFile stateFile = await Folder.GetFileAsync(STATE_FILE_NAME);
+                StorageFile navFile = await _folder.GetFileAsync(NAV_FILE_NAME);
+                StorageFile stateFile = await _folder.GetFileAsync(STATE_FILE_NAME);
 
                 PageStates = await StorageHelper.TryReadAsync<List<Dictionary<string, object>>>(stateFile);
                 int topIndex = PageStates.Count - 1;

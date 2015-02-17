@@ -47,6 +47,7 @@ namespace VITacademics
         /// <param name="e">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
+
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -60,14 +61,19 @@ namespace VITacademics
             // just ensure that the window is active
             if (rootFrame == null)
             {
-                // Create a Frame to act as the navigation context and navigate to the first page
+                // Create a Frame to act as the navigation context via PageManager.
                 rootFrame = PageManager.Initialize();
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                   bool restoreResult = await PageManager.TryRestoreState();
-                   if (restoreResult == false)
-                       rootFrame = PageManager.Initialize();
+                    // Do not restore session state if the last run session was long back, or the User changed.
+                    if ((DateTimeOffset.UtcNow - PageManager.LastSessionSavedDate).Hours <= 24)
+                       // TODO: && if User did not change between the last and current app session. 
+                    {
+                        bool restoreResult = await PageManager.TryRestoreState();
+                        if (restoreResult == false)
+                            rootFrame = PageManager.Initialize();
+                    }
                 }
 
                 // Place the frame in the current Window
@@ -91,11 +97,11 @@ namespace VITacademics
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
 #endif
 
-                // When the navigation stack isn't restored navigate to the first page,
-                // configuring the new page by passing required information as a navigation
-                // parameter
-                // TODO: Check user and navigate to desired page.
-                PageManager.NavigateTo(null, null, NavigationType.FreshStart);
+                // Load the desired page by checking some statistics.
+                if (UserManager.DoesUserExist() == true)
+                    PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);
+                else
+                    PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);
 
             }
 

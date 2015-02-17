@@ -37,8 +37,10 @@ namespace Academics.ContentService
                         break;
                     case 89:
                     case 97:
-                    case 98:
                         statusCode = StatusCode.ServerError;
+                        break;
+                    case 98:
+                        statusCode = StatusCode.UnderMaintenance;
                         break;
                     default:
                         statusCode = StatusCode.UnknownError;
