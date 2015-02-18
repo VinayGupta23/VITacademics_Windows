@@ -47,7 +47,11 @@ namespace Academics.ContentService
         /// <summary>
         /// The server or provider is undergoing maintenance.
         /// </summary>
-        UnderMaintenance = 9
+        UnderMaintenance = 9,
+        /// <summary>
+        /// The requested operation cannot be performed or is invalid.
+        /// </summary>
+        InvalidRequest = 10
     }
 
     /// <summary>

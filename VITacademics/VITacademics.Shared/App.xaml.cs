@@ -8,6 +8,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,6 +26,10 @@ namespace VITacademics
     /// </summary>
     public sealed partial class App : Application
     {
+
+        public static readonly ApplicationDataContainer _localSettings = ApplicationData.Current.LocalSettings;
+        public static readonly ApplicationDataContainer _roamingSettings = ApplicationData.Current.RoamingSettings;
+
 #if WINDOWS_PHONE_APP
         private TransitionCollection transitions;
 #endif
@@ -66,9 +71,9 @@ namespace VITacademics
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    // Do not restore session state if the last run session was long back, or the User changed.
-                    if ((DateTimeOffset.UtcNow - PageManager.LastSessionSavedDate).Hours <= 24)
-                       // TODO: && if User did not change between the last and current app session. 
+                    if (CheckSessionValidity() == true &&
+                        // Do not restore session state if the last run session was long back.
+                        (DateTimeOffset.UtcNow - PageManager.LastSessionSavedDate).Hours <= 24)
                     {
                         bool restoreResult = await PageManager.TryRestoreState();
                         if (restoreResult == false)
@@ -97,8 +102,8 @@ namespace VITacademics
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
 #endif
 
-                // Load the desired page by checking some statistics.
-                if (UserManager.DoesUserExist() == true)
+                // Load the desired page by checking some conditions.
+                if (UserManager.CurrentUser != null)
                     PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);
                 else
                     PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);
@@ -138,5 +143,22 @@ namespace VITacademics
 
             deferral.Complete();
         }
+
+        /// <summary>
+        /// Checks if the last saved session state is valid in terms of data integrity.
+        /// </summary>
+        private bool CheckSessionValidity()
+        {
+            bool isSessionValid = false;
+            if (UserManager.CurrentUser.RegNo == PageManager.LastSessionOwner)
+                // To ensure the background service did not update the data cache,
+                // Otherwise the last session (relying on the old cache) becomes invalid.
+                if (DateTimeOffset.Compare(PageManager.LastSessionSavedDate, UserManager.CachedDataLastChanged) >= 0)
+                {
+                    isSessionValid = true;
+                }
+            return isSessionValid;
+        }
+
     }
 }

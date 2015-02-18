@@ -8,7 +8,7 @@ using Windows.Web.Http.Filters;
 namespace Academics.ContentService
 {
     /// <summary>
-    /// Provides static methods to get response content along with status by sending HTTP/server requests.
+    /// Provides static methods to get raw response content along with status by sending HTTP/server requests.
     /// </summary>
     public static class NetworkService
     {
@@ -111,13 +111,10 @@ namespace Academics.ContentService
         }
 
         /// <summary>
-        /// Get the data as a Json string along with status code for the specified user and request option.
+        /// Get the data as a Json string along with status code for the specified user by sending a Http request.
         /// </summary>
         /// <param name="user">
         /// The user whose data to request.
-        /// </param>
-        /// <param name="getDataOption">
-        /// The type of data to request.
         /// </param>
         /// <remarks>
         /// Note: This method attempts a login and a single retry upon receiving a SessionTimedOut error.

@@ -37,15 +37,17 @@ namespace VITacademics.Managers
     ///        </code>
     ///     3. Any navigation between pages must take place through the static wrapper methods,
     ///        namely <see cref="NavigateTo"/> and <see cref="NavigateBack"/>
+    ///        
+    /// Note: For Windows Phone, pages can optionally implement the <see cref="IAppReturnControllable"/> to prevent or allow the app from suspending when the user presses the back button.
     ///</remarks>
     public static class PageManager
     {
         private const string NAV_FILE_NAME = "NavHistory.xml";
         private const string STATE_FILE_NAME = "SessionState.xml";
-        private const string LAST_DATE_SETTINGS_KEY = "lastDate_sessionState";
+        private const string SESSION_LASTDATE_KEY = "sessionState_lastDate";
+        private const string SESSION_OWNER_KEY = "sessionState_owner";
 
         private static readonly StorageFolder _folder = ApplicationData.Current.LocalFolder;
-        private static readonly ApplicationDataContainer _localSettings = ApplicationData.Current.LocalSettings;
 
         private static Page _currentPage;
         private static Dictionary<string, object> _pageState;
@@ -73,16 +75,46 @@ namespace VITacademics.Managers
         /// </summary>
         public static DateTimeOffset LastSessionSavedDate
         {
-            get;
-            private set;
+            get
+            {
+                try
+                {
+                    return (DateTimeOffset)App._localSettings.Values[SESSION_LASTDATE_KEY];
+                }
+                catch
+                {
+                    return default(DateTimeOffset);
+                }
+            }
+            private set
+            {
+                App._localSettings.Values[SESSION_LASTDATE_KEY] = value;
+            }
+        }
+        /// <summary>
+        /// Gets the last user's register number, who's session state was saved.
+        /// </summary>
+        public static string LastSessionOwner
+        {
+            get
+            {
+                try
+                {
+                    return App._localSettings.Values[SESSION_OWNER_KEY] as string;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            private set
+            {
+                App._localSettings.Values[SESSION_OWNER_KEY] = value;
+            }
         }
 
         static PageManager()
         {
-            if (_localSettings.Values.ContainsKey(LAST_DATE_SETTINGS_KEY))
-                LastSessionSavedDate = (DateTimeOffset)_localSettings.Values[LAST_DATE_SETTINGS_KEY];
-            else
-                LastSessionSavedDate = default(DateTimeOffset);
 
 #if WINDOWS_PHONE_APP
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
@@ -90,23 +122,21 @@ namespace VITacademics.Managers
         }
 
 #if WINDOWS_PHONE_APP
-        private static void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
+        private static async void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
         {
-            try
+            if(CanNavigateBack)
             {
-                if(CanNavigateBack)
+                NavigateBack();
+                e.Handled = true;
+            }
+            else
+            {
+                if(_currentPage as IAppReturnControllable != null)
                 {
-                    NavigateBack();
-                    e.Handled = true;
-                }
-                else
-                {
-                    bool allowExit = (_currentPage as IManageable).AllowAppExit();
+                    bool allowExit = await (_currentPage as IAppReturnControllable).AllowAppExit();
                     e.Handled = !allowExit;
                 }
             }
-            catch
-            { e.Handled = false; }
         }
 #endif
 
@@ -191,16 +221,21 @@ namespace VITacademics.Managers
         {
             try
             {
+                LastSessionSavedDate = default(DateTimeOffset);
+                LastSessionOwner = null;
+
                 PageStates.Add((_currentPage as IManageable).SaveState());
                 StorageFile navFile = await _folder.CreateFileAsync(NAV_FILE_NAME, CreationCollisionOption.ReplaceExisting);
                 StorageFile stateFile = await _folder.CreateFileAsync(STATE_FILE_NAME, CreationCollisionOption.ReplaceExisting);
                 bool result = true;
                 result &= await StorageHelper.TryWriteAsync(navFile, RootFrame.GetNavigationState());
                 result &= await StorageHelper.TryWriteAsync(stateFile, PageStates);
+                
                 if (result == true)
-                    _localSettings.Values[LAST_DATE_SETTINGS_KEY] = DateTimeOffset.UtcNow;
-                else
-                    _localSettings.Values[LAST_DATE_SETTINGS_KEY] = default(DateTimeOffset);
+                {
+                    LastSessionSavedDate = DateTimeOffset.UtcNow;
+                    LastSessionOwner = UserManager.CurrentUser.RegNo;
+                }
             }
             catch { }
         }

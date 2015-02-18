@@ -10,4 +10,20 @@ namespace Academics.DataModel
     {
 
     }
+
+    public class CBLCourse : Course
+    {
+
+    }
+
+    public class PBLCourse : Course
+    {
+
+    }
+
+    public class RBLCourse : Course
+    {
+
+    }
+
 }

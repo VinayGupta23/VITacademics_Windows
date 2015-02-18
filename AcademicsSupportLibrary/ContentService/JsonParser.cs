@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Data.Json;
+using Academics.DataModel;
 
 
 namespace Academics.ContentService
@@ -13,6 +14,11 @@ namespace Academics.ContentService
     /// </summary>
     public static class JsonParser
     {
+        /// <summary>
+        /// Returns the status shown on the Json string passed, or a suitable error code.
+        /// </summary>
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
         internal static StatusCode GetStatus(string jsonString)
         {
             try
@@ -52,6 +58,25 @@ namespace Academics.ContentService
             {
                 return StatusCode.InvalidData;
             }
+        }
+
+        /// <summary>
+        /// Parses the Json string and assigns all details to the passed User instance. Returns true on success.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// It is recommended that a (deep) copy of the original user instance be passed, to avoid partial data assignment on potential failure.
+        /// </remarks>
+        public static Task<bool> TryParseDataAsync(User user, string jsonString)
+        {
+            return
+                Task.Run(() => 
+                {
+                    return false;
+                }
+                );
         }
     }
 }

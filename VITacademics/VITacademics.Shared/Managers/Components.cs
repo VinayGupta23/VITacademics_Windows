@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 
 namespace VITacademics.Managers
@@ -31,13 +32,21 @@ namespace VITacademics.Managers
         /// This method is not invoked if the there is no saved page state.
         /// </remarks>
         void LoadState(Dictionary<string, object> lastState);
-#if WINDOWS_PHONE_APP    
+    }
+
+
+ #if WINDOWS_PHONE_APP
+    /// <summary>
+    /// Provides the contract for a page to allow or prevent app exit by pressing the back button.
+    /// </summary>
+    public interface IAppReturnControllable
+    {
         /// <summary>
         /// This method is called when the user presses the back button to navigate out of the app. Return false to cancel this behaviour.
         /// </summary>
-        bool AllowAppExit();
-#endif
+        Task<bool> AllowAppExit();
     }
+#endif
 
     /// <summary>
     /// Types of navigation available when navigating to a page.

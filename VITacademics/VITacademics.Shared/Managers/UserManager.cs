@@ -16,16 +16,55 @@ namespace VITacademics.Managers
     public static class UserManager
     {
         private const string RESOURCE_NAME = "VITacademics";
+        private const string JSON_FILE_NAME = "UserData.txt";
+        private const string CACHE_DATA_OWNER_KEY = "cachedData_owner";
+        private const string CACHE_DATA_TIME_KEY = "cachedData_time";
 
-        private static StorageFolder Folder
+        private static StorageFolder _folder = ApplicationData.Current.RoamingFolder;
+
+        private static string CachedDataOwner
         {
-            get;
-            set;
+            get
+            {
+                try
+                {
+                    return App._roamingSettings.Values[CACHE_DATA_OWNER_KEY] as string;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                App._roamingSettings.Values[CACHE_DATA_OWNER_KEY] = value;
+            }
         }
         public static User CurrentUser
         {
             get;
             private set;
+        }
+        /// <summary>
+        /// Gets the last point of time the user data was changed (saved or deleted), in UTC format. If unavailable, gets the default value of the data type.
+        /// </summary>
+        public static DateTimeOffset CachedDataLastChanged
+        {
+            get
+            {
+                try
+                {
+                    return (DateTimeOffset)App._roamingSettings.Values[CACHE_DATA_TIME_KEY];
+                }
+                catch
+                {
+                    return default(DateTimeOffset);
+                }
+            }
+            private set
+            {
+                App._roamingSettings.Values[CACHE_DATA_TIME_KEY] = value;
+            }
         }
 
         /// <summary>
@@ -48,78 +87,110 @@ namespace VITacademics.Managers
             }
         }
 
-        /// <summary>
-        /// Checks if any user crdentials are stored in the Locker.
-        /// </summary>
-        /// <returns>
-        /// Returns true if yes, otherwise returns false.
-        /// </returns>
-        public static bool DoesUserExist()
+        private static async Task<bool> TryCacheDataAsync(string jsonString)
         {
-            return (GetStoredCredential() != null);
+            bool res = false;
+            try
+            {
+                CachedDataOwner = null;
+                StorageFile dataFile = await _folder.CreateFileAsync(JSON_FILE_NAME, CreationCollisionOption.ReplaceExisting);
+                res = await StorageHelper.TryWriteAsync(dataFile, jsonString);
+                if (res == true)
+                    CachedDataOwner = CurrentUser.RegNo;
+            }
+            finally
+            {
+                CachedDataLastChanged = DateTimeOffset.UtcNow;
+            }
+            return res;
         }
 
         /// <summary>
-        /// Assigns the current user and logs in if stored credentials are found and valid, otherwise assigns null. 
+        /// Parses the Json string to assigns details and returns a fresh instance of the populated user. On failure, the method returns null.
         /// </summary>
-        /// <remarks>
-        /// If the stored credentials are corrupted, the Credential Locker is cleared.
-        /// </remarks>
-        /// <returns>
-        /// Indicates success if true is returned, status code contains login status.
-        /// </returns>
-        public static async Task<Response<bool>> TryLoginSavedUser()
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
+        private static async Task<User> RetrieveDataAsync(string jsonString)
+        {
+            User tempUser = new User(CurrentUser.RegNo, CurrentUser.DateOfBirth, CurrentUser.Campus);
+            bool result = await JsonParser.TryParseDataAsync(tempUser, jsonString);
+            if (result == true)
+                return tempUser;
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// Checks the Credential Locker and assigns current user if available. 
+        /// </summary>
+        static UserManager()
         {
             PasswordCredential credential = GetStoredCredential();
-
             if (credential != null)
+            {
                 try
                 {
                     credential = new PasswordVault().Retrieve(RESOURCE_NAME, credential.UserName);
                     // Parse "password" to retrieve DOB and campus
                     DateTimeOffset dob = DateTimeOffset.ParseExact(credential.Password.Substring(0, 8), "ddMMyyyy", CultureInfo.InvariantCulture);
                     string campus = credential.Password.Substring(8);
-
                     CurrentUser = new User(credential.UserName, dob, campus);
-                    Folder = ApplicationData.Current.LocalFolder;
-
-                    StatusCode code = await NetworkService.TryLoginAsync(CurrentUser);
-                    return new Response<bool>(code, true);
                 }
                 catch
                 {
-                    // The credential stored is corrupted.
+                    // Corrupt data
                     DeleteSavedUser();
                 }
-
-            // Failed to find user.
-            CurrentUser = null;
-            Folder = null;
-            return new Response<bool>(StatusCode.NoData, false);
+            }
+            else
+                CurrentUser = null;
         }
 
         /// <summary>
-        /// Clears any saved credentials in the Locker and resets the current user to null.
+        /// Attempts a login with the current user.
+        /// </summary>
+        /// <remarks>
+        /// This method returns a status code of NoData if the current user is null.
+        /// </remarks>
+        /// <returns>
+        /// Returns the specific status code as per the response.
+        /// </returns>
+        public static async Task<StatusCode> LoginUserAsync()
+        {
+            if (CurrentUser != null)
+            {
+                StatusCode code = await NetworkService.TryLoginAsync(CurrentUser);
+                return code;
+            }
+            else
+            {
+                return StatusCode.InvalidRequest;
+            }
+        }
+
+        /// <summary>
+        /// Clears any saved credentials in the Locker and sets the current user to null.
         /// </summary>
         public static void DeleteSavedUser()
         {
             CurrentUser = null;
-            Folder = null;
             try
             {
                 PasswordCredential credential = GetStoredCredential();
-                if (credential != null)
-                    new PasswordVault().Remove(credential);
+                new PasswordVault().Remove(credential);
             }
             catch { }
         }
 
         /// <summary>
-        /// Attempts to login using passed user credentials and assigns the current user on success. If login fails a specific status code is returned.
+        /// Assigns the current user (and logs in) and saves the credentials to the Locker, if a login with the passed parameters was successful.
         /// </summary>
         /// <remarks>
         /// Note: Any existing credentials in the Locker are overwritten on success.
         /// </remarks>
+        /// <returns>
+        ///  Returns a specific status code as per the login attempt result.
+        /// </returns>
         public static async Task<StatusCode> CreateNewUserAsync(string regNo, DateTimeOffset dateOfBirth, string campus)
         {
             User user = new User(regNo, dateOfBirth, campus);
@@ -135,12 +206,64 @@ namespace VITacademics.Managers
                         new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
                 }
                 catch { }
-
-                Folder = ApplicationData.Current.LocalFolder;
                 CurrentUser = user;
             }
-
             return status;
+        }
+
+        /// <summary>
+        /// Refreshes and assigns the user details by requesting fresh data from the server. On success, the data is also cached before the function returns.
+        /// </summary>
+        /// <returns>
+        /// Returns a status code containing information about the request's result.
+        /// </returns>
+        public static async Task<StatusCode> RefreshFromServerAsync()
+        {
+            if (CurrentUser == null)
+                return StatusCode.InvalidRequest;
+
+            Response<string> response = await NetworkService.TryGetDataAsync(CurrentUser);
+            if (response.Code != StatusCode.Success)
+                return response.Code;
+
+            User temp = await RetrieveDataAsync(response.Content);
+            if (temp == null)
+                return StatusCode.UnknownError;
+
+            CurrentUser = temp;
+            await TryCacheDataAsync(response.Content);
+            return StatusCode.Success;
+        }
+
+        /// <summary>
+        /// Assigns the user details by reading data from the cache.
+        /// </summary>
+        /// <returns>
+        /// Status code indicating result of operation.
+        /// </returns>
+        public static async Task<StatusCode> LoadCacheAsync()
+        {
+            if (CurrentUser == null)
+                return StatusCode.InvalidRequest;
+
+            if (CachedDataOwner != CurrentUser.RegNo)
+                return StatusCode.NoData;
+
+            try
+            {
+                StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);
+                string jsonString = await StorageHelper.TryReadAsync(file);
+                User temp = await RetrieveDataAsync(jsonString);
+                if (temp == null)
+                    return StatusCode.UnknownError;
+                
+                CurrentUser = temp;
+                return StatusCode.Success;
+            }
+            catch
+            {
+                return StatusCode.NoData;
+            }
         }
 
     }
