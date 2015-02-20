@@ -150,13 +150,16 @@ namespace VITacademics
         private bool CheckSessionValidity()
         {
             bool isSessionValid = false;
-            if (UserManager.CurrentUser.RegNo == PageManager.LastSessionOwner)
-                // To ensure the background service did not update the data cache,
-                // Otherwise the last session (relying on the old cache) becomes invalid.
-                if (DateTimeOffset.Compare(PageManager.LastSessionSavedDate, UserManager.CachedDataLastChanged) >= 0)
-                {
-                    isSessionValid = true;
-                }
+            if (UserManager.CurrentUser != null)
+            {
+                if (UserManager.CurrentUser.RegNo == PageManager.LastSessionOwner)
+                    // To ensure the background service did not update the data cache,
+                    // Otherwise the last session (relying on the old cache) becomes invalid.
+                    if (DateTimeOffset.Compare(PageManager.LastSessionSavedDate, UserManager.CachedDataLastChanged) >= 0)
+                    {
+                        isSessionValid = true;
+                    }
+            }
             return isSessionValid;
         }
 

@@ -15,10 +15,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\Components.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\PageManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\StorageHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\UserManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewModel.cs" />
   </ItemGroup>
 </Project>
