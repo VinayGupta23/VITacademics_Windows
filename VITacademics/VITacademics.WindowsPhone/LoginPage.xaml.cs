@@ -1,12 +1,16 @@
-﻿using System;
+﻿using Academics.ContentService;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using VITacademics.Common;
 using VITacademics.Managers;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,7 +26,6 @@ namespace VITacademics
     /// </summary>
     public sealed partial class LoginPage : Page, IManageable
     {
-        private bool _isRegNoValid;
         private string _regNo;
 
         public string Campus
@@ -36,8 +39,9 @@ namespace VITacademics
             { return _regNo; }
             set
             {
-                _regNo = value.Trim();
-                ValidateRegNo();
+                if (value != null)
+                    _regNo = value.ToLower().Trim();
+                UpdateLoginButtonState();
             }
         }
         public DateTimeOffset DOB
@@ -49,10 +53,11 @@ namespace VITacademics
         public LoginPage()
         {
             this.InitializeComponent();
+
+            datePicker.MaxYear = DateTimeOffset.UtcNow.AddYears(-1);
+            SetState(true);
+
             this.DataContext = this;
-            
-            UpdateLoginButtonState();
-            // Set upper limit for DateTime picker.
         }
 
         /// <summary>
@@ -65,7 +70,7 @@ namespace VITacademics
             PageManager.RegisterPage(this);
         }
 
-        private void ValidateRegNo()
+        private bool IsRegNoValid()
         {
             bool valid = false;
             if (RegNo.Length > 5)
@@ -87,39 +92,73 @@ namespace VITacademics
                 if (i == RegNo.Length)
                     valid = true;
             }
-            _isRegNoValid = valid;
-            UpdateLoginButtonState();
+            return valid;
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            Campus = (sender as RadioButton).Content as string;
+            Campus = ((sender as RadioButton).Content as string).ToLower();
             UpdateLoginButtonState();
         }
 
         private void UpdateLoginButtonState()
         {
-            bool state =
-                (Campus != null) && _isRegNoValid;
-            // loginButton.IsEnabled = state;
+            loginButton.IsEnabled =
+                Campus != null && RegNo != null;
+        }
+
+        private void SetState(bool isIdle)
+        {
+            regNoBox.IsEnabled = isIdle;
+            datePicker.IsEnabled = isIdle;
+            radioButton1.IsEnabled = isIdle;
+            radioButton2.IsEnabled = isIdle;
+
+            if (isIdle)
+            {
+                progressBar.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                statusBlock.Text = "Login to get started";
+                UpdateLoginButtonState();
+            }
+            else
+            {
+                progressBar.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                statusBlock.Text = "Logging in";
+                loginButton.IsEnabled = false;
+            }
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            // loginButton.IsEnabled = false;
-            // disable UI buttons and fields.
-            // Attempt CreateUser and show message.
-            // Enable buttons after attempting login.
+            regNoBox.IsTabStop = false;
+            SetState(false);
+
+            if (IsRegNoValid() == false)
+            {
+                new MessageDialog("Please enter the register number in the correct format and try again.", "Error").ShowAsync();
+                return;
+            }
+
+            StatusCode statusCode = await Task.Run(() => UserManager.CreateNewUserAsync(RegNo, DOB, Campus));
+
+            if (statusCode == StatusCode.Success)
+                PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);
+            else
+                StandardDialogs.GetDialog(statusCode).ShowAsync();
+
+            SetState(true);
+            regNoBox.IsTabStop = true;
+
         }
 
         public Dictionary<string, object> SaveState()
         {
             return null;
         }
-
         public void LoadState(Dictionary<string, object> lastState)
         { }
 
     }
+
 
 }

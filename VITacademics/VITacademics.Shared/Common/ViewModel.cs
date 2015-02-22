@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace VITacademics
+namespace VITacademics.Common
 {
     abstract class ViewModel : INotifyPropertyChanged
     {
