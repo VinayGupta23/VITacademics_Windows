@@ -1,21 +1,12 @@
 ﻿using Academics.ContentService;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using VITacademics.Common;
 using VITacademics.Managers;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 
@@ -136,15 +127,16 @@ namespace VITacademics
             if (IsRegNoValid() == false)
             {
                 new MessageDialog("Please enter the register number in the correct format and try again.", "Error").ShowAsync();
-                return;
             }
-
-            StatusCode statusCode = await Task.Run(() => UserManager.CreateNewUserAsync(RegNo, DOB, Campus));
-
-            if (statusCode == StatusCode.Success)
-                PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);
             else
-                StandardDialogs.GetDialog(statusCode).ShowAsync();
+            {
+                StatusCode statusCode = await Task.Run(() => UserManager.CreateNewUserAsync(RegNo, DOB, Campus));
+
+                if (statusCode == StatusCode.Success)
+                    PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);
+                else
+                    StandardMessageDialogs.GetDialog(statusCode).ShowAsync();
+            }
 
             SetState(true);
             regNoBox.IsTabStop = true;

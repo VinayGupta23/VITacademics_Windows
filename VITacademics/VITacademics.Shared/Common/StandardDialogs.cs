@@ -6,7 +6,7 @@ using Windows.UI.Popups;
 
 namespace VITacademics.Common
 {
-    static class StandardDialogs
+    static class StandardMessageDialogs
     {
         public static MessageDialog GetDialog(StatusCode code)
         {
