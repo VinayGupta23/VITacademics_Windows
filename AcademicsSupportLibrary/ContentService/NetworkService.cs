@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Windows.Web.Http;
 using Academics.DataModel;
 using Windows.Web.Http.Filters;
-
+using System.Collections.Generic;
 
 namespace Academics.ContentService
 {
@@ -12,11 +12,12 @@ namespace Academics.ContentService
     /// </summary>
     public static class NetworkService
     {
-        private const string BASE_URI_STRING = "http://vitacademics-dev.herokuapp.com";
+        private const string BASE_URI_STRING = "https://vitacademics-dev.herokuapp.com";
         private const string LOGIN_STRING_FORMAT = "/api/v2/{0}/login?regno={1}&dob={2}";
         private const string REFRESH_STRING_FORMAT = "/api/v2/{0}/refresh?regno={1}&dob={2}";
-        // To be changed, this is for Windows on desktop.
-        private const string WP_USER_AGENT = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)";
+        private const string WP_USER_AGENT = "Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 520) like iPhone OS 7_0_3 Mac OS X AppleWebKit/537 (KHTML, like Gecko) Mobile Safari/537";
+        // This is the User Agent for Windows on desktop, meant for testing purposes only.
+        // private const string WP_USER_AGENT = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)";
         private const int MAX_ATTEMPTS = 2;
 
         private static readonly HttpClient _httpClient;
@@ -33,11 +34,17 @@ namespace Academics.ContentService
         {
             StatusCode statusCode = StatusCode.UnknownError;
             string content = null;
-            
             try
             {
-                string uriString = BASE_URI_STRING + String.Format(relativeUriFormat, user.Campus, user.RegNo, user.DateOfBirth.ToString("ddMMyyyy", System.Globalization.CultureInfo.InvariantCulture));
-                HttpResponseMessage httpResponse = await _httpClient.GetAsync(new Uri(uriString));
+                string dob = user.DateOfBirth.ToString("ddMMyyyy", System.Globalization.CultureInfo.InvariantCulture);
+                var postContent = new HttpFormUrlEncodedContent(
+                                    new KeyValuePair<string, string>[2] {
+                                        new KeyValuePair<string, string>("regno", user.RegNo),
+                                        new KeyValuePair<string, string>("dob", dob) 
+                                    });
+
+                string uriString = BASE_URI_STRING + String.Format(relativeUriFormat, user.Campus, user.RegNo, dob);
+                HttpResponseMessage httpResponse = await _httpClient.PostAsync(new Uri(uriString), postContent);
 
                 switch (httpResponse.StatusCode)
                 {
