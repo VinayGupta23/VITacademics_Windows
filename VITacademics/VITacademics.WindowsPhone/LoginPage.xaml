@@ -7,22 +7,25 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Page.Background>
-        <ImageBrush Stretch="Fill" ImageSource="Assets/Common/AppBackground.png"></ImageBrush>
+        <LinearGradientBrush ColorInterpolationMode="ScRgbLinearInterpolation" EndPoint="0,1" StartPoint="-0.2,0.5">
+            <GradientStop Color="#FF1B1E22"/>
+            <GradientStop Color="#FF363D3F" Offset="0.7"/>
+        </LinearGradientBrush>
     </Page.Background>
     
     <!-- Root Grid -->
     <Grid Margin="19,0,19,0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="7*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="7.5*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="3*"></RowDefinition>
-            <RowDefinition Height="4*"></RowDefinition>
+            <RowDefinition Height="3.5*"></RowDefinition>
+            <RowDefinition Height="4.5*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Image Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-               Source="Assets/Common/AppLogo.png"></Image>
+               Source="Assets/AppLogo.png"></Image>
         <TextBlock Text="VITacademics"
                    Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" 
                    Style="{StaticResource HeaderTextBlockStyle}"></TextBlock>
@@ -32,7 +35,7 @@
                      Grid.Row="4" VerticalAlignment="Top" Margin="-19,0,-19,0"></ProgressBar>
 
         <!-- Input Grid -->
-        <Grid Grid.Row="5" Margin="0,0,0,20">
+        <Grid Grid.Row="5" Margin="2,0,2,20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
