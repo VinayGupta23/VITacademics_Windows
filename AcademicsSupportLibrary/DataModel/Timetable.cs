@@ -8,6 +8,9 @@ namespace Academics.DataModel
 {
     class Timetable
     {
-        
+        public IReadOnlyDictionary<ClassHours, Course> this[DayOfWeek day]
+        {
+
+        }
     }
 }

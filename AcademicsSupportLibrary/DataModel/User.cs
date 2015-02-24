@@ -8,6 +8,8 @@ namespace Academics.DataModel
 {
     public class User
     {
+        private Timetable _timetable;
+
         public string RegNo
         {
             get;
@@ -24,11 +26,18 @@ namespace Academics.DataModel
             private set;
         }
 
+        public List<Course> Courses { get; set; }
+        public Timetable Timetable
+        {
+            get { return _timetable; }
+        }
+
         public User(string regNo, DateTimeOffset dateOfBirth, string campus)
         {
             RegNo = regNo;
             DateOfBirth = dateOfBirth;
             Campus = campus;
         }
+
     }
 }

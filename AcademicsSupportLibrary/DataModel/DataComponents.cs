@@ -8,26 +8,41 @@ namespace Academics.DataModel
 {
     public class ClassHours
     {
-        public DateTimeOffset StartHours { get; set; }
-        public DateTimeOffset EndHours { get; set; }
-        public DayOfWeek Day { get; set; }
+        public DateTimeOffset StartHours { get; private set; }
+        public DateTimeOffset EndHours { get; private set; }
+        public DayOfWeek Day { get; private set; }
+
+        public ClassHours(DateTimeOffset startHours, DateTimeOffset endHours, DayOfWeek day)
+        {
+            StartHours = startHours;
+            EndHours = endHours;
+            Day = day;
+        }
     }
 
     public class Attendance
     {
-        // Array of AttendanceDetail
+        public ushort TotalClasses { get; set; }
+        public ushort AttendedClasses { get; set; }
+        public float Percentage { get; set; }
+        public SortedSet<AttendanceDetail> AttendanceDetails { get; set; }
     }
 
     public class AttendanceDetail
     {
-        public DateTimeOffset ClassDate { get; set; }
-        public string Status { get; set; }
-        public string Reason { get; set; }
+        public DateTimeOffset ClassDate { get; private set; }
+        public string Status { get; private set; }
+        public string Reason { get; private set; }
+
+        public AttendanceDetail(DateTimeOffset classDate, string status, string reason)
+        {
+            ClassDate = classDate;
+            Status = status;
+            Reason = reason;
+        }
     }
 
     public class Marks
-    {
-
-    }
+    { }
 
 }
