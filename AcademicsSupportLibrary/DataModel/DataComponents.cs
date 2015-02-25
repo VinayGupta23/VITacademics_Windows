@@ -24,7 +24,7 @@ namespace Academics.DataModel
     {
         public ushort TotalClasses { get; set; }
         public ushort AttendedClasses { get; set; }
-        public float Percentage { get; set; }
+        public double Percentage { get; set; }
         public SortedSet<AttendanceDetail> AttendanceDetails { get; set; }
     }
 
@@ -42,7 +42,10 @@ namespace Academics.DataModel
         }
     }
 
-    public class Marks
-    { }
+    public class MarksInfo
+    {
+        public double? Marks { get; set; }
+        public string Status { get; set; }
+    }
 
 }

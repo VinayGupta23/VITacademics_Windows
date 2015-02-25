@@ -222,17 +222,21 @@ namespace VITacademics.Managers
             if (CurrentUser == null)
                 return StatusCode.InvalidRequest;
 
-            Response<string> response = await NetworkService.TryGetDataAsync(CurrentUser);
-            if (response.Code != StatusCode.Success)
-                return response.Code;
+            try
+            {
+                Response<string> response = await NetworkService.TryGetDataAsync(CurrentUser);
+                if (response.Code != StatusCode.Success)
+                    return response.Code;
 
-            User temp = await RetrieveDataAsync(response.Content);
-            if (temp == null)
-                return StatusCode.UnknownError;
+                User temp = await RetrieveDataAsync(response.Content);
+                if (temp == null)
+                    return StatusCode.UnknownError;
 
-            CurrentUser = temp;
-            await TryCacheDataAsync(response.Content);
-            return StatusCode.Success;
+                CurrentUser = temp;
+                await TryCacheDataAsync(response.Content);
+                return StatusCode.Success;
+            }
+            finally { }
         }
 
         /// <summary>
