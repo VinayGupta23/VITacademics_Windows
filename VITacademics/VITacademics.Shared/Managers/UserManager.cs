@@ -110,7 +110,7 @@ namespace VITacademics.Managers
         /// </summary>
         /// <param name="jsonString"></param>
         /// <returns></returns>
-        private static async Task<User> RetrieveDataAsync(string jsonString)
+        private static async Task<User> ParseDataAsync(string jsonString)
         {
             User tempUser = new User(CurrentUser.RegNo, CurrentUser.DateOfBirth, CurrentUser.Campus);
             bool result = await JsonParser.TryParseDataAsync(tempUser, jsonString);
@@ -228,12 +228,13 @@ namespace VITacademics.Managers
                 if (response.Code != StatusCode.Success)
                     return response.Code;
 
-                User temp = await RetrieveDataAsync(response.Content);
+                await TryCacheDataAsync(response.Content);
+
+                User temp = await ParseDataAsync(response.Content);
                 if (temp == null)
                     return StatusCode.UnknownError;
 
                 CurrentUser = temp;
-                await TryCacheDataAsync(response.Content);
                 return StatusCode.Success;
             }
             finally { }
@@ -257,7 +258,7 @@ namespace VITacademics.Managers
             {
                 StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);
                 string jsonString = await StorageHelper.TryReadAsync(file);
-                User temp = await RetrieveDataAsync(jsonString);
+                User temp = await ParseDataAsync(jsonString);
                 if (temp == null)
                     return StatusCode.UnknownError;
                 

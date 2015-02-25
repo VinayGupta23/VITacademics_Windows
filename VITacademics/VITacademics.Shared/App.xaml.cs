@@ -104,7 +104,12 @@ namespace VITacademics
 
                 // Load the desired page by checking some conditions.
                 if (UserManager.CurrentUser != null)
-                    PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);
+                {
+                    // Pre-load cache data before displaying UI.
+                    var status = await UserManager.LoadCacheAsync();
+                    // Send the status of the load to the Main Page for furthur handling.
+                    PageManager.NavigateTo(typeof(MainPage), status, NavigationType.FreshStart);
+                }
                 else
                     PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);
 

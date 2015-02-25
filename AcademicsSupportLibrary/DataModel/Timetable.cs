@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Academics.DataModel
 {
     public class Timetable
@@ -25,12 +26,12 @@ namespace Academics.DataModel
             }
         }
 
-        public void StartNewBatch()
+        internal void StartNewBatch()
         {
             _weekTimetable = new Dictionary<DayOfWeek, List<Tuple<ClassHours, LtpCourse>>>();
         }
 
-        public void AddTimingsToBatch(LtpCourse source)
+        internal void AddTimingsToBatch(LtpCourse source)
         {
             foreach (ClassHours classHours in source.CourseTimings)
             {
@@ -43,7 +44,7 @@ namespace Academics.DataModel
             }
         }
 
-        public void FinalizeBatch()
+        internal void FinalizeBatch()
         {
             foreach (List<Tuple<ClassHours, LtpCourse>> dayTimetable in _weekTimetable.Values)
             {
