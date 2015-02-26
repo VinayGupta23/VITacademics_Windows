@@ -117,6 +117,10 @@
       <Project>{7c33b608-c522-44f7-ad99-a6dffea77988}</Project>
       <Name>AcademicsSupportLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DataPlotterTools\DataPlotterTools.csproj">
+      <Project>{2961de6b-f3c1-4e04-a708-49b91ac31efd}</Project>
+      <Name>DataPlotterTools</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
