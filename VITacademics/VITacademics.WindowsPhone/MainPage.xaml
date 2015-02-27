@@ -8,28 +8,51 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     RequestedTheme="Light"
-    Background="{StaticResource AppAlternateBackgroundColor}">
+    Background="{ThemeResource AlternateDarkBrush}">
     
     <Page.Resources>
-        <ResourceDictionary Source="PhoneResources.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="Resources/PhoneResources.xaml"></ResourceDictionary>
     </Page.Resources>
     
+    <!-- Bottom App Bar -->
     <Page.BottomAppBar>
-        <CommandBar></CommandBar>
+        <CommandBar ClosedDisplayMode="Minimal">
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="settings"></AppBarButton>
+                <AppBarButton Label="about"></AppBarButton>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
     </Page.BottomAppBar>
     
+    <!-- Root Grid -->
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Grid Margin="0,-1,0,0" Background="{StaticResource AppAlternateBackgroundColor}">
-            <TextBlock Margin="10,13,0,10" Text="VITacademics" FontSize="30"
-                       Style="{StaticResource SubheaderTextBlockStyle}" Foreground="White"></TextBlock>
+        <!-- Page Top Panel -->
+        <Grid Margin="0,-1,0,0" Background="{StaticResource AlternateDarkBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Grid.Column="0" Margin="17,13,0,10"
+                       Text="VITacademics" Foreground="White" LineStackingStrategy="MaxHeight"
+                       Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
+            <AppBarButton Grid.Column="1" Margin="0,0,15,0"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"            
+                          Icon="Refresh" Style="{StaticResource TopBarButtonStyle}"></AppBarButton>
+            <AppBarButton Grid.Column="2" Margin="0,0,15,0"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"            
+                          Icon="AllApps" Style="{StaticResource TopBarButtonStyle}"></AppBarButton>
         </Grid>
+        
         <Button Grid.Row="1" HorizontalAlignment="Center"
                 Click="Button_Click" Content="Log Out"></Button>
+        
     </Grid>
     
 </Page>

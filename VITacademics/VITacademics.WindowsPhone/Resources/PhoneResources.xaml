@@ -1,0 +1,49 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics.Resources">
+
+    <Style TargetType="AppBarButton" x:Key="TopBarButtonStyle">
+        <Setter Property="IsCompact" Value="True"></Setter>
+        <Setter Property="RequestedTheme" Value="Dark"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="AppBarButton">
+                    <Grid Width="40" Height="40">
+                        
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="ForegroundBrush"
+                                                        Storyboard.TargetProperty="Color"
+                                                        To="Orange"></ColorAnimation>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <ColorAnimation Duration="0" Storyboard.TargetName="ForegroundBrush"
+                                                        Storyboard.TargetProperty="Color"
+                                                        To="Gray"></ColorAnimation>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Normal">
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <Viewbox Height="32" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ContentPresenter Content="{TemplateBinding Icon}">
+                                <ContentPresenter.Foreground>
+                                    <SolidColorBrush Color="White" x:Name="ForegroundBrush"></SolidColorBrush>
+                                </ContentPresenter.Foreground>
+                            </ContentPresenter>
+                        </Viewbox>
+                        
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

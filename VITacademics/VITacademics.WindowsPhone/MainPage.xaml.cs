@@ -42,9 +42,9 @@ namespace VITacademics
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
-        {
+        {    
             UserManager.DeleteSavedUser();
-            PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);
+            PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);   
         }
 
         public Dictionary<string, object> SaveState()
