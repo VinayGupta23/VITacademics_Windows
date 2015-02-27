@@ -1,0 +1,9 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics">
+
+    <SolidColorBrush x:Key="AppAlternateBackgroundColor"
+                     Color="#FF1B1E22"></SolidColorBrush>
+    
+</ResourceDictionary>

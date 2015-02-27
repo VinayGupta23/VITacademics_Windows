@@ -15,7 +15,7 @@ namespace VITacademics.Managers
     public interface IManageable
     {
         /// <summary>
-        /// This method should return any page specific state that is required to be stored.
+        /// This method should return any page specific state that is required to be stored. For correct behaviour, it is required that the state dictionary only contain primitive types.
         /// </summary>
         /// <remarks>
         /// This method is called by the PageManager on navigating away to another page (Not on going back).
@@ -39,12 +39,15 @@ namespace VITacademics.Managers
     /// <summary>
     /// Provides the contract for a page to allow or prevent app exit by pressing the back button.
     /// </summary>
+    /// <remarks>
+    /// Note: This method must not require to be awaited, otherwise unpredictable behaviour may occur. 
+    /// </remarks>
     public interface IAppReturnControllable
     {
         /// <summary>
         /// This method is called when the user presses the back button to navigate out of the app. Return false to cancel this behaviour.
         /// </summary>
-        Task<bool> AllowAppExit();
+        bool AllowAppExit();
     }
 #endif
 

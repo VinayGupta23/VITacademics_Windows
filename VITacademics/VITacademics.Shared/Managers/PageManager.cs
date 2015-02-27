@@ -122,7 +122,7 @@ namespace VITacademics.Managers
         }
 
 #if WINDOWS_PHONE_APP
-        private static async void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
+        private static void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
         {
             if(CanNavigateBack)
             {
@@ -133,7 +133,7 @@ namespace VITacademics.Managers
             {
                 if(_currentPage as IAppReturnControllable != null)
                 {
-                    bool allowExit = await (_currentPage as IAppReturnControllable).AllowAppExit();
+                    bool allowExit = (_currentPage as IAppReturnControllable).AllowAppExit();
                     e.Handled = !allowExit;
                 }
             }
