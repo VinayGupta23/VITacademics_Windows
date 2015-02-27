@@ -50,6 +50,7 @@ namespace VITacademics.Managers
         private static readonly StorageFolder _folder = ApplicationData.Current.LocalFolder;
 
         private static Page _currentPage;
+        private static NavigationType _currentType;
         private static Dictionary<string, object> _pageState;
 
         private static Frame RootFrame
@@ -157,12 +158,24 @@ namespace VITacademics.Managers
         {
             _currentPage = page;
             _currentPage.Loaded += CurrentPage_Loaded;
+            
         }
+
         public static Frame Initialize()
         {
             RootFrame = new Frame();
+            RootFrame.Navigated += RootFrame_Navigated;
             PageStates = new List<Dictionary<string, object>>();
             return RootFrame;
+        }
+
+        static void RootFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (_currentType == NavigationType.FreshStart)
+            {
+                RootFrame.BackStack.Clear();
+                PageStates.Clear();
+            }
         }
 
         /// <summary>
@@ -183,6 +196,8 @@ namespace VITacademics.Managers
         public static void NavigateTo(Type pageType, object parameter, NavigationType type)
         {
             _pageState = null;
+            _currentType = type;
+
             if (type == NavigationType.Default)
             {
                 Dictionary<string, object> pageState = (_currentPage as IManageable).SaveState();
@@ -192,8 +207,7 @@ namespace VITacademics.Managers
             else
             {
                 RootFrame.Navigate(pageType, parameter);
-                RootFrame.BackStack.Clear();
-                PageStates.Clear();
+                // Clearing of back stack and page states occur in Navigated event handler.
             }
         }
 
