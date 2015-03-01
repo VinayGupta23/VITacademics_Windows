@@ -15,12 +15,18 @@ namespace VITacademics.Managers
     /// </summary>
     public static class UserManager
     {
+        #region Constants and Fields
+
         private const string RESOURCE_NAME = "VITacademics";
         private const string JSON_FILE_NAME = "UserData.txt";
         private const string CACHE_DATA_OWNER_KEY = "cachedData_owner";
         private const string CACHE_DATA_TIME_KEY = "cachedData_time";
 
         private static StorageFolder _folder = ApplicationData.Current.RoamingFolder;
+
+        #endregion
+
+        #region Properties
 
         private static string CachedDataOwner
         {
@@ -66,6 +72,10 @@ namespace VITacademics.Managers
                 App._roamingSettings.Values[CACHE_DATA_TIME_KEY] = value;
             }
         }
+
+        #endregion
+
+        #region Private Helper Methods
 
         /// <summary>
         /// Checks if credentials are saved in the Credential Locker and returns the credentials if found, otherwise returns null.
@@ -120,6 +130,10 @@ namespace VITacademics.Managers
                 return null;
         }
 
+        #endregion
+
+        #region Constructor
+
         /// <summary>
         /// Checks the Credential Locker and assigns current user if available. 
         /// </summary>
@@ -144,6 +158,39 @@ namespace VITacademics.Managers
             }
             else
                 CurrentUser = null;
+        }
+
+        #endregion
+
+        #region Public Methods (API)
+
+        /// <summary>
+        /// Assigns the current user (and logs in) and saves the credentials to the Locker, if a login with the passed parameters was successful.
+        /// </summary>
+        /// <remarks>
+        /// Note: Any existing credentials in the Locker are overwritten on success.
+        /// </remarks>
+        /// <returns>
+        ///  Returns a specific status code as per the login attempt result.
+        /// </returns>
+        public static async Task<StatusCode> CreateNewUserAsync(string regNo, DateTimeOffset dateOfBirth, string campus)
+        {
+            User user = new User(regNo, dateOfBirth, campus);
+            StatusCode status = await NetworkService.TryLoginAsync(user);
+
+            if (status == StatusCode.Success)
+            {
+                DeleteSavedUser();
+                try
+                {
+                    // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}{Campus}"
+                    new PasswordVault().Add(
+                        new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
+                }
+                catch { }
+                CurrentUser = user;
+            }
+            return status;
         }
 
         /// <summary>
@@ -183,35 +230,6 @@ namespace VITacademics.Managers
         }
 
         /// <summary>
-        /// Assigns the current user (and logs in) and saves the credentials to the Locker, if a login with the passed parameters was successful.
-        /// </summary>
-        /// <remarks>
-        /// Note: Any existing credentials in the Locker are overwritten on success.
-        /// </remarks>
-        /// <returns>
-        ///  Returns a specific status code as per the login attempt result.
-        /// </returns>
-        public static async Task<StatusCode> CreateNewUserAsync(string regNo, DateTimeOffset dateOfBirth, string campus)
-        {
-            User user = new User(regNo, dateOfBirth, campus);
-            StatusCode status = await NetworkService.TryLoginAsync(user);
-
-            if (status == StatusCode.Success)
-            {
-                DeleteSavedUser();
-                try
-                {
-                    // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}{Campus}"
-                    new PasswordVault().Add(
-                        new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
-                }
-                catch { }
-                CurrentUser = user;
-            }
-            return status;
-        }
-
-        /// <summary>
         /// Refreshes and assigns the user details by requesting fresh data from the server. On success, the data is also cached before the function returns.
         /// </summary>
         /// <returns>
@@ -228,16 +246,18 @@ namespace VITacademics.Managers
                 if (response.Code != StatusCode.Success)
                     return response.Code;
 
-                await TryCacheDataAsync(response.Content);
-
                 User temp = await ParseDataAsync(response.Content);
                 if (temp == null)
                     return StatusCode.UnknownError;
 
                 CurrentUser = temp;
+                await TryCacheDataAsync(response.Content);
                 return StatusCode.Success;
             }
-            finally { }
+            catch
+            {
+                return StatusCode.UnknownError;
+            }
         }
 
         /// <summary>
@@ -248,20 +268,20 @@ namespace VITacademics.Managers
         /// </returns>
         public static async Task<StatusCode> LoadCacheAsync()
         {
-            if (CurrentUser == null)
-                return StatusCode.InvalidRequest;
-
-            if (CachedDataOwner != CurrentUser.RegNo)
-                return StatusCode.NoData;
-
             try
             {
+                if (CurrentUser == null)
+                    return StatusCode.InvalidRequest;
+
+                if (CachedDataOwner != CurrentUser.RegNo)
+                    return StatusCode.NoData;
+
                 StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);
                 string jsonString = await StorageHelper.TryReadAsync(file);
                 User temp = await ParseDataAsync(jsonString);
                 if (temp == null)
                     return StatusCode.UnknownError;
-                
+
                 CurrentUser = temp;
                 return StatusCode.Success;
             }
@@ -270,6 +290,8 @@ namespace VITacademics.Managers
                 return StatusCode.NoData;
             }
         }
+
+        #endregion
 
     }
 }

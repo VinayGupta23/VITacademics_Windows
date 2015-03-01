@@ -121,12 +121,13 @@ namespace VITacademics
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            // To prevent on-screen keyboard from automatically displaying after the method executes.
             regNoBox.IsTabStop = false;
             SetState(false);
 
             if (IsRegNoValid() == false)
             {
-                new MessageDialog("Please enter the register number in the correct format and try again.", "Error").ShowAsync();
+                new MessageDialog("Please enter your register number in the correct format and try again.", "Invalid Credentials").ShowAsync();
             }
             else
             {
@@ -139,6 +140,7 @@ namespace VITacademics
             }
 
             SetState(true);
+            // Re-enable TextBox.
             regNoBox.IsTabStop = true;
 
         }

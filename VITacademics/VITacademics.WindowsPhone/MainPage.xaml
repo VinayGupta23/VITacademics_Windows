@@ -39,7 +39,7 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             
-            <TextBlock Grid.Column="0" Margin="17,13,0,10"
+            <TextBlock x:Name="TitleTextBlock" Grid.Column="0" Margin="17,10,0,10"
                        Text="VITacademics" Foreground="White" LineStackingStrategy="MaxHeight"
                        Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
             <AppBarButton Grid.Column="1" Margin="0,0,15,0"

@@ -16,9 +16,9 @@ namespace VITacademics.Common
                     return new MessageDialog("Please check your credentials and try again.", "Invalid Credentials");
                 case StatusCode.ServerError:
                 case StatusCode.UnderMaintenance:
-                    return new MessageDialog("The servers are overloaded or currently under maintenance. Please try again after some time.", "Oops...");
+                    return new MessageDialog("The servers are overloaded or currently under maintenance. Please try again after some time.", "Sorry");
                 case StatusCode.NoInternet:
-                    return new MessageDialog("We can't connect to our servers. Please check your internet connection and try again.", "No Internet");
+                    return new MessageDialog("We couldn't connect to our servers. Please check your internet connection and try again.", "No Internet");
                 default:
                     return new MessageDialog("An unforeseen error has occured, please try again later. If this problem persists, feel free to contact us so we can provide you some assistance.", "Unknown Error");
             }
