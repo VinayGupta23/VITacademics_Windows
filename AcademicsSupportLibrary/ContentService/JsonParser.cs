@@ -122,11 +122,13 @@ namespace Academics.ContentService
             course.Attendance = new Attendance(course, total, attended, percentage);
 
             JsonArray detailsArray = attendanceObject.GetNamedArray("details");
-            foreach(JsonValue stubValue in detailsArray)
+            foreach (JsonValue stubValue in detailsArray)
             {
                 JsonObject stubObject = stubValue.GetObject();
+                DateTime classDate = DateTime.ParseExact(stubObject.GetNamedString("date"), "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
                 course.Attendance.AddAttendanceStub(
-                    DateTimeOffset.ParseExact(stubObject.GetNamedString("date"), "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    new DateTimeOffset(classDate, new TimeSpan(5, 30, 0)),
                     stubObject.GetNamedString("status"),
                     stubObject.GetNamedString("reason"));
             }
@@ -138,7 +140,7 @@ namespace Academics.ContentService
                 JsonObject classHoursObject = classHoursValue.GetObject();
                 DateTimeOffset start = GetUtcTime(classHoursObject.GetNamedString("start_time"));
                 DateTimeOffset end = GetUtcTime(classHoursObject.GetNamedString("end_time"));
-                DayOfWeek day = (DayOfWeek)(int)classHoursObject.GetNamedNumber("day");
+                DayOfWeek day = (DayOfWeek)((int)classHoursObject.GetNamedNumber("day") + 1);
                 course.AddClassHoursInstance(new ClassHours(course, start, end, day));
             }
         }
