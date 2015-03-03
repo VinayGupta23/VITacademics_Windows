@@ -7,7 +7,7 @@ namespace Academics.DataModel
 {
     public class Attendance : LtpCourseComponent
     {
-        private SortedDictionary<DateTimeOffset, AttendanceStub> _details;
+        internal SortedDictionary<DateTimeOffset, AttendanceStub> _details;
 
         public ushort TotalClasses { get; private set; }
         public ushort AttendedClasses { get; private set; }
