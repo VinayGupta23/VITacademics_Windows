@@ -17,7 +17,7 @@
                                     <Storyboard>
                                         <ColorAnimation Duration="0" Storyboard.TargetName="ForegroundBrush"
                                                         Storyboard.TargetProperty="Color"
-                                                        To="Orange"></ColorAnimation>
+                                                        To="{Binding Path=Color, Source={StaticResource PhoneAccentBrush}}"></ColorAnimation>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">

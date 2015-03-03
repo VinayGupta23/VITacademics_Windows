@@ -216,7 +216,7 @@ namespace VITacademics.Managers
         /// </summary>
         public static void NavigateBack()
         {
-            try
+            if (RootFrame.CanGoBack)
             {
                 int lastPageIndex = RootFrame.BackStackDepth - 1;
                 _pageState = PageStates[lastPageIndex];
@@ -224,7 +224,6 @@ namespace VITacademics.Managers
                 RootFrame.GoBack();
                 PageStates.RemoveAt(lastPageIndex);
             }
-            catch { }
         }
 
         /// <summary>
