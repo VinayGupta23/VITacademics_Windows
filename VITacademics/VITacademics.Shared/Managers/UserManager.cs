@@ -115,21 +115,6 @@ namespace VITacademics.Managers
             return res;
         }
 
-        /// <summary>
-        /// Parses the Json string to assigns details and returns a fresh instance of the populated user. On failure, the method returns null.
-        /// </summary>
-        /// <param name="jsonString"></param>
-        /// <returns></returns>
-        private static async Task<User> ParseDataAsync(string jsonString)
-        {
-            User tempUser = new User(CurrentUser.RegNo, CurrentUser.DateOfBirth, CurrentUser.Campus);
-            bool result = await JsonParser.TryParseDataAsync(tempUser, jsonString);
-            if (result == true)
-                return tempUser;
-            else
-                return null;
-        }
-
         #endregion
 
         #region Constructor
@@ -246,7 +231,7 @@ namespace VITacademics.Managers
                 if (response.Code != StatusCode.Success)
                     return response.Code;
 
-                User temp = await ParseDataAsync(response.Content);
+                User temp = JsonParser.TryParseDataAsync(response.Content);
                 if (temp == null)
                     return StatusCode.UnknownError;
 
@@ -278,7 +263,7 @@ namespace VITacademics.Managers
 
                 StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);
                 string jsonString = await StorageHelper.TryReadAsync(file);
-                User temp = await ParseDataAsync(jsonString);
+                User temp = JsonParser.TryParseDataAsync(jsonString);
                 if (temp == null)
                     return StatusCode.UnknownError;
 
