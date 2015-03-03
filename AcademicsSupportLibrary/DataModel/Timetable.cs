@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,52 +9,71 @@ using System.Threading.Tasks;
 
 namespace Academics.DataModel
 {
+
     public class Timetable
     {
-        private Dictionary<DayOfWeek, List<Tuple<ClassHours, LtpCourse>>> _weekTimetable;
+        private List<ClassHours>[] _weekSchedule = new List<ClassHours>[7];
 
-        public IReadOnlyList<Tuple<ClassHours, LtpCourse>> this[DayOfWeek day]
+        private Timetable()
+        {
+            for (int i = 0; i < _weekSchedule.Length; i++)
+                _weekSchedule[i] = new List<ClassHours>();
+        }
+
+        public ReadOnlyCollection<ClassHours> this[DayOfWeek day]
         {
             get
             {
-                try
-                {
-                    return _weekTimetable[day];
-                }
-                catch
-                {
-                    return null;
-                }
+                return new ReadOnlyCollection<ClassHours>(_weekSchedule[(int)day]);
             }
         }
 
-        internal void StartNewBatch()
+        public static Timetable GetTimetable(IEnumerable<Course> courses)
         {
-            _weekTimetable = new Dictionary<DayOfWeek, List<Tuple<ClassHours, LtpCourse>>>();
-        }
-
-        internal void AddTimingsToBatch(LtpCourse source)
-        {
-            foreach (ClassHours classHours in source.CourseTimings)
+            try
             {
-                DayOfWeek day = classHours.Day;
+                Timetable timetable = new Timetable();
+                foreach (Course c in courses)
+                {
+                    LtpCourse course = c as LtpCourse;
+                    if (course == null)
+                        continue;
 
-                if (_weekTimetable.ContainsKey(day) == false)
-                    _weekTimetable[day] = new List<Tuple<ClassHours, LtpCourse>>();
+                    foreach (ClassHours classHours in course.Timings)
+                        timetable._weekSchedule[(int)classHours.Day].Add(classHours);
+                }
+                foreach (var daySchedule in timetable._weekSchedule)
+                    daySchedule.Sort(ClassHoursComparision);
 
-                _weekTimetable[day].Add(new Tuple<ClassHours, LtpCourse>(classHours, source));
+                return timetable;
             }
-        }
-
-        internal void FinalizeBatch()
-        {
-            foreach (List<Tuple<ClassHours, LtpCourse>> dayTimetable in _weekTimetable.Values)
+            catch
             {
-                dayTimetable.Sort(
-                    (Tuple<ClassHours, LtpCourse> A, Tuple<ClassHours, LtpCourse> B)
-                        => DateTimeOffset.Compare(A.Item1.StartHours, B.Item1.StartHours)
-                                );
+                return null;
             }
         }
+
+        public IEnumerable<Tuple<ClassHours, AttendanceStub>> GetDayInfo(DateTimeOffset instructionDayDate)
+        {
+            int day = (int)instructionDayDate.DayOfWeek;
+            int itemCount = _weekSchedule[day].Count;
+
+            List<Tuple<ClassHours, AttendanceStub>> dayInfo = new List<Tuple<ClassHours, AttendanceStub>>(itemCount);
+            for (int i = 0; i < itemCount; i++)
+            {
+                AttendanceStub stub;
+                _weekSchedule[day][i].Parent.Attendance.Details.TryGetValue(instructionDayDate, out stub);
+                dayInfo[i] = new Tuple<ClassHours, AttendanceStub>(_weekSchedule[day][i], stub);
+            }
+
+            return dayInfo;
+        }
+
+        private static int ClassHoursComparision(ClassHours x, ClassHours y)
+        {
+            return DateTimeOffset.Compare(x.StartHours, y.StartHours);
+        }
+
     }
+
 }

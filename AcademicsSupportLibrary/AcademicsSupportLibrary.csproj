@@ -43,7 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentService\ResponseStatus.cs" />
-    <Compile Include="DataModel\Course.cs" />
+    <Compile Include="DataModel\AbstractModels.cs" />
+    <Compile Include="DataModel\Attendance.cs" />
+    <Compile Include="DataModel\CourseTypes.cs" />
     <Compile Include="DataModel\DataComponents.cs" />
     <Compile Include="ContentService\JsonParser.cs" />
     <Compile Include="ContentService\NetworkService.cs" />
