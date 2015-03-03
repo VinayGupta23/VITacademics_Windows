@@ -62,7 +62,7 @@ namespace Academics.ContentService
         /// </summary>
         /// <param name="jsonString"></param>
         /// <returns></returns>
-        public static User TryParseDataAsync(string jsonString)
+        public static User TryParseData(string jsonString)
         {
             try
             {

@@ -231,7 +231,7 @@ namespace VITacademics.Managers
                 if (response.Code != StatusCode.Success)
                     return response.Code;
 
-                User temp = JsonParser.TryParseDataAsync(response.Content);
+                User temp = JsonParser.TryParseData(response.Content);
                 if (temp == null)
                     return StatusCode.UnknownError;
 
@@ -263,7 +263,7 @@ namespace VITacademics.Managers
 
                 StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);
                 string jsonString = await StorageHelper.TryReadAsync(file);
-                User temp = JsonParser.TryParseDataAsync(jsonString);
+                User temp = JsonParser.TryParseData(jsonString);
                 if (temp == null)
                     return StatusCode.UnknownError;
 
