@@ -1,24 +1,35 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace Academics.DataModel
 {
-
     public class Timetable
     {
+
+        #region Private Fields and Helper Methods
+
         private List<ClassHours>[] _weekSchedule = new List<ClassHours>[7];
+
+        private static int ClassHoursComparision(ClassHours x, ClassHours y)
+        {
+            return DateTimeOffset.Compare(x.StartHours, y.StartHours);
+        }
+
+        #endregion
+
+        #region Private Constructor
 
         private Timetable()
         {
             for (int i = 0; i < _weekSchedule.Length; i++)
                 _weekSchedule[i] = new List<ClassHours>();
         }
+
+        #endregion
+
+        #region Indexer and Public Methods (API)
 
         public ReadOnlyCollection<ClassHours> this[DayOfWeek day]
         {
@@ -69,11 +80,7 @@ namespace Academics.DataModel
             return dayInfo;
         }
 
-        private static int ClassHoursComparision(ClassHours x, ClassHours y)
-        {
-            return DateTimeOffset.Compare(x.StartHours, y.StartHours);
-        }
+        #endregion
 
     }
-
 }

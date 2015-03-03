@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Academics.DataModel;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Web.Http;
-using Academics.DataModel;
 using Windows.Web.Http.Filters;
-using System.Collections.Generic;
+
 
 namespace Academics.ContentService
 {
@@ -12,6 +13,8 @@ namespace Academics.ContentService
     /// </summary>
     public static class NetworkService
     {
+        #region Private fields and constants
+        
         private const string BASE_URI_STRING = "https://vitacademics-dev.herokuapp.com";
         private const string LOGIN_STRING_FORMAT = "/api/v2/{0}/login?regno={1}&dob={2}";
         private const string REFRESH_STRING_FORMAT = "/api/v2/{0}/refresh?regno={1}&dob={2}";
@@ -21,6 +24,10 @@ namespace Academics.ContentService
         private const int MAX_ATTEMPTS = 2;
 
         private static readonly HttpClient _httpClient;
+        
+        #endregion
+
+        #region Private Helper Methods and Constructor
 
         /// <summary>
         /// Returns the content and status of the specified network request. Content is null if request fails.
@@ -88,6 +95,10 @@ namespace Academics.ContentService
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(WP_USER_AGENT);
         }
 
+        #endregion
+
+        #region Public Methods (API)
+
         /// <summary>
         /// Attempts to login the passed user and returns the status of the operation.
         /// </summary>
@@ -145,5 +156,7 @@ namespace Academics.ContentService
 
             return response;
         }
+
+        #endregion
     }
 }
