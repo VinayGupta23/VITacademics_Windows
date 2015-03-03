@@ -53,17 +53,17 @@ namespace Academics.DataModel
             }
         }
 
-        public IEnumerable<Tuple<ClassHours, AttendanceStub>> GetDayInfo(DateTimeOffset instructionDayDate)
+        public IEnumerable<Tuple<ClassHours, AttendanceStub>> GetDayInfo(DateTime instructionDayDate)
         {
             int day = (int)instructionDayDate.DayOfWeek;
-            int itemCount = _weekSchedule[day].Count;
-
-            List<Tuple<ClassHours, AttendanceStub>> dayInfo = new List<Tuple<ClassHours, AttendanceStub>>(itemCount);
-            for (int i = 0; i < itemCount; i++)
+            DateTimeOffset date = new DateTimeOffset(instructionDayDate.Year, instructionDayDate.Month, instructionDayDate.Day, 0, 0, 0, new TimeSpan(5, 30, 0));
+            List<Tuple<ClassHours, AttendanceStub>> dayInfo = new List<Tuple<ClassHours, AttendanceStub>>(_weekSchedule[day].Count);
+            
+            foreach(ClassHours classHours in _weekSchedule[day])
             {
                 AttendanceStub stub;
-                _weekSchedule[day][i].Parent.Attendance.Details.TryGetValue(instructionDayDate, out stub);
-                dayInfo[i] = new Tuple<ClassHours, AttendanceStub>(_weekSchedule[day][i], stub);
+                classHours.Parent.Attendance.Details.TryGetValue(date, out stub);
+                dayInfo.Add(new Tuple<ClassHours, AttendanceStub>(classHours, stub));
             }
 
             return dayInfo;
