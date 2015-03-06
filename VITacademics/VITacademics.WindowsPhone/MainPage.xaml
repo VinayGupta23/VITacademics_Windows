@@ -31,6 +31,19 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
+        <Pivot Grid.Row="1" x:Name="mainPivot">
+
+            <Pivot.Resources>
+                <ResourceDictionary Source="Resources/PivotItemResources.xaml"></ResourceDictionary>
+            </Pivot.Resources>
+
+            <Pivot.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock FontSize="45" Text="{Binding}"></TextBlock>
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+        </Pivot>
+
         <!-- Page Top Panel -->
         <Grid Margin="0,-1,0,0" Background="{StaticResource AlternateDarkBrush}">
             <Grid.ColumnDefinitions>
@@ -39,19 +52,16 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             
-            <TextBlock x:Name="TitleTextBlock" Grid.Column="0" Margin="17,10,0,10"
+            <TextBlock x:Name="titleTextBlock" Grid.Column="0" Margin="17,10,0,10"
                        Text="VITacademics" Foreground="White" LineStackingStrategy="MaxHeight"
                        Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
-            <AppBarButton Grid.Column="1" Margin="0,0,15,0"
+            <AppBarButton Grid.Column="1" Margin="0,0,15,0" Click="RefreshButton_Click"
                           HorizontalAlignment="Center" VerticalAlignment="Center"            
                           Icon="Refresh" Style="{StaticResource TopBarButtonStyle}"></AppBarButton>
             <AppBarButton Grid.Column="2" Margin="0,0,15,0"
                           HorizontalAlignment="Center" VerticalAlignment="Center"            
                           Icon="AllApps" Style="{StaticResource TopBarButtonStyle}"></AppBarButton>
         </Grid>
-        
-        <Button Grid.Row="1" HorizontalAlignment="Center"
-                Click="Button_Click" Content="Log Out"></Button>
         
     </Grid>
     

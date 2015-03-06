@@ -87,6 +87,19 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helpers\PivotContentManager.cs" />
+    <Compile Include="UIControls\BasicDayControl.xaml.cs">
+      <DependentUpon>BasicDayControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIControls\CourseAttendanceControl.xaml.cs">
+      <DependentUpon>CourseAttendanceControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIControls\CurrentDayControl.xaml.cs">
+      <DependentUpon>CurrentDayControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIControls\EnhancedDayControl.xaml.cs">
+      <DependentUpon>EnhancedDayControl.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -120,6 +133,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\PivotItemResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="UIControls\BasicDayControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIControls\CourseAttendanceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIControls\CurrentDayControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIControls\EnhancedDayControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

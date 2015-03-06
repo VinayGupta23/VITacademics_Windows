@@ -1,0 +1,24 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics.Resources">
+    
+    
+    <Style x:Key="CBLCoursePivotItemStyle" TargetType="PivotItem">
+        
+    </Style>
+
+    <Style x:Key="PBLCoursePivotItemStyle" TargetType="PivotItem">
+
+    </Style>
+
+    <Style x:Key="LBCCoursePivotItemStyle" TargetType="PivotItem">
+
+    </Style>
+
+    <Style x:Key="PBCCoursePivotItemStyle" TargetType="PivotItem">
+
+    </Style>
+    
+    
+</ResourceDictionary>
