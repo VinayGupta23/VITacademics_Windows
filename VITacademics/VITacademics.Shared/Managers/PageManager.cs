@@ -143,8 +143,7 @@ namespace VITacademics.Managers
 
         private static void CurrentPage_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_pageState != null)
-                (sender as IManageable).LoadState(_pageState);
+            (sender as IManageable).LoadState(_pageState);
             _currentPage.Loaded -= CurrentPage_Loaded;
         }
 

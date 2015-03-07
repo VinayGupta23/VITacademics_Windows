@@ -45,5 +45,15 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <Style TargetType="Pivot" x:Key="MainContentPivotStyle">
+        <Setter Property="HeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" FontSize="45"></TextBlock>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

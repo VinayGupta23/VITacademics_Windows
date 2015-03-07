@@ -258,7 +258,7 @@ namespace VITacademics.Managers
                 if (CurrentUser == null)
                     return StatusCode.InvalidRequest;
 
-                if (CachedDataOwner != CurrentUser.RegNo)
+                if (string.Equals(CachedDataOwner, CurrentUser.RegNo, StringComparison.OrdinalIgnoreCase) == false)
                     return StatusCode.NoData;
 
                 StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);

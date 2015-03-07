@@ -152,7 +152,7 @@ namespace VITacademics
             bool isSessionValid = false;
             if (UserManager.CurrentUser != null)
             {
-                if (UserManager.CurrentUser.RegNo == PageManager.LastSessionOwner)
+                if (string.Equals(UserManager.CurrentUser.RegNo, PageManager.LastSessionOwner, StringComparison.OrdinalIgnoreCase) == true)
                     // To ensure the background service did not update the data cache,
                     // Otherwise the last session (relying on the old cache) becomes invalid.
                     if (DateTimeOffset.Compare(PageManager.LastSessionSavedDate, UserManager.CachedDataLastChanged) >= 0)
