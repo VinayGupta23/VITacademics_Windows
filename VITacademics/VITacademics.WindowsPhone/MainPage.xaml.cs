@@ -17,44 +17,52 @@ using Windows.UI.ViewManagement;
 using Windows.UI;
 using Academics.ContentService;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 
 namespace VITacademics
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainPage : Page, IManageable
+
+    public sealed partial class MainPage : Page, IManageable, INotifyPropertyChanged
     {
 
         private StatusBar _statusBar = StatusBar.GetForCurrentView();
 
+        public bool IsIdle
+        {
+            get { return !UserManager.IsBusy; }
+        }
+
         public MainPage()
         {
             this.InitializeComponent();
+            this.DataContext = this;
+
+            UserManager.PropertyChanged += UserManager_PropertyChanged;
 
             _statusBar.BackgroundColor = (Application.Current.Resources["AlternateDarkBrush"] as SolidColorBrush).Color;
             _statusBar.ForegroundColor = Colors.LightGray;
             _statusBar.ShowAsync();
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
+
+        void UserManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsBusy")
+                NotifyPropertyChanged("IsIdle");
+            if(e.PropertyName == "CurrentUser")
+            {
+
+            }
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // TODO: Prepare page for display here.
             PageManager.RegisterPage(this);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {    
-            UserManager.DeleteSavedUser();
-            _statusBar.ProgressIndicator.HideAsync();
-            PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);   
-        }
+
+        #region IManageable Interface Implementation
 
         public Dictionary<string, object> SaveState()
         {
@@ -77,23 +85,35 @@ namespace VITacademics
                     fromCache = false;
                 }
                 DisplayStatus(status, fromCache);
-                mainContentPresenter.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             }
+            loadingScreenPresenter.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
         }
+
+        #endregion
+
+        #region INotifyPropertyChanged Interface Implementation
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
+        #region Refresh Event Handler and Dependencies
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            AppBarButton sourceButton = (sender as AppBarButton);
-
-            sourceButton.IsEnabled = false;
             _statusBar.ProgressIndicator.Text = "Refreshing...";
             _statusBar.ProgressIndicator.ProgressValue = null;
             _statusBar.ProgressIndicator.ShowAsync();
 
-            StatusCode code = await Task.Run(() => UserManager.RefreshFromServerAsync());
+            StatusCode code = await UserManager.RefreshFromServerAsync();
 
             DisplayStatus(code, false);
-            sourceButton.IsEnabled = true;
         }
 
         private string GetTimeString(DateTimeOffset date)
@@ -119,7 +139,7 @@ namespace VITacademics
                 if (refreshedFromCache == false)
                     _statusBar.ProgressIndicator.Text = "Last refreshed " + GetTimeString(DateTimeOffset.Now);
                 else
-                    _statusBar.ProgressIndicator.Text = "Loaded cache, last refreshed " + GetTimeString(metaData.RefreshedDate);
+                    _statusBar.ProgressIndicator.Text = "Cache loaded, refreshed " + GetTimeString(metaData.RefreshedDate);
             }
             else
             {
@@ -133,6 +153,36 @@ namespace VITacademics
             _statusBar.ProgressIndicator.ProgressValue = 0;
             _statusBar.ProgressIndicator.ShowAsync();
         }
+
+        #endregion
+
+        #region Navigation Request Handlers
+
+        private void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            PageManager.NavigateTo(typeof(AboutPage), null, NavigationType.Default);
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            PageManager.NavigateTo(typeof(SettingsPage), null, NavigationType.Default);
+        }
+
+        // Temporary for testing only.
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (UserManager.IsBusy == true)
+            {
+                StandardMessageDialogs.GetDialog(StatusCode.UnknownError).ShowAsync();
+                return;
+            }
+
+            UserManager.DeleteSavedUser();
+            _statusBar.ProgressIndicator.HideAsync();
+            PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);
+        }
+
+        #endregion
 
     }
 }

@@ -6,6 +6,8 @@ using Windows.Security.Credentials;
 using System.Globalization;
 using System.Threading.Tasks;
 using Windows.Storage;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 
 namespace VITacademics.Managers
@@ -22,7 +24,10 @@ namespace VITacademics.Managers
         private const string CACHE_DATA_OWNER_KEY = "cachedData_owner";
         private const string CACHE_DATA_TIME_KEY = "cachedData_time";
 
+        private static User _currentUser;
         private static StorageFolder _folder = ApplicationData.Current.RoamingFolder;
+        private static bool _isBusy;
+        private delegate Task<StatusCode> Function();
 
         #endregion
 
@@ -46,11 +51,6 @@ namespace VITacademics.Managers
                 App._roamingSettings.Values[CACHE_DATA_OWNER_KEY] = value;
             }
         }
-        public static User CurrentUser
-        {
-            get;
-            private set;
-        }
         /// <summary>
         /// Gets the last point of time the user data was changed (saved or deleted), in UTC format. If unavailable, gets the default value of the data type.
         /// </summary>
@@ -70,6 +70,24 @@ namespace VITacademics.Managers
             private set
             {
                 App._roamingSettings.Values[CACHE_DATA_TIME_KEY] = value;
+            }
+        }
+        public static User CurrentUser
+        {
+            get { return _currentUser; }
+            private set
+            {
+                _currentUser = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public static bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                _isBusy = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -113,6 +131,29 @@ namespace VITacademics.Managers
                 CachedDataLastChanged = DateTimeOffset.UtcNow;
             }
             return res;
+        }
+
+        private static async Task<StatusCode> MonitoredTask(Function func)
+        {
+            if (IsBusy == true)
+                return StatusCode.InvalidRequest;
+
+            IsBusy = true;
+            StatusCode result = await func();
+            IsBusy = false;
+            return result;
+        }
+
+        #endregion
+
+        #region Event Notifiers
+
+        public static event PropertyChangedEventHandler PropertyChanged;
+
+        private static void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(null, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
@@ -160,22 +201,26 @@ namespace VITacademics.Managers
         /// </returns>
         public static async Task<StatusCode> CreateNewUserAsync(string regNo, DateTimeOffset dateOfBirth, string campus)
         {
-            User user = new User(regNo, dateOfBirth, campus);
-            StatusCode status = await NetworkService.TryLoginAsync(user);
-
-            if (status == StatusCode.Success)
+            return await MonitoredTask(async () =>
             {
-                DeleteSavedUser();
-                try
+                User user = new User(regNo, dateOfBirth, campus);
+                StatusCode status = await NetworkService.TryLoginAsync(user);
+
+                if (status == StatusCode.Success)
                 {
-                    // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}{Campus}"
-                    new PasswordVault().Add(
-                        new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
+                    DeleteSavedUser();
+                    try
+                    {
+                        // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}{Campus}"
+                        new PasswordVault().Add(
+                            new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
+                    }
+                    catch { }
+                    CurrentUser = user;
                 }
-                catch { }
-                CurrentUser = user;
+                return status;
             }
-            return status;
+            );
         }
 
         /// <summary>
@@ -189,22 +234,29 @@ namespace VITacademics.Managers
         /// </returns>
         public static async Task<StatusCode> LoginUserAsync()
         {
-            if (CurrentUser != null)
+            return await MonitoredTask(async () =>
             {
-                StatusCode code = await NetworkService.TryLoginAsync(CurrentUser);
-                return code;
-            }
-            else
-            {
-                return StatusCode.InvalidRequest;
-            }
+                if (CurrentUser != null)
+                {
+                    StatusCode code = await NetworkService.TryLoginAsync(CurrentUser);
+                    return code;
+                }
+                else
+                {
+                    return StatusCode.InvalidRequest;
+                }
+            });
         }
 
         /// <summary>
         /// Clears any saved credentials in the Locker and sets the current user to null.
         /// </summary>
-        public static void DeleteSavedUser()
+        public static StatusCode DeleteSavedUser()
         {
+            if (IsBusy == true)
+                return StatusCode.InvalidRequest;
+            
+            IsBusy = true;
             CurrentUser = null;
             try
             {
@@ -212,6 +264,8 @@ namespace VITacademics.Managers
                 new PasswordVault().Remove(credential);
             }
             catch { }
+            IsBusy = false;
+            return StatusCode.Success;
         }
 
         /// <summary>
@@ -222,27 +276,30 @@ namespace VITacademics.Managers
         /// </returns>
         public static async Task<StatusCode> RefreshFromServerAsync()
         {
-            if (CurrentUser == null)
-                return StatusCode.InvalidRequest;
-
-            try
+            return await MonitoredTask(async () =>
             {
-                Response<string> response = await NetworkService.TryGetDataAsync(CurrentUser);
-                if (response.Code != StatusCode.Success)
-                    return response.Code;
+                if (CurrentUser == null)
+                    return StatusCode.InvalidRequest;
 
-                User temp = JsonParser.TryParseData(response.Content);
-                if (temp == null)
+                try
+                {
+                    Response<string> response = await NetworkService.TryGetDataAsync(CurrentUser);
+                    if (response.Code != StatusCode.Success)
+                        return response.Code;
+
+                    User temp = JsonParser.TryParseData(response.Content);
+                    if (temp == null)
+                        return StatusCode.UnknownError;
+
+                    CurrentUser = temp;
+                    await TryCacheDataAsync(response.Content);
+                    return StatusCode.Success;
+                }
+                catch
+                {
                     return StatusCode.UnknownError;
-
-                CurrentUser = temp;
-                await TryCacheDataAsync(response.Content);
-                return StatusCode.Success;
-            }
-            catch
-            {
-                return StatusCode.UnknownError;
-            }
+                }
+            });
         }
 
         /// <summary>
@@ -253,27 +310,30 @@ namespace VITacademics.Managers
         /// </returns>
         public static async Task<StatusCode> LoadCacheAsync()
         {
-            try
+            return await MonitoredTask(async () =>
             {
-                if (CurrentUser == null)
-                    return StatusCode.InvalidRequest;
+                try
+                {
+                    if (CurrentUser == null)
+                        return StatusCode.InvalidRequest;
 
-                if (string.Equals(CachedDataOwner, CurrentUser.RegNo, StringComparison.OrdinalIgnoreCase) == false)
+                    if (string.Equals(CachedDataOwner, CurrentUser.RegNo, StringComparison.OrdinalIgnoreCase) == false)
+                        return StatusCode.NoData;
+
+                    StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);
+                    string jsonString = await StorageHelper.TryReadAsync(file);
+                    User temp = JsonParser.TryParseData(jsonString);
+                    if (temp == null)
+                        return StatusCode.UnknownError;
+
+                    CurrentUser = temp;
+                    return StatusCode.Success;
+                }
+                catch
+                {
                     return StatusCode.NoData;
-
-                StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);
-                string jsonString = await StorageHelper.TryReadAsync(file);
-                User temp = JsonParser.TryParseData(jsonString);
-                if (temp == null)
-                    return StatusCode.UnknownError;
-
-                CurrentUser = temp;
-                return StatusCode.Success;
-            }
-            catch
-            {
-                return StatusCode.NoData;
-            }
+                }
+            });
         }
 
         #endregion

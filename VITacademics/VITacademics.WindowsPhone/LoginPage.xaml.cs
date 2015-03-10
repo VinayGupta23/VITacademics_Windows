@@ -50,11 +50,6 @@ namespace VITacademics
             this.DataContext = this;
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             PageManager.RegisterPage(this);
@@ -130,7 +125,7 @@ namespace VITacademics
             }
             else
             {
-                StatusCode statusCode = await Task.Run(() => UserManager.CreateNewUserAsync(RegNo, DOB, Campus));
+                StatusCode statusCode = await UserManager.CreateNewUserAsync(RegNo, DOB, Campus);
 
                 if (statusCode == StatusCode.Success)
                     PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);

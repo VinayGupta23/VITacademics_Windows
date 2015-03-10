@@ -18,8 +18,8 @@
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Minimal">
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="settings"></AppBarButton>
-                <AppBarButton Label="about"></AppBarButton>
+                <AppBarButton Label="settings" Click="SettingsButton_Click"></AppBarButton>
+                <AppBarButton Label="about" Click="AboutButton_Click"></AppBarButton>
                 <!-- For testing purposes -->
                 <AppBarButton Label="logout" Click="Button_Click"></AppBarButton>
             </CommandBar.SecondaryCommands>
@@ -32,13 +32,22 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-
-        <ContentPresenter Grid.Row="1" x:Name="mainContentPresenter" HorizontalAlignment="Center" VerticalAlignment="Center">
+        
+        <!-- Loading Screen Presenter -->
+        <ContentPresenter Grid.Row="1" x:Name="loadingScreenPresenter" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel>
                 <ProgressRing IsActive="True" Margin="0,0,0,5">
                 </ProgressRing>
                 <TextBlock Text="Getting your content ready" Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
             </StackPanel>
+        </ContentPresenter>
+        
+        <!-- Menu Presenter -->
+        <ContentPresenter Grid.Row="1" x:Name="menuPresenter">
+        </ContentPresenter>
+        
+        <!-- Content Presenter -->
+        <ContentPresenter Grid.Row="1" x:Name="contentPresenter">
         </ContentPresenter>
         
         <!-- Page Top Panel -->
@@ -54,7 +63,8 @@
                        Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
             <AppBarButton Grid.Column="1" Margin="0,0,15,0" Click="RefreshButton_Click"
                           HorizontalAlignment="Center" VerticalAlignment="Center"            
-                          Icon="Refresh" Style="{StaticResource TopBarButtonStyle}"></AppBarButton>
+                          Icon="Refresh" Style="{StaticResource TopBarButtonStyle}"
+                          IsEnabled="{Binding IsIdle, Mode=OneWay}"></AppBarButton>
             <AppBarButton Grid.Column="2" Margin="0,0,15,0"
                           HorizontalAlignment="Center" VerticalAlignment="Center"            
                           Icon="AllApps" Style="{StaticResource TopBarButtonStyle}"></AppBarButton>
