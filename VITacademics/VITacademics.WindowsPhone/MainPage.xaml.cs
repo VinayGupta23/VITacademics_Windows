@@ -18,6 +18,8 @@ using Windows.UI;
 using Academics.ContentService;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using VITacademics.UIControls;
+using Academics.DataModel;
 
 
 namespace VITacademics
@@ -171,6 +173,7 @@ namespace VITacademics
         // Temporary for testing only.
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            
             if (UserManager.IsBusy == true)
             {
                 StandardMessageDialogs.GetDialog(StatusCode.UnknownError).ShowAsync();
@@ -180,9 +183,21 @@ namespace VITacademics
             UserManager.DeleteSavedUser();
             _statusBar.ProgressIndicator.HideAsync();
             PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);
+
         }
+             
+
 
         #endregion
+
+        private void MenuButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            BasicTimetableControl b = new BasicTimetableControl();
+            contentPresenter.Content = b;
+            b.GenerateTimetableView(Timetable.GetTimetable(UserManager.CurrentUser.Courses));
+
+        }
 
     }
 }

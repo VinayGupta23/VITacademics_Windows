@@ -15,7 +15,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace VITacademics.UIControls
 {
@@ -24,9 +23,27 @@ namespace VITacademics.UIControls
 
         public event EventHandler<RequestEventArgs> ActionRequested;
 
-        public BasicTimetableControl(Timetable timetable)
+        public BasicTimetableControl()
         {
             this.InitializeComponent();
+        }
+
+        public void GenerateTimetableView(Timetable timetable)
+        {   
+                int j = 0;
+                List<PivotItem> pivotItems = new List<PivotItem>(7);
+                for (int i = 0; i < 7; i++)
+                {
+                    var daySchedule = timetable[(DayOfWeek)i];
+                    if (daySchedule.Count != 0)
+                    {
+                        pivotItems.Add(new PivotItem());
+                        pivotItems[j].Header = ((DayOfWeek)i).ToString().ToLower();
+                        pivotItems[j].DataContext = daySchedule;
+                        j++;
+                    }
+                }
+                rootPivot.ItemsSource = pivotItems;
         }
     }
 }

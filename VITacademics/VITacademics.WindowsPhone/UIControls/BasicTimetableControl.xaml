@@ -6,10 +6,66 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignHeight="720"
+    d:DesignWidth="420">
     
-    <Grid>
+    <UserControl.Resources> 
+        <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>        
+    </UserControl.Resources>
+    
+    <Pivot x:Name="rootPivot" HeaderTemplate="{StaticResource PivotItemHeaderTemplate}">
+    
+        <Pivot.Resources>
+                    
+            <Style TargetType="PivotItem">
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <ListView ItemsSource="{Binding}"
+                                      SelectionMode="None">
+                                
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment"
+                                                Value="Stretch"></Setter>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="60"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
 
-    </Grid>
+                                            <Border Grid.Column="0" Margin="0,0,5,0" Background="LightGray">
+                                                <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding}"></TextBlock>
+                                            </Border>
+                                            
+                                            <Grid DataContext="{Binding Parent}" Grid.Column="1">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition></RowDefinition>
+                                                    <RowDefinition></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" Text="{Binding Title}" Style="{StaticResource MessageDialogContentStyle}"
+                                                           FontSize="23" MaxLines="1"></TextBlock>
+                                                <TextBlock Grid.Row="1" Text="{Binding CourseCode}" Style="{StaticResource ComboBoxPlaceholderTextBlockStyle}" HorizontalAlignment="Left"></TextBlock>
+                                                <TextBlock Grid.Row="1" Text="{Binding Slot}" Style="{StaticResource ComboBoxPlaceholderTextBlockStyle}" HorizontalAlignment="Right"></TextBlock>
+                                            </Grid>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                
+                            </ListView>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+        </Pivot.Resources>
+        
+    </Pivot>
+    
 </UserControl>
