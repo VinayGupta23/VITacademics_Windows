@@ -50,4 +50,10 @@
         <TextBlock Text="{Binding}" FontSize="45"></TextBlock>
     </DataTemplate>
 
+    <Style TargetType="TextBlock" x:Key="ListItemSubHeaderOneStyle" BasedOn="{StaticResource MessageDialogContentStyle}">
+        <Setter Property="MaxLines" Value="1"></Setter>
+        <Setter Property="FontWeight" Value="Normal"></Setter>
+        <Setter Property="Foreground" Value="{ThemeResource PhoneAccentBrush}"></Setter>
+    </Style>
+    
 </ResourceDictionary>

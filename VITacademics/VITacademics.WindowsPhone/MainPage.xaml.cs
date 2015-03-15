@@ -28,6 +28,7 @@ namespace VITacademics
     public sealed partial class MainPage : Page, IManageable, INotifyPropertyChanged
     {
 
+        private IProxiedControl proxiedControl;
         private StatusBar _statusBar = StatusBar.GetForCurrentView();
 
         public bool IsIdle
@@ -120,17 +121,18 @@ namespace VITacademics
 
         private string GetTimeString(DateTimeOffset date)
         {
-            DateTimeOffset today = DateTimeOffset.UtcNow;
+            date = date.ToLocalTime();
+            DateTimeOffset today = DateTimeOffset.Now;
             if (date.Month == today.Month)
             {
                 if (date.Day == today.Day)
 
-                    return "at " + date.ToLocalTime().ToString("H:mm");
+                    return "at " + date.ToString("HH:mm");
                 else
-                    return "on " + date.ToLocalTime().ToString("ddd, H:mm");
+                    return "on " + date.ToString("ddd, HH:mm");
             }
             else
-                return "on " + date.ToLocalTime().ToString("dd MMM, H:mm");
+                return "on " + date.ToString("dd MMM, HH:mm");
         }
         private void DisplayStatus(StatusCode status, bool refreshedFromCache)
         {
@@ -146,7 +148,7 @@ namespace VITacademics
             else
             {
                 if (metaData == null)
-                    _statusBar.ProgressIndicator.Text = "Unable to refresh, last tried at " + DateTimeOffset.Now.ToString("H:mm");
+                    _statusBar.ProgressIndicator.Text = "Unable to refresh, last tried at " + DateTimeOffset.Now.ToString("HH:mm");
                 else
                     _statusBar.ProgressIndicator.Text = "Unable to refresh, last updated " + GetTimeString(metaData.RefreshedDate);
                 StandardMessageDialogs.GetDialog(status).ShowAsync();
@@ -193,10 +195,9 @@ namespace VITacademics
         private void MenuButton_Click(object sender, RoutedEventArgs e)
         {
 
-            BasicTimetableControl b = new BasicTimetableControl();
-            contentPresenter.Content = b;
-            b.GenerateTimetableView(Timetable.GetTimetable(UserManager.CurrentUser.Courses));
-
+            proxiedControl = new BasicTimetableControl();
+            proxiedControl.GenerateView(Timetable.GetTimetable(UserManager.CurrentUser.Courses));
+            contentPresenter.Content = proxiedControl;
         }
 
     }

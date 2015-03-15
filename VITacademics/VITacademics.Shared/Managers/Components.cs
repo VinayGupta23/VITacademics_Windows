@@ -88,10 +88,19 @@ namespace VITacademics.Managers
     public interface IProxiedControl
     {
         event EventHandler<RequestEventArgs> ActionRequested;
+        void GenerateView(object parameter);
     }
 
-    public class RequestEventArgs : EventArgs
+    public sealed class RequestEventArgs : EventArgs
     {
+        public readonly Type TargetElement;
+        public readonly object Parameter;
+
+        public RequestEventArgs(Type targetElement, object parameter)
+        {
+            TargetElement = targetElement;
+            Parameter = parameter;
+        }
     }
 
 #endif

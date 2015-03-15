@@ -22,12 +22,41 @@ namespace VITacademics.UIControls
     public sealed partial class EnhancedTimetableControl : UserControl, IProxiedControl
     {
 
-        public event EventHandler<RequestEventArgs> ActionRequested;
-
-        public EnhancedTimetableControl(Timetable timetable)
+        public EnhancedTimetableControl()
         {
             this.InitializeComponent();
         }
 
+        /*
+        private void Pivot_PivotItemLoading(Pivot sender, PivotItemEventArgs args)
+        {
+            int curIndex = sender.SelectedIndex;
+            for (int i = curIndex + 1; i < curIndex + 4; i++)
+            {
+                _dates[i % 5] = _dates[curIndex].AddDays(i - curIndex);
+            }
+            int previousIndex = (curIndex + 4) % 5;
+            _dates[previousIndex] = _dates[curIndex].AddDays(-1);
+            for (int i = 0; i < 5; i++)
+            {
+                (sender.Items[i] as PivotItem).Header = _dates[i].ToString("ddd dd");
+            }
+
+            if (_dates[curIndex].Date == DateTime.Now.Date)
+                args.Item.Content = new CurrentDayControl();
+            
+        }
+        
+       
+       
+       
+        */
+
+        public event EventHandler<RequestEventArgs> ActionRequested;
+
+        public void GenerateView(object parameter)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

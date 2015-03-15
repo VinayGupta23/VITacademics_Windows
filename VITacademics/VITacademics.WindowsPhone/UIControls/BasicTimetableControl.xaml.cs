@@ -21,29 +21,38 @@ namespace VITacademics.UIControls
     public sealed partial class BasicTimetableControl : UserControl, IProxiedControl
     {
 
-        public event EventHandler<RequestEventArgs> ActionRequested;
-
         public BasicTimetableControl()
         {
             this.InitializeComponent();
         }
 
-        public void GenerateTimetableView(Timetable timetable)
-        {   
-                int j = 0;
-                List<PivotItem> pivotItems = new List<PivotItem>(7);
-                for (int i = 0; i < 7; i++)
+        public void GenerateView(object parameter)
+        {
+            Timetable timetable = parameter as Timetable;
+            int j = 0;
+            List<PivotItem> pivotItems = new List<PivotItem>(7);
+            for (int i = 0; i < 7; i++)
+            {
+                var daySchedule = timetable[(DayOfWeek)i];
+                if (daySchedule.Count != 0)
                 {
-                    var daySchedule = timetable[(DayOfWeek)i];
-                    if (daySchedule.Count != 0)
-                    {
-                        pivotItems.Add(new PivotItem());
-                        pivotItems[j].Header = ((DayOfWeek)i).ToString().ToLower();
-                        pivotItems[j].DataContext = daySchedule;
-                        j++;
-                    }
+                    pivotItems.Add(new PivotItem());
+                    pivotItems[j].Header = ((DayOfWeek)i).ToString().ToLower();
+                    pivotItems[j].DataContext = daySchedule;
+                    j++;
                 }
-                rootPivot.ItemsSource = pivotItems;
+            }
+            rootPivot.ItemsSource = pivotItems;
+        }
+
+        public event EventHandler<RequestEventArgs> ActionRequested;
+
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if(ActionRequested != null)
+            {
+                ActionRequested(this, new RequestEventArgs(typeof(UserControl), (e.ClickedItem as ClassHours).Parent));
+            }
         }
     }
 }
