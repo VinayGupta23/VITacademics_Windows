@@ -57,6 +57,13 @@ namespace Academics.DataModel
             _endHours = endHours;
             _day = day;
         }
+
+        public override string ToString()
+        {
+            return String.Format("{0}\nto\n{1}",
+                                 this.StartHours.ToLocalTime().ToString("H:mm"),
+                                 this.EndHours.ToLocalTime().ToString("H:mm"));
+        }
     }
 
     public class MarksInfo : LtpCourseComponent
