@@ -205,6 +205,7 @@ namespace Academics.ContentService
         }
         private static void AssignSpecificDetails(LBCCourse course, JsonObject courseObject)
         {
+            course.Title += " Lab";
             course.LabCamMarks = GetMarksInfo(course, "lab_cam", courseObject.GetNamedObject("marks"));
         }
         private static void AssignSpecificDetails(PBLCourse course, JsonObject courseObject)
