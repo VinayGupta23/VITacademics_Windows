@@ -20,20 +20,47 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using VITacademics.UIControls;
 using Academics.DataModel;
+using System.Runtime.CompilerServices;
 
 
 namespace VITacademics
 {
 
-    public sealed partial class MainPage : Page, IManageable, INotifyPropertyChanged
+    public sealed partial class MainPage : Page, IManageable, INotifyPropertyChanged, IAppReturnControllable
     {
 
         private IProxiedControl proxiedControl;
+        private object currentContentSource;
         private StatusBar _statusBar = StatusBar.GetForCurrentView();
+        private MenuControl _menu = new MenuControl();        
+        private bool _isMenuOpen;
+        private string _titleText = null;
 
         public bool IsIdle
         {
             get { return !UserManager.IsBusy; }
+        }
+        private bool IsMenuOpen
+        {
+            get { return _isMenuOpen; }
+            set
+            {
+                _isMenuOpen = value;
+                NotifyPropertyChanged("TitleText");
+            }
+        }
+        public string TitleText
+        {
+            get
+            {
+                if (_titleText == null || IsMenuOpen == true) return "VITacademics";
+                else return _titleText;
+            }
+            set
+            {
+                _titleText = value;
+                NotifyPropertyChanged();
+            }
         }
 
         public MainPage()
@@ -42,20 +69,40 @@ namespace VITacademics
             this.DataContext = this;
 
             UserManager.PropertyChanged += UserManager_PropertyChanged;
+            _menu.ActionRequested += ProxiedControl_ActionRequested;
 
             _statusBar.BackgroundColor = (Application.Current.Resources["AlternateDarkBrush"] as SolidColorBrush).Color;
             _statusBar.ForegroundColor = Colors.LightGray;
             _statusBar.ShowAsync();
-        }
 
+        }
 
         void UserManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsBusy")
                 NotifyPropertyChanged("IsIdle");
-            if(e.PropertyName == "CurrentUser")
+            if(e.PropertyName == "CurrentUser" && UserManager.CurrentUser != null)
             {
+                _menu.GenerateView(UserManager.CurrentUser.Courses);
+                if (proxiedControl != null)
+                {
+                    if (currentContentSource as Course != null)
+                    {
+                        int classNo = (currentContentSource as Course).ClassNumber;
+                        foreach (Course c in UserManager.CurrentUser.Courses)
+                            if (c.ClassNumber == classNo)
+                            {
+                                currentContentSource = c;
+                                break;
+                            }
+                    }
+                    else if (currentContentSource as Timetable != null)
+                        currentContentSource = Timetable.GetTimetable(UserManager.CurrentUser.Courses);
+                    else
+                        currentContentSource = UserManager.CurrentUser.Courses;
 
+                    proxiedControl.GenerateView(currentContentSource);
+                }
             }
         }
 
@@ -63,7 +110,6 @@ namespace VITacademics
         {
             PageManager.RegisterPage(this);
         }
-
 
         #region IManageable Interface Implementation
 
@@ -98,7 +144,7 @@ namespace VITacademics
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void NotifyPropertyChanged(string propertyName)
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
@@ -160,7 +206,7 @@ namespace VITacademics
 
         #endregion
 
-        #region Navigation Request Handlers
+        #region Navigation Request and Related Handlers
 
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
@@ -172,33 +218,62 @@ namespace VITacademics
             PageManager.NavigateTo(typeof(SettingsPage), null, NavigationType.Default);
         }
 
-        // Temporary for testing only.
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void MenuButton_Click(object sender, RoutedEventArgs e)
         {
-            
-            if (UserManager.IsBusy == true)
+            if (IsMenuOpen)
+                menuPresenter.Content = null;
+            else
+                menuPresenter.Content = _menu;
+            IsMenuOpen = !IsMenuOpen;
+        }
+
+        private void ProxiedControl_ActionRequested(object sender, RequestEventArgs e)
+        {
+            if (e.TargetElement == typeof(CourseInfoControl))
             {
-                StandardMessageDialogs.GetDialog(StatusCode.UnknownError).ShowAsync();
-                return;
+                proxiedControl = new CourseInfoControl();
+                TitleText = "Course Details";
+            }
+            else if (e.TargetElement == typeof(BasicTimetableControl))
+            {
+                proxiedControl = new BasicTimetableControl();
+                TitleText = "Timetable";
+            }
+            else if (e.TargetElement == typeof(EnhancedTimetableControl))
+            {
+                proxiedControl = new EnhancedTimetableControl();
+                TitleText = "Daily Schedule";
+            }
+            else
+            {
+                proxiedControl = new UserOverviewControl();
+                TitleText = "Overview";
             }
 
-            UserManager.DeleteSavedUser();
-            _statusBar.ProgressIndicator.HideAsync();
-            PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);
+            proxiedControl.GenerateView(e.Parameter);
+            currentContentSource = e.Parameter;
+            proxiedControl.ActionRequested += ProxiedControl_ActionRequested;
+            contentPresenter.Content = proxiedControl;
 
+            if (sender as MenuControl != null)
+                MenuButton_Click(null, null);
         }
-             
-
 
         #endregion
 
-        private void MenuButton_Click(object sender, RoutedEventArgs e)
-        {
+        #region IAppReturnControllable Interface Implementation
 
-            proxiedControl = new BasicTimetableControl();
-            proxiedControl.GenerateView(Timetable.GetTimetable(UserManager.CurrentUser.Courses));
-            contentPresenter.Content = proxiedControl;
+        public bool AllowAppExit()
+        {
+            if (IsMenuOpen == true)
+            {
+                MenuButton_Click(null, null);
+                return false;
+            }
+            else
+                return true;
         }
 
+        #endregion
     }
 }

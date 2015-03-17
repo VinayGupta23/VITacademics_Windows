@@ -96,23 +96,17 @@
     <Compile Include="UIControls\BasicTimetableControl.xaml.cs">
       <DependentUpon>BasicTimetableControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UIControls\CBLCourseControl.xaml.cs">
-      <DependentUpon>CBLCourseControl.xaml</DependentUpon>
+    <Compile Include="UIControls\CourseInfoControl.xaml.cs">
+      <DependentUpon>CourseInfoControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UIControls\EnhancedTimetableControl.xaml.cs">
       <DependentUpon>EnhancedTimetableControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UIControls\LBCCourseControl.xaml.cs">
-      <DependentUpon>LBCCourseControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UIControls\MenuControl.xaml.cs">
       <DependentUpon>MenuControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UIControls\PBCCourseControl.xaml.cs">
-      <DependentUpon>PBCCourseControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UIControls\PBLCourseControl.xaml.cs">
-      <DependentUpon>PBLCourseControl.xaml</DependentUpon>
+    <Compile Include="UIControls\UserOverviewControl.xaml.cs">
+      <DependentUpon>UserOverviewControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -160,7 +154,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UIControls\CBLCourseControl.xaml">
+    <Page Include="UIControls\CourseInfoControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -168,19 +162,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UIControls\LBCCourseControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UIControls\MenuControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UIControls\PBCCourseControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UIControls\PBLCourseControl.xaml">
+    <Page Include="UIControls\UserOverviewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

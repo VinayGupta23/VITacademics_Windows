@@ -1,9 +1,9 @@
-﻿using Academics.DataModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using VITacademics.Managers;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -18,11 +18,18 @@ using Windows.UI.Xaml.Navigation;
 
 namespace VITacademics.UIControls
 {
-    public sealed partial class PBLCourseControl : UserControl
+    public sealed partial class UserOverviewControl : UserControl, IProxiedControl
     {
-        public PBLCourseControl(PBLCourse course)
+        public UserOverviewControl()
         {
             this.InitializeComponent();
+        }
+
+        public event EventHandler<RequestEventArgs> ActionRequested;
+
+        public void GenerateView(object parameter)
+        {
+
         }
     }
 }

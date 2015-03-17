@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    RequestedTheme="Light"
+    RequestedTheme="Dark"
     Background="{ThemeResource AlternateDarkBrush}">
     
     <Page.Resources>
@@ -16,18 +16,16 @@
     
     <!-- Bottom App Bar -->
     <Page.BottomAppBar>
-        <CommandBar ClosedDisplayMode="Minimal">
+        <CommandBar ClosedDisplayMode="Minimal" Background="{StaticResource AlternateDarkBrush}">
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="settings" Click="SettingsButton_Click"></AppBarButton>
                 <AppBarButton Label="about" Click="AboutButton_Click"></AppBarButton>
-                <!-- For testing purposes -->
-                <AppBarButton Label="test button" Click="Button_Click"></AppBarButton>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
     
     <!-- Root Grid -->
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid RequestedTheme="Light" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -42,14 +40,14 @@
             </StackPanel>
         </ContentPresenter>
         
-        <!-- Menu Presenter -->
-        <ContentPresenter Grid.Row="1" x:Name="menuPresenter">
-        </ContentPresenter>
-        
         <!-- Content Presenter -->
         <ContentPresenter Grid.Row="1" x:Name="contentPresenter">
         </ContentPresenter>
-        
+
+        <!-- Menu Presenter -->
+        <ContentPresenter Grid.Row="1" x:Name="menuPresenter">
+        </ContentPresenter>
+
         <!-- Page Top Panel -->
         <Grid Margin="0,-1,0,0" Background="{StaticResource AlternateDarkBrush}">
             <Grid.ColumnDefinitions>
@@ -58,8 +56,8 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             
-            <TextBlock x:Name="TitleTextBlock" Grid.Column="0" Margin="19,10,0,10"
-                       Text="VITacademics" Foreground="White" LineStackingStrategy="MaxHeight"
+            <TextBlock Grid.Column="0" Margin="19,10,0,10"
+                       Text="{Binding TitleText, Mode=OneWay}" Foreground="White" LineStackingStrategy="MaxHeight"
                        Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
             <AppBarButton Grid.Column="1" Margin="0,0,15,0" Click="RefreshButton_Click"
                           HorizontalAlignment="Center" VerticalAlignment="Center"            

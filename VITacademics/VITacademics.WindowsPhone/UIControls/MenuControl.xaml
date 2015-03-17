@@ -6,10 +6,78 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
-    
-    <Grid>
+    RequestedTheme="Light"
+    d:DesignHeight="720"
+    d:DesignWidth="420">
 
-    </Grid>
+    <UserControl.Resources>
+
+        <Style TargetType="TextBlock" x:Key="ListItemHeaderTextBlockStyle"
+               BasedOn="{StaticResource MessageDialogTitleStyle}">
+            <Setter Property="Foreground" Value="Black"></Setter>
+            <Setter Property="FontWeight" Value="Normal"></Setter>
+            <Setter Property="MaxLines" Value="1"></Setter>
+        </Style>
+        
+        <Style TargetType="TextBlock" x:Key="ListItemSubHeaderTextBlockStyle"
+               BasedOn="{StaticResource ListViewItemSubheaderTextBlockStyle}">
+            <Setter Property="FontWeight" Value="Normal"></Setter>
+        </Style>
+        
+        <Style TargetType="ListView">
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Style="{ThemeResource TitleTextBlockStyle}"></TextBlock>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+    </UserControl.Resources>
+
+    <UserControl.Transitions>
+        <TransitionCollection>
+            <PaneThemeTransition Edge="Bottom"></PaneThemeTransition>
+        </TransitionCollection>
+    </UserControl.Transitions>
+
+    <ScrollViewer Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel Margin="19,17,0,0">
+
+            <ListView Header="MENU"
+                      IsItemClickEnabled="True"
+                      ItemsSource="{Binding MenuItems, Mode=OneTime}"
+                      ItemClick="MenuList_ItemClick">    
+                
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,13,0,0">
+                            <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource ListItemHeaderTextBlockStyle}"></TextBlock>
+                            <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource ListItemSubHeaderTextBlockStyle}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                
+            </ListView>
+
+            <!-- Trial design -->
+            <ListView ItemsSource="{Binding Courses}"
+                      ItemClick="CourseList_ItemClick"
+                      IsItemClickEnabled="True"
+                      Header="COURSES" Margin="0,17,0,0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,13,0,0">
+                        <TextBlock Text="{Binding Title}"
+                                   Style="{StaticResource ListItemHeaderTextBlockStyle}"></TextBlock>
+                            <TextBlock Text="{Binding CourseCode}"
+                                       Style="{StaticResource ListItemSubHeaderTextBlockStyle}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

@@ -51,7 +51,7 @@ namespace VITacademics.UIControls
         {
             if(ActionRequested != null)
             {
-                ActionRequested(this, new RequestEventArgs(typeof(UserControl), (e.ClickedItem as ClassHours).Parent));
+                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), (e.ClickedItem as ClassHours).Parent));
             }
         }
     }
