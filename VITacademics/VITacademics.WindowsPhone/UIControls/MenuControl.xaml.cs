@@ -70,8 +70,8 @@ namespace VITacademics.UIControls
             this.InitializeComponent();
 
             MenuItems = new List<MenuItem>();
-            MenuItems.Add(new MenuItem("overview", "a summary of marks and attendance, and today's schedule"));
-            MenuItems.Add(new MenuItem("timetable", "your daywise schedule of classes"));
+            MenuItems.Add(new MenuItem("overview", "a summary of marks and attendance, today's schedule"));
+            MenuItems.Add(new MenuItem("timetable", "your regular schedule of classes"));
 
             this.DataContext = this;
         }

@@ -229,31 +229,34 @@ namespace VITacademics
 
         private void ProxiedControl_ActionRequested(object sender, RequestEventArgs e)
         {
+            string titleText = null;
+
             if (e.TargetElement == typeof(CourseInfoControl))
             {
                 proxiedControl = new CourseInfoControl();
-                TitleText = "Course Details";
+                titleText = "Course Details";
             }
             else if (e.TargetElement == typeof(BasicTimetableControl))
             {
                 proxiedControl = new BasicTimetableControl();
-                TitleText = "Timetable";
+                titleText = "Timetable";
             }
             else if (e.TargetElement == typeof(EnhancedTimetableControl))
             {
                 proxiedControl = new EnhancedTimetableControl();
-                TitleText = "Daily Schedule";
+                titleText = "Daily Buzz";
             }
             else
             {
                 proxiedControl = new UserOverviewControl();
-                TitleText = "Overview";
+                titleText = "Overview";
             }
 
             proxiedControl.GenerateView(e.Parameter);
             currentContentSource = e.Parameter;
             proxiedControl.ActionRequested += ProxiedControl_ActionRequested;
             contentPresenter.Content = proxiedControl;
+            TitleText = titleText;
 
             if (sender as MenuControl != null)
                 MenuButton_Click(null, null);
