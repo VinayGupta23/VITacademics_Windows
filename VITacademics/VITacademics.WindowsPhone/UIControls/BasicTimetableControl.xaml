@@ -16,7 +16,6 @@
     <Pivot x:Name="rootPivot" HeaderTemplate="{StaticResource PivotItemHeaderTemplate}">
     
         <Pivot.Resources>
-                    
             <Style TargetType="PivotItem">
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
@@ -36,11 +35,9 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Margin="0,0,0,13">
-
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="80"></RowDefinition>
                                             </Grid.RowDefinitions>
-
                                         <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="80"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -58,18 +55,18 @@
                                                     <RowDefinition Height="Auto"></RowDefinition>
                                                 </Grid.RowDefinitions>
                                                 
-                                                <TextBlock Grid.Row="0" Text="{Binding Title}" Style="{StaticResource MessageDialogContentStyle}"
-                                                           FontSize="23" MaxLines="1"></TextBlock>
-                                                
-                                                <TextBlock Grid.Row="1" Text="{Binding CourseCode}" Style="{StaticResource ListItemSubHeaderOneStyle}"
-                                                           HorizontalAlignment="Left"></TextBlock>
-                                                <TextBlock Grid.Row="2" Text="{Binding CourseMode}" Style="{StaticResource MessageDialogContentStyle}"
-                                                           HorizontalAlignment="Left"></TextBlock>
-                                                
-                                                <TextBlock Grid.Row="1" Text="{Binding Slot}" Style="{StaticResource ListItemSubHeaderOneStyle}"
-                                                           HorizontalAlignment="Right"></TextBlock>
-                                                <TextBlock Grid.Row="2" Text="{Binding Venue}" Style="{StaticResource MessageDialogContentStyle}"
-                                                           HorizontalAlignment="Right"></TextBlock>
+                                                <TextBlock Grid.Row="0" Text="{Binding Title, Mode=OneTime}"
+                                                           Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+
+                                                <TextBlock Grid.Row="1" Text="{Binding CourseCode, Mode=OneTime}"
+                                                           Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
+                                                <TextBlock Grid.Row="2" Text="{Binding CourseMode, Mode=OneTime}"
+                                                           Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+
+                                                <TextBlock Grid.Row="1" Text="{Binding Slot, Mode=OneTime}"
+                                                           HorizontalAlignment="Right" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
+                                                <TextBlock Grid.Row="2" Text="{Binding Venue, Mode=OneTime}"
+                                                            HorizontalAlignment="Right" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
 
                                             </Grid>
                                         </Grid>

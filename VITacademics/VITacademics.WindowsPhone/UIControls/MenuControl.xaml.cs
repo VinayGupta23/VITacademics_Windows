@@ -72,6 +72,7 @@ namespace VITacademics.UIControls
             MenuItems = new List<MenuItem>();
             MenuItems.Add(new MenuItem("overview", "a summary of marks and attendance, today's schedule"));
             MenuItems.Add(new MenuItem("timetable", "your regular schedule of classes"));
+            MenuItems.Add(new MenuItem("daily buzz", "the semester's activity embedded into the timetable"));
 
             this.DataContext = this;
         }
@@ -91,12 +92,18 @@ namespace VITacademics.UIControls
 
         private void MenuList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(ActionRequested != null)
+            if (ActionRequested != null)
             {
-                if((e.ClickedItem as MenuItem) == MenuItems[0])
-                    ActionRequested(this, new RequestEventArgs(typeof(UserOverviewControl), UserManager.CurrentUser.Courses));
-                else
-                    ActionRequested(this, new RequestEventArgs(typeof(BasicTimetableControl), Timetable.GetTimetable(UserManager.CurrentUser.Courses)));
+                MenuItem item = e.ClickedItem as MenuItem;
+                if (item != null)
+                {
+                    if (item == MenuItems[0])
+                        ActionRequested(this, new RequestEventArgs(typeof(UserOverviewControl), UserManager.CurrentUser.Courses));
+                    else if (item == MenuItems[1])
+                        ActionRequested(this, new RequestEventArgs(typeof(BasicTimetableControl), Timetable.GetTimetable(UserManager.CurrentUser.Courses)));
+                    else
+                        ActionRequested(this, new RequestEventArgs(typeof(EnhancedTimetableControl), Timetable.GetTimetable(UserManager.CurrentUser.Courses)));
+                }
             }
         }
 

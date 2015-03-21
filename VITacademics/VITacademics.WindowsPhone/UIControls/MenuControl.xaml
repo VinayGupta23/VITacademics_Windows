@@ -32,6 +32,7 @@
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
+            <Setter Property="IsItemClickEnabled" Value="True"></Setter>
         </Style>
         
     </UserControl.Resources>
@@ -46,7 +47,6 @@
         <StackPanel Margin="19,17,0,0">
 
             <ListView Header="MENU"
-                      IsItemClickEnabled="True"
                       ItemsSource="{Binding MenuItems, Mode=OneTime}"
                       ItemClick="MenuList_ItemClick">    
                 
@@ -64,7 +64,6 @@
             <!-- Trial design -->
             <ListView ItemsSource="{Binding Courses}"
                       ItemClick="CourseList_ItemClick"
-                      IsItemClickEnabled="True"
                       Header="COURSES" Margin="0,17,0,0">
                 <ListView.ItemTemplate>
                     <DataTemplate>

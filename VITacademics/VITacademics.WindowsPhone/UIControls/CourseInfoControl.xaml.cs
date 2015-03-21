@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Academics.DataModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,16 +21,21 @@ namespace VITacademics.UIControls
 {
     public sealed partial class CourseInfoControl : UserControl, IProxiedControl
     {
+        public event EventHandler<RequestEventArgs> ActionRequested;
+
         public CourseInfoControl()
         {
             this.InitializeComponent();
         }
 
-        public event EventHandler<RequestEventArgs> ActionRequested;
-
         public void GenerateView(object parameter)
         {
-
+            try
+            {
+                this.DataContext = parameter as Course;
+            }
+            catch { }
         }
     }
+
 }

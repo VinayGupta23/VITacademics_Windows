@@ -6,16 +6,65 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400"
+    d:DesignHeight="720"
+    d:DesignWidth="420"
     RequestedTheme="Light">
     
-    <Grid>
-        <TextBlock Text="Hello from Course View!" 
-                   x:Name="textBlock"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
-    </Grid>
-    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                
+                <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
+                <ResourceDictionary>
+                    
+                    <DataTemplate x:Key="CBLPivotTemplate">
+                        <Pivot HeaderTemplate="{StaticResource PivotItemHeaderTemplate}">
+                            <PivotItem Header="details">
+                                
+                            </PivotItem>
+                            <PivotItem Header="attendance" DataContext="{Binding Attendance}">
+                                <local:AttendanceControl DataContext="{Binding}"></local:AttendanceControl>
+                            </PivotItem>
+                        </Pivot>
+                    </DataTemplate>
+                    
+                    <DataTemplate x:Key="PBLPivotTemplate">
+                        <Pivot HeaderTemplate="{StaticResource PivotItemHeaderTemplate}">
+                            <PivotItem Header="details">
+                                
+                            </PivotItem>
+                            <PivotItem Header="attendance" DataContext="{Binding Attendance}">
+                                <local:AttendanceControl DataContext="{Binding}"></local:AttendanceControl>
+                            </PivotItem>
+                        </Pivot>
+                    </DataTemplate>
+                    
+                    <DataTemplate x:Key="LBCPivotTemplate">
+                        <Pivot HeaderTemplate="{StaticResource PivotItemHeaderTemplate}">
+                            <PivotItem Header="details">
+                                
+                            </PivotItem>
+                            <PivotItem Header="attendance" DataContext="{Binding Attendance}">
+                                <local:AttendanceControl DataContext="{Binding}"></local:AttendanceControl>
+                            </PivotItem>
+                        </Pivot>
+                    </DataTemplate>
+                    
+                    <DataTemplate x:Key="PBCPivotTemplate">
+                        <Pivot HeaderTemplate="{StaticResource PivotItemHeaderTemplate}">
+                            <PivotItem Header="details">
+                                
+                            </PivotItem>
+                        </Pivot>
+                    </DataTemplate>
+                    
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ContentPresenter ContentTemplate="{StaticResource CBLPivotTemplate}"
+                      DataContext="{Binding}"
+                      ></ContentPresenter>
+
 </UserControl>
