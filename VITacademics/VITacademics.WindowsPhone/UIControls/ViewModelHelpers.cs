@@ -58,6 +58,21 @@ namespace VITacademics.UIControls
         }
     }
     
+    public sealed class DateToTimeStringConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            DateTimeOffset date = ((DateTimeOffset)value);
+            return date.ToLocalTime().ToString("HH:mm");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return default(DateTimeOffset);
+        }
+    }
+
     public class CourseTemplateSelector : DataTemplateSelector
     {
         public DataTemplate CBLTemplate { get; set; }
