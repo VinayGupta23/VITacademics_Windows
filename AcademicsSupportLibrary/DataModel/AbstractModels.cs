@@ -35,6 +35,8 @@ namespace Academics.DataModel
         public string Slot { get; internal set; }
         public string Venue { get; internal set; }
         public string Ltpc { get; internal set; }
+        public double InternalMarksScored { get; internal set; }
+        public double TotalMarksTested { get; internal set; }
         public ReadOnlyCollection<ClassHours> Timings { get; private set; }
         public Attendance Attendance { get; internal set; }
 

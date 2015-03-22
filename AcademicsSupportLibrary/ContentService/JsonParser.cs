@@ -196,17 +196,53 @@ namespace Academics.ContentService
         private static void AssignSpecificDetails(CBLCourse course, JsonObject courseObject)
         {
             JsonObject marksObject = courseObject.GetNamedObject("marks");
+            double scored = 0, total = 0;
+            double? temp;
 
+            // Quiz Marks
             for (int i = 0; i < 3; i++)
+            {
                 course._quizMarks[i] = GetMarksInfo(course, "quiz" + (i + 1), marksObject);
+                temp = course._quizMarks[i].Marks;
+                if(temp != null)
+                {
+                    scored += (double)temp;
+                    total += 5;
+                }
+            }
+            // CAT Marks
             for (int i = 0; i < 2; i++)
+            {
                 course._catMarks[i] = GetMarksInfo(course, "cat" + (i + 1), marksObject);
+                temp = course._quizMarks[i].Marks;
+                if (temp != null)
+                {
+                    scored += ((double)temp / 15);
+                    total += 15;
+                }
+            }
+            // Assignment Marks
             course.AssignmentMarks = GetMarksInfo(course, "assignment", marksObject);
+            temp = course.AssignmentMarks.Marks;
+            if (temp != null)
+            {
+                scored += (double)temp;
+                total += 5;
+            }
+
+            course.InternalMarksScored = scored;
+            course.TotalMarksTested = total;
         }
         private static void AssignSpecificDetails(LBCCourse course, JsonObject courseObject)
         {
             course.Title += " Lab";
             course.LabCamMarks = GetMarksInfo(course, "lab_cam", courseObject.GetNamedObject("marks"));
+            double? temp = course.LabCamMarks.Marks;
+            if (temp != null)
+            {
+                course.InternalMarksScored = (double)temp;
+                course.TotalMarksTested = 50;
+            }
         }
         private static void AssignSpecificDetails(PBLCourse course, JsonObject courseObject)
         {
@@ -231,6 +267,11 @@ namespace Academics.ContentService
                                                          DateTimeOffset.ParseExact(marksObject.GetNamedString("conducted_on"), "yyyy-MM-dd", CultureInfo.InvariantCulture),
                                                          marksObject.GetNamedNumber("scored_mark"),
                                                          marksObject.GetNamedString("status"));
+                    if(markInfo.Marks != null)
+                    {
+                        course.InternalMarksScored += (double)markInfo.Marks * weightage / markInfo.MaxMarks;
+                        course.TotalMarksTested += markInfo.Weightage;
+                    }
                 }
                 course._pblMarks.Add(markInfo);
             }
