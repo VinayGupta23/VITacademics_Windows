@@ -30,7 +30,7 @@ namespace DataPlotterTools
 
         // Using a DependencyProperty as the backing store for RadiusProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DiameterProperty =
-            DependencyProperty.Register("Diameter", typeof(double), typeof(CompletionRing), new PropertyMetadata(100.0D, OnDiameterChanged));
+            DependencyProperty.Register("Diameter", typeof(double), typeof(CompletionRing), new PropertyMetadata(130.0D, OnDiameterChanged));
 
 
         public double RingThickness
@@ -41,7 +41,7 @@ namespace DataPlotterTools
 
         // Using a DependencyProperty as the backing store for RingThicknessProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RingThicknessProperty =
-            DependencyProperty.Register("RingThickness", typeof(double), typeof(CompletionRing), new PropertyMetadata(13.0D, OnThicknessChanged));
+            DependencyProperty.Register("RingThickness", typeof(double), typeof(CompletionRing), new PropertyMetadata(17.0D, OnThicknessChanged));
 
 
         public double PercentageComplete
@@ -85,7 +85,7 @@ namespace DataPlotterTools
 
         // Using a DependencyProperty as the backing store for VoidRegionForeground.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VoidRegionForegroundProperty =
-            DependencyProperty.Register("VoidRegionForeground", typeof(Brush), typeof(CompletionRing), new PropertyMetadata(new SolidColorBrush(Colors.DimGray)));
+            DependencyProperty.Register("VoidRegionForeground", typeof(Brush), typeof(CompletionRing), new PropertyMetadata(new SolidColorBrush(Colors.Gray)));
 
 
         public SolidColorBrush InnerBackground
@@ -96,7 +96,7 @@ namespace DataPlotterTools
 
         // Using a DependencyProperty as the backing store for Background.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty InnerBackgroundProperty =
-            DependencyProperty.Register("InnerBackground", typeof(SolidColorBrush), typeof(CompletionRing), new PropertyMetadata(new SolidColorBrush(Colors.Black)));
+            DependencyProperty.Register("InnerBackground", typeof(SolidColorBrush), typeof(CompletionRing), null);
 
 
         public SweepDirection SweepDirection

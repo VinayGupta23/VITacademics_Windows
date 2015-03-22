@@ -1,6 +1,7 @@
 ﻿using Academics.DataModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -32,10 +33,24 @@ namespace VITacademics.UIControls
         {
             try
             {
-                this.DataContext = parameter as Course;
+                ContentPresenter contentPresenter = new ContentPresenter();
+                Type contentType = parameter.GetType();
+                if (contentType == typeof(CBLCourse))
+                    contentPresenter.ContentTemplate = this.Resources["CBLPivotTemplate"] as DataTemplate;
+                else if (contentType == typeof(PBLCourse))
+                    contentPresenter.ContentTemplate = this.Resources["PBLPivotTemplate"] as DataTemplate;
+                else if (contentType == typeof(LBCCourse))
+                    contentPresenter.ContentTemplate = this.Resources["LBCPivotTemplate"] as DataTemplate;
+                else if (contentType == typeof(PBCCourse))
+                    contentPresenter.ContentTemplate = this.Resources["PBCPivotTemplate"] as DataTemplate;
+                else
+                    contentPresenter.ContentTemplate = this.Resources["CBLPivotTemplate"] as DataTemplate;
+                contentPresenter.Content = parameter;
+                this.Content = contentPresenter;
             }
             catch { }
         }
+
     }
 
 }

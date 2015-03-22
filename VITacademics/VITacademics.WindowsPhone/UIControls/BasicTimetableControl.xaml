@@ -7,73 +7,76 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="720"
-    d:DesignWidth="420">
+    d:DesignWidth="420"
+    RequestedTheme="Light">
     
     <UserControl.Resources> 
         <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>        
     </UserControl.Resources>
     
-    <Pivot x:Name="rootPivot" HeaderTemplate="{StaticResource PivotItemHeaderTemplate}">
+    <Pivot x:Name="rootPivot" Style="{StaticResource ContentPivotStyle}">
     
         <Pivot.Resources>
             <Style TargetType="PivotItem">
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <ListView ItemsSource="{Binding}"
+                            <ScrollViewer>
+                                <ListView ItemsSource="{Binding}"
                                       SelectionMode="None"
                                       IsItemClickEnabled="True"
                                       ItemClick="ListView_ItemClick">
-                                
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="HorizontalContentAlignment"
+
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment"
                                                 Value="Stretch"></Setter>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,0,0,13">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="80"></RowDefinition>
-                                            </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="80"></ColumnDefinition>
-                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                            </Grid.ColumnDefinitions>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
 
-                                            <Border Grid.Column="0" Grid.Row="0" Background="{ThemeResource PhoneChromeBrush}">
-                                                <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding}"
-                                                           TextAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                                            </Border>
-                                            
-                                            <Grid DataContext="{Binding Parent}" Grid.Column="1" Grid.Row="0" Margin="10,0,0,0">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0,0,13">
                                                 <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"></RowDefinition>
-                                                    <RowDefinition Height="Auto"></RowDefinition>
-                                                    <RowDefinition Height="Auto"></RowDefinition>
+                                                    <RowDefinition Height="80"></RowDefinition>
                                                 </Grid.RowDefinitions>
-                                                
-                                                <TextBlock Grid.Row="0" Text="{Binding Title, Mode=OneTime}"
-                                                           Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="80"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
 
-                                                <TextBlock Grid.Row="1" Text="{Binding CourseCode, Mode=OneTime}"
+                                                <Border Grid.Column="0" Grid.Row="0" Background="{ThemeResource PhoneChromeBrush}">
+                                                    <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding}"
+                                                           TextAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                                                </Border>
+
+                                                <Grid DataContext="{Binding Parent}" Grid.Column="1" Grid.Row="0" Margin="10,0,0,0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"></RowDefinition>
+                                                        <RowDefinition Height="Auto"></RowDefinition>
+                                                        <RowDefinition Height="Auto"></RowDefinition>
+                                                    </Grid.RowDefinitions>
+
+                                                    <TextBlock Grid.Row="0" Text="{Binding Title, Mode=OneTime}"
+                                                               Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+
+                                                    <TextBlock Grid.Row="1" Text="{Binding CourseCode, Mode=OneTime}"
                                                            Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
-                                                <TextBlock Grid.Row="2" Text="{Binding CourseMode, Mode=OneTime}"
+                                                    <TextBlock Grid.Row="2" Text="{Binding CourseMode, Mode=OneTime}"
                                                            Style="{StaticResource SingleItemContentStyle}"></TextBlock>
 
-                                                <TextBlock Grid.Row="1" Text="{Binding Slot, Mode=OneTime}"
+                                                    <TextBlock Grid.Row="1" Text="{Binding Slot, Mode=OneTime}"
                                                            HorizontalAlignment="Right" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
-                                                <TextBlock Grid.Row="2" Text="{Binding Venue, Mode=OneTime}"
+                                                    <TextBlock Grid.Row="2" Text="{Binding Venue, Mode=OneTime}"
                                                             HorizontalAlignment="Right" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
 
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                                
-                            </ListView>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+
+                                </ListView>
+                            </ScrollViewer>
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>

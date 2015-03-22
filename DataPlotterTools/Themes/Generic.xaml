@@ -4,6 +4,10 @@
     xmlns:local="using:DataPlotterTools">
 
     <Style TargetType="local:CompletionRing">
+        <Setter Property="InnerBackground" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
+        <Setter Property="FontSize" Value="23"></Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:CompletionRing">
@@ -17,7 +21,7 @@
                         <Ellipse x:Name="InnerCircle"
                                  HorizontalAlignment="Center" VerticalAlignment="Center"
                                  Fill="{TemplateBinding InnerBackground}" StrokeThickness="0"></Ellipse>
-                        <TextBlock x:Name="DataTextBlock"
+                        <TextBlock x:Name="DataTextBlock" FontSize="{TemplateBinding FontSize}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Foreground="{TemplateBinding Foreground}"
                                    TextAlignment="Center" LineStackingStrategy="BlockLineHeight"></TextBlock>

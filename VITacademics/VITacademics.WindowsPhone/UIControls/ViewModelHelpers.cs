@@ -1,13 +1,16 @@
-﻿using System;
+﻿using Academics.DataModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
-namespace VITacademics
+namespace VITacademics.UIControls
 {
     public sealed class AttendanceStatusToBrushConverter : IValueConverter
     {
@@ -52,6 +55,29 @@ namespace VITacademics
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();
+        }
+    }
+    
+    public class CourseTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate CBLTemplate { get; set; }
+        public DataTemplate PBLTemplate { get; set; }
+        public DataTemplate LBCTemplate { get; set; }
+        public DataTemplate PBCTemplate { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        {
+            Type contentType = (container as FrameworkElement).DataContext.GetType();
+            if (contentType == typeof(CBLCourse))
+                return CBLTemplate;
+            else if (contentType == typeof(PBLCourse))
+                return PBLTemplate;
+            else if (contentType == typeof(LBCCourse))
+                return LBCTemplate;
+            else if (contentType == typeof(PBCCourse))
+                return PBCTemplate;
+            else
+                return null;
         }
     }
 }

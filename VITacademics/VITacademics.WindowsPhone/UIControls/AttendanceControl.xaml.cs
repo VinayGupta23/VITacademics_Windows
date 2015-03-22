@@ -1,22 +1,10 @@
 ﻿using Academics.DataModel;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace VITacademics.UIControls
 {
@@ -98,12 +86,12 @@ namespace VITacademics.UIControls
                 }
                 else
                 {
-                    double target = (_targetAttendance - 0.9) / 100;
+                    double target = (_targetAttendance - 1) / 100;
                     double req = (_attendedClasses - target * _totalClasses) / (target - 1);
                     if (double.IsInfinity(req) || double.IsNaN(req) || req < 0)
-                        return "Sorry, but you can't reach your target :/";
+                        return "Sorry, you can't reach your target :/";
                     else
-                        return String.Format("Need to attend at least {0} class{1}.", Math.Ceiling(req), req == 1 ? "" : "es");
+                        return String.Format("Need to attend at least {0} class{1}.", Math.Floor(req + 1), req == 1 ? "" : "es");
                 }
             }
         }

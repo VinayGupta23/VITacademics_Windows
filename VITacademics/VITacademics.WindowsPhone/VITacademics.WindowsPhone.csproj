@@ -111,7 +111,7 @@
     <Compile Include="UIControls\UserOverviewControl.xaml.cs">
       <DependentUpon>UserOverviewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModelHelpers.cs" />
+    <Compile Include="UIControls\ViewModelHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

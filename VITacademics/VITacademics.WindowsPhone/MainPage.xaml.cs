@@ -189,7 +189,7 @@ namespace VITacademics
                 if (refreshedFromCache == false)
                     _statusBar.ProgressIndicator.Text = "Last refreshed " + GetTimeString(DateTimeOffset.Now);
                 else
-                    _statusBar.ProgressIndicator.Text = "Cache loaded, refreshed " + GetTimeString(metaData.RefreshedDate);
+                    _statusBar.ProgressIndicator.Text = "Data ready, last refreshed " + GetTimeString(UserManager.CachedDataLastChanged);
             }
             else
             {

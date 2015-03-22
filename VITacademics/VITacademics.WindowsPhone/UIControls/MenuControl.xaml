@@ -11,30 +11,28 @@
     d:DesignWidth="420">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
+                <ResourceDictionary>
+                    <Style TargetType="TextBlock" x:Key="ListItemSubHeaderTextBlockStyle"
+                           BasedOn="{StaticResource ListViewItemSubheaderTextBlockStyle}">
+                        <Setter Property="FontWeight" Value="Normal"></Setter>
+                    </Style>
 
-        <Style TargetType="TextBlock" x:Key="ListItemHeaderTextBlockStyle"
-               BasedOn="{StaticResource MessageDialogTitleStyle}">
-            <Setter Property="Foreground" Value="Black"></Setter>
-            <Setter Property="FontWeight" Value="Normal"></Setter>
-            <Setter Property="MaxLines" Value="1"></Setter>
-        </Style>
-        
-        <Style TargetType="TextBlock" x:Key="ListItemSubHeaderTextBlockStyle"
-               BasedOn="{StaticResource ListViewItemSubheaderTextBlockStyle}">
-            <Setter Property="FontWeight" Value="Normal"></Setter>
-        </Style>
-        
-        <Style TargetType="ListView">
-            <Setter Property="HeaderTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" Style="{ThemeResource TitleTextBlockStyle}"></TextBlock>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="IsItemClickEnabled" Value="True"></Setter>
-        </Style>
-        
+                    <Style TargetType="ListView">
+                        <Setter Property="HeaderTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" Style="{ThemeResource TitleTextBlockStyle}"></TextBlock>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="IsItemClickEnabled" Value="True"></Setter>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <UserControl.Transitions>
@@ -53,7 +51,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="0,13,0,0">
-                            <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource ListItemHeaderTextBlockStyle}"></TextBlock>
+                            <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource SingleItemMediumHeaderStyle}"></TextBlock>
                             <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource ListItemSubHeaderTextBlockStyle}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
@@ -69,7 +67,7 @@
                     <DataTemplate>
                         <StackPanel Margin="0,13,0,0">
                         <TextBlock Text="{Binding Title}"
-                                   Style="{StaticResource ListItemHeaderTextBlockStyle}"></TextBlock>
+                                   Style="{StaticResource SingleItemMediumHeaderStyle}"></TextBlock>
                             <TextBlock Text="{Binding CourseCode}"
                                        Style="{StaticResource ListItemSubHeaderTextBlockStyle}"></TextBlock>
                         </StackPanel>

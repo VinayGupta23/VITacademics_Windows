@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using VITacademics.Managers;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -40,9 +41,11 @@ namespace VITacademics
         {
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
             UserManager.DeleteSavedUser();
+            await StatusBar.GetForCurrentView().ProgressIndicator.HideAsync();
+            PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);
         }
 
     }
