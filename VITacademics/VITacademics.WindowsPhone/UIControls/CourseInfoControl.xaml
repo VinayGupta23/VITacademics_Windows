@@ -84,27 +84,28 @@
                                     </Grid>
                                 </StackPanel>
                             </Grid>
-
-                            <TextBlock Text="Class Timings" Margin="0,20,0,0"
-                                       Style="{ThemeResource GroupHeaderTextBlockStyle}"></TextBlock>
                             
-                            <ItemsControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Timings}"
-                                          Margin="0,10,0,0">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding Day}" Style="{StaticResource BodyTextBlockStyle}"
-                                                   Margin="10,0,0,0"></TextBlock>
-                                            <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            
+                            <Border Background="WhiteSmoke" Margin="0,20,0,0" CornerRadius="3">
+                                <StackPanel Margin="10,7,10,7">
+                                    <TextBlock Text="Class Timings"
+                                               Style="{ThemeResource GroupHeaderTextBlockStyle}"></TextBlock>
+                                    <ItemsControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Timings}"
+                                          Margin="0,13,0,0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,0,0,7">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding Day}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                                    <TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="{Binding}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
                     </DataTemplate>
                     

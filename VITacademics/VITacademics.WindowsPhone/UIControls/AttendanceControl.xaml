@@ -79,27 +79,28 @@
                 <TextBlock Grid.Row="5" Grid.Column="1" Margin="0,0,0,5"
                            Text="{Binding WillMissString, Mode=OneWay}"></TextBlock>
 
-
-                <Grid Grid.Row="7" Grid.Column="0" Background="Gainsboro"
-                      Margin="0,20,-5,0" Grid.ColumnSpan="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="1.2*"></ColumnDefinition>
-                        <ColumnDefinition Width="2.4*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Set target (%)" VerticalAlignment="Center"
+                <Border Grid.Row="7" Grid.Column="0" CornerRadius="3" 
+                         Grid.ColumnSpan="2" Margin="0,0,0,0" Padding="0,0,0,0">
+                    <Grid Background="WhiteSmoke" Margin="0,20,-5,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="1.2*"></ColumnDefinition>
+                            <ColumnDefinition Width="2.4*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Set target (%)" VerticalAlignment="Center"
                                TextLineBounds="TrimToCapHeight"
                                Margin="10,0,0,0" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
-                    <TextBox Margin="13,7,17,7" Grid.Column="1" PreventKeyboardDisplayOnProgrammaticFocus="True"
+                        <TextBox Margin="13,7,17,7" Grid.Column="1" PreventKeyboardDisplayOnProgrammaticFocus="True"
                              BorderBrush="#FFAAAAAA" Background="Transparent"
                              InputScope="Number" LostFocus="TargetBox_LostFocus"
                              Text="{Binding TargetAttendanceText, Mode=OneWay}"></TextBox>
-                    <TextBlock Grid.Column="2" Margin="0,0,10,0" TextAlignment="Right"
+                        <TextBlock Grid.Column="2" Margin="0,0,10,0" TextAlignment="Right"
                                HorizontalAlignment="Right" VerticalAlignment="Center"
                                TextLineBounds="TrimToCapHeight" LineStackingStrategy="BlockLineHeight"
                                Text="{Binding TargetClasses, Mode=OneWay}"></TextBlock>
-                </Grid>
-                
+                    </Grid>
+                </Border>
+
             </Grid>
             
             <TextBlock Text="Details"
