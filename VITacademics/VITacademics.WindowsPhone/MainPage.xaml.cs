@@ -29,10 +29,9 @@ namespace VITacademics
     public sealed partial class MainPage : Page, IManageable, INotifyPropertyChanged, IAppReturnControllable
     {
 
-        private IProxiedControl proxiedControl;
-        private object currentContentSource;
         private StatusBar _statusBar = StatusBar.GetForCurrentView();
-        private MenuControl _menu = new MenuControl();        
+        private MenuControl _menu = new MenuControl();
+        private ControlManager _contentControlManager;
         private bool _isMenuOpen;
         private string _titleText = null;
 
@@ -70,11 +69,11 @@ namespace VITacademics
 
             UserManager.PropertyChanged += UserManager_PropertyChanged;
             _menu.ActionRequested += ProxiedControl_ActionRequested;
+            _contentControlManager = new ControlManager(ProxiedControl_ActionRequested);
 
             _statusBar.BackgroundColor = (Application.Current.Resources["AlternateDarkBrush"] as SolidColorBrush).Color;
             _statusBar.ForegroundColor = Colors.LightGray;
             _statusBar.ShowAsync();
-
         }
 
         void UserManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -83,25 +82,11 @@ namespace VITacademics
                 NotifyPropertyChanged("IsIdle");
             if(e.PropertyName == "CurrentUser" && UserManager.CurrentUser != null)
             {
-                _menu.GenerateView(UserManager.CurrentUser.Courses);
-                if (proxiedControl != null)
+                _menu.GenerateView(null);
+                if (_contentControlManager.CurrentControl != null)
                 {
-                    if (currentContentSource as Course != null)
-                    {
-                        int classNo = (currentContentSource as Course).ClassNumber;
-                        foreach (Course c in UserManager.CurrentUser.Courses)
-                            if (c.ClassNumber == classNo)
-                            {
-                                currentContentSource = c;
-                                break;
-                            }
-                    }
-                    else if (currentContentSource as Timetable != null)
-                        currentContentSource = Timetable.GetTimetable(UserManager.CurrentUser.Courses);
-                    else
-                        currentContentSource = UserManager.CurrentUser.Courses;
-
-                    proxiedControl.GenerateView(currentContentSource);
+                    _contentControlManager.RefreshCurrentControl();
+                    SetTitleAndContent();
                 }
             }
         }
@@ -115,18 +100,24 @@ namespace VITacademics
 
         public Dictionary<string, object> SaveState()
         {
-            return null;
+            return _contentControlManager.SaveState();
         }
 
         public async void LoadState(Dictionary<string, object> lastState)
         {
-            if(UserManager.CurrentUser.CoursesMetadata == null)
+            if (UserManager.CurrentUser.CoursesMetadata == null)
             {
                 bool fromCache = false;
                 StatusCode status = await UserManager.LoadCacheAsync();
                 if (status == StatusCode.Success)
                 {
                     fromCache = true;
+                    if (lastState != null)
+                    {
+                        _contentControlManager.LoadState(lastState);
+                        if (_contentControlManager.CurrentControl != null)
+                            SetTitleAndContent();
+                    }
                 }
                 else
                 {
@@ -229,37 +220,31 @@ namespace VITacademics
 
         private void ProxiedControl_ActionRequested(object sender, RequestEventArgs e)
         {
-            string titleText = null;
-
-            if (e.TargetElement == typeof(CourseInfoControl))
-            {
-                proxiedControl = new CourseInfoControl();
-                titleText = "Course Details";
-            }
-            else if (e.TargetElement == typeof(BasicTimetableControl))
-            {
-                proxiedControl = new BasicTimetableControl();
-                titleText = "Timetable";
-            }
-            else if (e.TargetElement == typeof(EnhancedTimetableControl))
-            {
-                proxiedControl = new EnhancedTimetableControl();
-                titleText = "Daily Buzz";
-            }
-            else
-            {
-                proxiedControl = new UserOverviewControl();
-                titleText = "Overview";
-            }
-
-            proxiedControl.GenerateView(e.Parameter);
-            currentContentSource = e.Parameter;
-            proxiedControl.ActionRequested += ProxiedControl_ActionRequested;
-            contentPresenter.Content = proxiedControl;
-            TitleText = titleText;
+            _contentControlManager.NavigateToControl(e.TargetElement, e.Parameter);
+            SetTitleAndContent();
 
             if (sender as MenuControl != null)
                 MenuButton_Click(null, null);
+        }
+
+        private void SetTitleAndContent()
+        {
+            string titleText = null;
+            Type contentType = _contentControlManager.CurrentControl.GetType();
+
+            if (contentType == typeof(CourseInfoControl))
+                titleText = "Course Details";
+            else if (contentType == typeof(BasicTimetableControl))
+                titleText = "Timetable";
+            else if (contentType == typeof(EnhancedTimetableControl))
+                titleText = "Daily Buzz";
+            else if (contentType == typeof(UserOverviewControl))
+                titleText = "Overview";
+            else
+                titleText = "VITacademics";
+
+            contentPresenter.Content = _contentControlManager.CurrentControl;
+            TitleText = titleText;
         }
 
         #endregion

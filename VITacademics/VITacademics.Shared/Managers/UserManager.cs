@@ -208,15 +208,22 @@ namespace VITacademics.Managers
 
                 if (status == StatusCode.Success)
                 {
-                    DeleteSavedUser();
                     try
                     {
+                        PasswordCredential credential = GetStoredCredential();
+                        if (credential != null)
+                            new PasswordVault().Remove(credential);
+
                         // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}{Campus}"
                         new PasswordVault().Add(
                             new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
+
+                        CurrentUser = user;
                     }
-                    catch { }
-                    CurrentUser = user;
+                    catch
+                    {
+                        status = StatusCode.UnknownError;
+                    }
                 }
                 return status;
             }

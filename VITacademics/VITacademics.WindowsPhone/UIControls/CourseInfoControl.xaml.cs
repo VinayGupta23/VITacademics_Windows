@@ -29,12 +29,15 @@ namespace VITacademics.UIControls
             this.InitializeComponent();
         }
 
-        public void GenerateView(object parameter)
+        public void GenerateView(string parameter)
         {
             try
             {
                 ContentPresenter contentPresenter = new ContentPresenter();
-                Type contentType = parameter.GetType();
+                Course course =
+                    UserManager.CurrentUser.Courses.Single<Course>((Course c) => string.Equals(c.ClassNumber.ToString(), parameter));
+                
+                Type contentType = course.GetType();
                 if (contentType == typeof(CBLCourse))
                     contentPresenter.ContentTemplate = this.Resources["CBLPivotTemplate"] as DataTemplate;
                 else if (contentType == typeof(PBLCourse))
@@ -45,12 +48,22 @@ namespace VITacademics.UIControls
                     contentPresenter.ContentTemplate = this.Resources["PBCPivotTemplate"] as DataTemplate;
                 else
                     contentPresenter.ContentTemplate = this.Resources["CBLPivotTemplate"] as DataTemplate;
-                contentPresenter.Content = parameter;
+                contentPresenter.Content = course;
                 this.Content = contentPresenter;
             }
             catch { }
         }
 
+
+        public Dictionary<string, object> SaveState()
+        {
+            return null;
+        }
+
+        public void LoadState(Dictionary<string, object> lastState)
+        {
+
+        }
     }
 
 }

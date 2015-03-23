@@ -44,11 +44,11 @@ namespace VITacademics.UIControls
             }
         }
 
-        public void GenerateView(object parameter)
+        public void GenerateView(string parameter)
         {
             try
             {
-                _timetable = parameter as Timetable;
+                _timetable = Timetable.GetTimetable(UserManager.CurrentUser.Courses);
                 List<PivotItem> pivotItems = new List<PivotItem>(5);
                 for (int i = 0; i < 5; i++)
                     pivotItems.Add(new PivotItem());
@@ -57,6 +57,16 @@ namespace VITacademics.UIControls
                 rootPivot.ItemsSource = pivotItems;
             }
             catch { }
+        }
+
+        public Dictionary<string, object> SaveState()
+        {
+            return null;
+        }
+
+        public void LoadState(Dictionary<string, object> lastState)
+        {
+
         }
     }
 }

@@ -27,7 +27,17 @@ namespace VITacademics.UIControls
 
         public event EventHandler<RequestEventArgs> ActionRequested;
 
-        public void GenerateView(object parameter)
+        public void GenerateView(string parameter)
+        {
+
+        }
+
+        public Dictionary<string, object> SaveState()
+        {
+            return null;
+        }
+
+        public void LoadState(Dictionary<string, object> lastState)
         {
 
         }

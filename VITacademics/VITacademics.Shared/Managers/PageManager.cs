@@ -46,8 +46,10 @@ namespace VITacademics.Managers
         private const string STATE_FILE_NAME = "SessionState.xml";
         private const string SESSION_LASTDATE_KEY = "sessionState_lastDate";
         private const string SESSION_OWNER_KEY = "sessionState_owner";
+        private const string SESSION_RELEVANCY_DATE_KEY = "sessionState_relevancyDate";
 
         private static readonly StorageFolder _folder = ApplicationData.Current.LocalFolder;
+        private static readonly Type[] _standardKnownTypes;
 
         private static Page _currentPage;
         private static NavigationType _currentType;
@@ -113,6 +115,27 @@ namespace VITacademics.Managers
                 App._localSettings.Values[SESSION_OWNER_KEY] = value;
             }
         }
+        /// <summary>
+        /// Gets the age of the data for which the session remains valid.
+        /// </summary>
+        public static DateTimeOffset SessionRelevancyDate
+        {
+            get
+            {
+                try
+                {
+                    return (DateTimeOffset)App._localSettings.Values[SESSION_RELEVANCY_DATE_KEY];
+                }
+                catch
+                {
+                    return default(DateTimeOffset);
+                }
+            }
+            private set
+            {
+                App._localSettings.Values[SESSION_RELEVANCY_DATE_KEY] = value;
+            }
+        }
 
         static PageManager()
         {
@@ -120,6 +143,11 @@ namespace VITacademics.Managers
 #if WINDOWS_PHONE_APP
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 #endif
+            _standardKnownTypes = new Type[4];
+            _standardKnownTypes[0] = typeof(List<bool>);
+            _standardKnownTypes[1] = typeof(List<int>);
+            _standardKnownTypes[2] = typeof(List<string>);
+            _standardKnownTypes[3] = typeof(List<double>);
         }
 
 #if WINDOWS_PHONE_APP
@@ -234,6 +262,7 @@ namespace VITacademics.Managers
             try
             {
                 LastSessionSavedDate = default(DateTimeOffset);
+                SessionRelevancyDate = default(DateTimeOffset);
                 LastSessionOwner = null;
 
                 PageStates.Add((_currentPage as IManageable).SaveState());
@@ -241,11 +270,12 @@ namespace VITacademics.Managers
                 StorageFile stateFile = await _folder.CreateFileAsync(STATE_FILE_NAME, CreationCollisionOption.ReplaceExisting);
                 bool result = true;
                 result &= await StorageHelper.TryWriteAsync(navFile, RootFrame.GetNavigationState());
-                result &= await StorageHelper.TryWriteAsync(stateFile, PageStates);
+                result &= await StorageHelper.TryWriteAsync(stateFile, PageStates, _standardKnownTypes);
                 
                 if (result == true)
                 {
                     LastSessionSavedDate = DateTimeOffset.UtcNow;
+                    SessionRelevancyDate = UserManager.CachedDataLastChanged;
                     LastSessionOwner = UserManager.CurrentUser.RegNo;
                 }
             }
@@ -265,7 +295,7 @@ namespace VITacademics.Managers
                 StorageFile navFile = await _folder.GetFileAsync(NAV_FILE_NAME);
                 StorageFile stateFile = await _folder.GetFileAsync(STATE_FILE_NAME);
 
-                PageStates = await StorageHelper.TryReadAsync<List<Dictionary<string, object>>>(stateFile);
+                PageStates = await StorageHelper.TryReadAsync<List<Dictionary<string, object>>>(stateFile, _standardKnownTypes);
                 int topIndex = PageStates.Count - 1;
                 _pageState = PageStates[topIndex];
                 PageStates.RemoveAt(topIndex);

@@ -85,18 +85,18 @@ namespace VITacademics.Managers
         bool AllowAppExit();
     }
 
-    public interface IProxiedControl
+    public interface IProxiedControl : IManageable
     {
         event EventHandler<RequestEventArgs> ActionRequested;
-        void GenerateView(object parameter);
+        void GenerateView(string parameter);
     }
 
     public sealed class RequestEventArgs : EventArgs
     {
         public readonly Type TargetElement;
-        public readonly object Parameter;
+        public readonly string Parameter;
 
-        public RequestEventArgs(Type targetElement, object parameter)
+        public RequestEventArgs(Type targetElement, string parameter)
         {
             TargetElement = targetElement;
             Parameter = parameter;

@@ -14,7 +14,7 @@
         <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
     </UserControl.Resources>
 
-    <Pivot x:Name="rootPivot" HeaderTemplate="{StaticResource PivotItemHeaderTemplate}">
+    <Pivot x:Name="rootPivot" Style="{StaticResource ContentPivotStyle}">
     </Pivot>
     
 </UserControl>

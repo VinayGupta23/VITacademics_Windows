@@ -64,7 +64,7 @@ namespace VITacademics.UIControls
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             DateTimeOffset date = ((DateTimeOffset)value);
-            return date.ToLocalTime().ToString("HH:mm");
+            return date.ToString("HH:mm");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

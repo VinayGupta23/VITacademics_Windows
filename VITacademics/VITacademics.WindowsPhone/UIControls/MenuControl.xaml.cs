@@ -79,15 +79,15 @@ namespace VITacademics.UIControls
 
         public event EventHandler<RequestEventArgs> ActionRequested;
 
-        public void GenerateView(object parameter)
+        public void GenerateView(string parameter)
         {
-            Courses = parameter as IEnumerable<Course>;
+            Courses = UserManager.CurrentUser.Courses;
         }
 
         private void CourseList_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (ActionRequested != null)
-                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), e.ClickedItem));
+                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), (e.ClickedItem as Course).ClassNumber.ToString()));
         }
 
         private void MenuList_ItemClick(object sender, ItemClickEventArgs e)
@@ -98,14 +98,24 @@ namespace VITacademics.UIControls
                 if (item != null)
                 {
                     if (item == MenuItems[0])
-                        ActionRequested(this, new RequestEventArgs(typeof(UserOverviewControl), UserManager.CurrentUser.Courses));
+                        ActionRequested(this, new RequestEventArgs(typeof(UserOverviewControl), null));
                     else if (item == MenuItems[1])
-                        ActionRequested(this, new RequestEventArgs(typeof(BasicTimetableControl), Timetable.GetTimetable(UserManager.CurrentUser.Courses)));
+                        ActionRequested(this, new RequestEventArgs(typeof(BasicTimetableControl), null));
                     else
-                        ActionRequested(this, new RequestEventArgs(typeof(EnhancedTimetableControl), Timetable.GetTimetable(UserManager.CurrentUser.Courses)));
+                        ActionRequested(this, new RequestEventArgs(typeof(EnhancedTimetableControl), null));
                 }
             }
         }
 
+
+        public Dictionary<string, object> SaveState()
+        {
+            return null;
+        }
+
+        public void LoadState(Dictionary<string, object> lastState)
+        {
+
+        }
     }
 }

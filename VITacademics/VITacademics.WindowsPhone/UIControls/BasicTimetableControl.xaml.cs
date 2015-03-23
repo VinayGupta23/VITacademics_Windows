@@ -27,11 +27,11 @@ namespace VITacademics.UIControls
             this.InitializeComponent();
         }
 
-        public void GenerateView(object parameter)
+        public void GenerateView(string parameter)
         {
             try
             {
-                Timetable timetable = parameter as Timetable;
+                Timetable timetable = Timetable.GetTimetable(UserManager.CurrentUser.Courses);
                 int j = 0;
                 List<PivotItem> pivotItems = new List<PivotItem>(7);
                 for (int i = 0; i < 7; i++)
@@ -54,8 +54,18 @@ namespace VITacademics.UIControls
         {
             if(ActionRequested != null)
             {
-                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), (e.ClickedItem as ClassHours).Parent));
+                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), (e.ClickedItem as ClassHours).Parent.ClassNumber.ToString()));
             }
+        }
+
+        public Dictionary<string, object> SaveState()
+        {
+            return null;
+        }
+
+        public void LoadState(Dictionary<string, object> lastState)
+        {
+
         }
     }
 }
