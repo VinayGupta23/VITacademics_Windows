@@ -107,11 +107,15 @@
         </Setter>
     </Style>
 
-    <Style TargetType="TextBlock" x:Key="SingleItemHeaderStyle" BasedOn="{StaticResource GroupHeaderTextBlockStyle}">
-        <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
+    <Style TargetType="TextBlock" x:Key="SingleItemHeaderStyle" BasedOn="{StaticResource MessageDialogTitleStyle}">
         <Setter Property="MaxLines" Value="1"></Setter>
+        <Setter Property="TextWrapping" Value="NoWrap"></Setter>
+        <Setter Property="FontSize" Value="25"></Setter>
+        <Setter Property="FontWeight" Value="Normal"></Setter>
         <Setter Property="TextAlignment" Value="Left"></Setter>
         <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+        <Setter Property="TextLineBounds" Value="TrimToBaseline"></Setter>
+        <Setter Property="LineStackingStrategy" Value="MaxHeight"></Setter>
     </Style>
 
     <Style TargetType="TextBlock" x:Key="SingleItemSubHeaderStyle" BasedOn="{StaticResource MessageDialogContentStyle}">
@@ -122,20 +126,18 @@
         <Setter Property="HorizontalAlignment" Value="Left"></Setter>
     </Style>
     
-    <Style TargetType="TextBlock" x:Key="SingleItemContentStyle" BasedOn="{StaticResource ListViewItemSubheaderTextBlockStyle}">
-        <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
-        <Setter Property="FontWeight" Value="Normal"></Setter>
+    <Style TargetType="TextBlock" x:Key="SingleItemContentStyle" BasedOn="{StaticResource ListViewItemContentTextBlockStyle}">
         <Setter Property="MaxLines" Value="2"></Setter>
         <Setter Property="TextWrapping" Value="WrapWholeWords"></Setter>
         <Setter Property="TextAlignment" Value="Left"></Setter>
         <Setter Property="HorizontalAlignment" Value="Left"></Setter>
     </Style>
-    
-    <Style TargetType="TextBlock" x:Key="SingleItemMediumHeaderStyle" BasedOn="{StaticResource MessageDialogTitleStyle}">
-        <Setter Property="FontWeight" Value="Normal"></Setter>
-        <Setter Property="MaxLines" Value="1"></Setter>
+
+    <Style TargetType="TextBlock" x:Key="LabelTextBlockStyle" BasedOn="{StaticResource BodyTextBlockStyle}">
+        <Setter Property="Foreground" Value="{ThemeResource PhoneDisabledBrush}"></Setter>
+        <Setter Property="FontWeight" Value="SemiBold"></Setter>
     </Style>
-    
+
     <Style TargetType="Pivot" x:Key="ContentPivotStyle">
         <Setter Property="HeaderTemplate">
             <Setter.Value>

@@ -30,14 +30,22 @@ namespace VITacademics
     {
 
         private StatusBar _statusBar = StatusBar.GetForCurrentView();
-        private MenuControl _menu = new MenuControl();
+        private MenuControl _menu;
         private ControlManager _contentControlManager;
         private bool _isMenuOpen;
+        private bool _isContentAvailable = false;
+        private bool _isIdle;
         private string _titleText = null;
+        private bool _isCached = false;
 
         public bool IsIdle
         {
-            get { return !UserManager.IsBusy; }
+            get { return _isIdle; }
+            private set
+            {
+                _isIdle = value;
+                NotifyPropertyChanged();
+            }
         }
         private bool IsMenuOpen
         {
@@ -46,6 +54,7 @@ namespace VITacademics
             {
                 _isMenuOpen = value;
                 NotifyPropertyChanged("TitleText");
+                NotifyPropertyChanged("CanGoBack");
             }
         }
         public string TitleText
@@ -61,14 +70,36 @@ namespace VITacademics
                 NotifyPropertyChanged();
             }
         }
+        public Visibility CanGoBack
+        {
+            get
+            {
+                if (_contentControlManager != null && _contentControlManager.CanGoBack == true && IsMenuOpen == false)
+                    return Windows.UI.Xaml.Visibility.Visible;
+                else
+                    return Windows.UI.Xaml.Visibility.Collapsed;
+            }
+        }
+        public bool IsContentAvailable
+        {
+            get { return _isContentAvailable; }
+            set
+            {
+                if (value == _isContentAvailable)
+                    return;
+
+                _isContentAvailable = true;
+                NotifyPropertyChanged();
+            }
+        }
 
         public MainPage()
         {
             this.InitializeComponent();
             this.DataContext = this;
+            this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
 
-            UserManager.PropertyChanged += UserManager_PropertyChanged;
-            _menu.ActionRequested += ProxiedControl_ActionRequested;
+            _menu = new MenuControl();
             _contentControlManager = new ControlManager(ProxiedControl_ActionRequested);
 
             _statusBar.BackgroundColor = (Application.Current.Resources["AlternateDarkBrush"] as SolidColorBrush).Color;
@@ -79,14 +110,25 @@ namespace VITacademics
         void UserManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsBusy")
-                NotifyPropertyChanged("IsIdle");
-            if(e.PropertyName == "CurrentUser" && UserManager.CurrentUser != null)
+                this.IsIdle = !UserManager.IsBusy;
+            if (e.PropertyName == "CurrentUser")
             {
-                _menu.GenerateView(null);
-                if (_contentControlManager.CurrentControl != null)
+                // Current user was destroyed, detach handlers to forget history and allow fresh assignment and return.
+                if (UserManager.CurrentUser == null)
                 {
-                    _contentControlManager.RefreshCurrentControl();
-                    SetTitleAndContent();
+                    UserManager.PropertyChanged -= UserManager_PropertyChanged;
+                    return;
+                }
+
+                if (UserManager.CurrentUser.CoursesMetadata != null)
+                {
+                    if (_contentControlManager.CurrentControl != null)
+                    {
+                        _contentControlManager.RefreshCurrentControl();
+                        SetTitleAndContent();
+                    }
+                    this.IsContentAvailable = true;
+                    this._menu.GenerateView(null);
                 }
             }
         }
@@ -105,28 +147,56 @@ namespace VITacademics
 
         public async void LoadState(Dictionary<string, object> lastState)
         {
-            if (UserManager.CurrentUser.CoursesMetadata == null)
+            if (_isCached == true)
+                return;
+
+            StatusCode status = StatusCode.UnknownError;
+            bool freshData = false;
+
+            await Task.Run(async () =>
             {
-                bool fromCache = false;
-                StatusCode status = await UserManager.LoadCacheAsync();
-                if (status == StatusCode.Success)
+                if (UserManager.CurrentUser.CoursesMetadata != null)
                 {
-                    fromCache = true;
                     if (lastState != null)
-                    {
                         _contentControlManager.LoadState(lastState);
-                        if (_contentControlManager.CurrentControl != null)
-                            SetTitleAndContent();
-                    }
+                    freshData = false;
+                    status = StatusCode.Success;
                 }
                 else
                 {
-                    status = await UserManager.RefreshFromServerAsync();
-                    fromCache = false;
+                    status = await UserManager.LoadCacheAsync();
+                    if (status == StatusCode.Success)
+                    {
+                        freshData = false;
+                        if (lastState != null)
+                            _contentControlManager.LoadState(lastState);
+                    }
+                    else
+                    {
+                        status = await UserManager.RefreshFromServerAsync();
+                        freshData = true;
+                    }
                 }
-                DisplayStatus(status, fromCache);
+            });
+
+            if (status == StatusCode.Success)
+            {
+                if (freshData == false && _contentControlManager.CanGoBack)
+                {
+                    _contentControlManager.ReturnToLastControl();
+                    SetTitleAndContent();
+                }
+                _menu.GenerateView(null);
+                IsContentAvailable = true;
             }
+
+            DisplayStatus(status, !freshData);
+            UserManager.PropertyChanged += UserManager_PropertyChanged;
+            _menu.ActionRequested += ProxiedControl_ActionRequested;
+
             loadingScreenPresenter.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+            _isCached = true;
+            IsIdle = !UserManager.IsBusy;
         }
 
         #endregion
@@ -178,16 +248,16 @@ namespace VITacademics
             if (status == StatusCode.Success)
             {
                 if (refreshedFromCache == false)
-                    _statusBar.ProgressIndicator.Text = "Last refreshed " + GetTimeString(DateTimeOffset.Now);
+                    _statusBar.ProgressIndicator.Text = "Last refreshed " + DateTimeOffset.Now.ToString("HH:mm");
                 else
-                    _statusBar.ProgressIndicator.Text = "Data ready, last refreshed " + GetTimeString(UserManager.CachedDataLastChanged);
+                    _statusBar.ProgressIndicator.Text = "Last refreshed " + GetTimeString(UserManager.CachedDataLastChanged);
             }
             else
             {
                 if (metaData == null)
-                    _statusBar.ProgressIndicator.Text = "Unable to refresh, last tried at " + DateTimeOffset.Now.ToString("HH:mm");
+                    _statusBar.ProgressIndicator.Text = "No data, unable to refresh";
                 else
-                    _statusBar.ProgressIndicator.Text = "Unable to refresh, last updated " + GetTimeString(metaData.RefreshedDate);
+                    _statusBar.ProgressIndicator.Text = "Unable to refresh, last updated " + GetTimeString(UserManager.CachedDataLastChanged);
                 StandardMessageDialogs.GetDialog(status).ShowAsync();
             }
 
@@ -220,11 +290,23 @@ namespace VITacademics
 
         private void ProxiedControl_ActionRequested(object sender, RequestEventArgs e)
         {
+            if (sender as MenuControl != null)
+            {
+                MenuButton_Click(null, null);
+                _contentControlManager.ClearHistory();
+            }
+
             _contentControlManager.NavigateToControl(e.TargetElement, e.Parameter);
             SetTitleAndContent();
+        }
 
-            if (sender as MenuControl != null)
-                MenuButton_Click(null, null);
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_contentControlManager.CanGoBack)
+            {
+                _contentControlManager.ReturnToLastControl();
+                SetTitleAndContent();
+            }
         }
 
         private void SetTitleAndContent()
@@ -244,6 +326,7 @@ namespace VITacademics
                 titleText = "VITacademics";
 
             contentPresenter.Content = _contentControlManager.CurrentControl;
+            NotifyPropertyChanged("CanGoBack");
             TitleText = titleText;
         }
 
@@ -263,5 +346,6 @@ namespace VITacademics
         }
 
         #endregion
+
     }
 }

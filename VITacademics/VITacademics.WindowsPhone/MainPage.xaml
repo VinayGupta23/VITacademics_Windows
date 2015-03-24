@@ -55,16 +55,23 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            
-            <TextBlock Grid.Column="0" Margin="19,10,0,10"
-                       Text="{Binding TitleText, Mode=OneWay}" Foreground="{ThemeResource PhoneForegroundBrush}" LineStackingStrategy="MaxHeight"
-                       Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
-            <AppBarButton Grid.Column="1" Margin="0,0,15,0" Click="RefreshButton_Click"
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Viewbox Margin="13,0,-6,4" Width="44" Visibility="{Binding CanGoBack, Mode=OneWay}" VerticalAlignment="Center">
+                    <AppBarButton Icon="Back" VerticalContentAlignment="Center" IsCompact="True"
+                                  Click="ReturnButton_Click"></AppBarButton>
+                </Viewbox>
+                <TextBlock Margin="19,10,0,10"
+                           Text="{Binding TitleText, Mode=OneWay}" Foreground="{ThemeResource PhoneForegroundBrush}" LineStackingStrategy="MaxHeight"
+                           Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
+            </StackPanel>
+                <AppBarButton Grid.Column="1" Margin="0,0,15,0" Click="RefreshButton_Click"
                           HorizontalAlignment="Center" VerticalAlignment="Center"            
                           Icon="Refresh" Style="{StaticResource TopBarButtonStyle}"
                           IsEnabled="{Binding IsIdle, Mode=OneWay}"></AppBarButton>
             <AppBarButton Grid.Column="2" Margin="0,0,15,0" Click="MenuButton_Click"
-                          HorizontalAlignment="Center" VerticalAlignment="Center"            
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          IsEnabled="{Binding IsContentAvailable, Mode=OneWay}"
                           Icon="AllApps" Style="{StaticResource TopBarButtonStyle}"></AppBarButton>
         </Grid>
         

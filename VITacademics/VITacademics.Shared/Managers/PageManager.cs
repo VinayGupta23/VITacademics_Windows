@@ -42,11 +42,17 @@ namespace VITacademics.Managers
     ///</remarks>
     public static class PageManager
     {
+        #region Constants
+
         private const string NAV_FILE_NAME = "NavHistory.xml";
         private const string STATE_FILE_NAME = "SessionState.xml";
         private const string SESSION_LASTDATE_KEY = "sessionState_lastDate";
         private const string SESSION_OWNER_KEY = "sessionState_owner";
         private const string SESSION_RELEVANCY_DATE_KEY = "sessionState_relevancyDate";
+
+        #endregion
+
+        #region Fields and Properties
 
         private static readonly StorageFolder _folder = ApplicationData.Current.LocalFolder;
         private static readonly Type[] _standardKnownTypes;
@@ -137,6 +143,10 @@ namespace VITacademics.Managers
             }
         }
 
+        #endregion
+
+        #region Contructor and Dependencies
+
         static PageManager()
         {
 
@@ -169,11 +179,34 @@ namespace VITacademics.Managers
         }
 #endif
 
+        #endregion
+
+        #region Private Helper Methods
+
         private static void CurrentPage_Loaded(object sender, RoutedEventArgs e)
         {
             (sender as IManageable).LoadState(_pageState);
             _currentPage.Loaded -= CurrentPage_Loaded;
         }
+
+        private static void RootFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (_currentType == NavigationType.FreshStart)
+            {
+                RootFrame.BackStack.Clear();
+                PageStates.Clear();
+            }
+        }
+
+        private static void ClearPageCache()
+        {
+            RootFrame.CacheSize = 0;
+            RootFrame.CacheSize = 1;
+        }
+
+        #endregion
+
+        #region Public Methods (API)
 
         /// <summary>
         /// Call this method to register the current page to allow management of state.
@@ -185,26 +218,17 @@ namespace VITacademics.Managers
         {
             _currentPage = page;
             _currentPage.Loaded += CurrentPage_Loaded;
-            
         }
 
         public static Frame Initialize()
         {
             RootFrame = new Frame();
+            RootFrame.CacheSize = 1;
             RootFrame.Navigated += RootFrame_Navigated;
             PageStates = new List<Dictionary<string, object>>();
             return RootFrame;
         }
-
-        static void RootFrame_Navigated(object sender, NavigationEventArgs e)
-        {
-            if (_currentType == NavigationType.FreshStart)
-            {
-                RootFrame.BackStack.Clear();
-                PageStates.Clear();
-            }
-        }
-
+        
         /// <summary>
         /// Navigates to the desired page, passing a parameter to the next page.
         /// </summary>
@@ -233,6 +257,7 @@ namespace VITacademics.Managers
             }
             else
             {
+                ClearPageCache();
                 RootFrame.Navigate(pageType, parameter);
                 // Clearing of back stack and page states occur in Navigated event handler.
             }
@@ -311,5 +336,6 @@ namespace VITacademics.Managers
             }
         }
 
+        #endregion
     }
 }

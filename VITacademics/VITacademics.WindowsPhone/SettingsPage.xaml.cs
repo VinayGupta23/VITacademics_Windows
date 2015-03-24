@@ -41,10 +41,10 @@ namespace VITacademics
         {
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
+            StatusBar.GetForCurrentView().ProgressIndicator.HideAsync();
             UserManager.DeleteSavedUser();
-            await StatusBar.GetForCurrentView().ProgressIndicator.HideAsync();
             PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);
         }
 

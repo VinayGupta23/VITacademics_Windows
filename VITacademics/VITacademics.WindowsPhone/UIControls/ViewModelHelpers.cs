@@ -17,7 +17,9 @@ namespace VITacademics.UIControls
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             string status = value as string;
-            if (status == "Absent")
+            if (status == null)
+                return new SolidColorBrush(Colors.LightGray);
+            else if (status == "Absent")
                 return new SolidColorBrush(Colors.Red);
             else
                 return new SolidColorBrush(Colors.Green);

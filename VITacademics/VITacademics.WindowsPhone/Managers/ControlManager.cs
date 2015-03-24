@@ -56,7 +56,7 @@ namespace VITacademics.Managers
         public ControlManager(EventHandler<RequestEventArgs> handler)
         {
             _handler = handler;
-            ResetStack();
+            ClearHistory();
         }
 
         private void ActionRequestedListener(object sender, RequestEventArgs e)
@@ -93,7 +93,7 @@ namespace VITacademics.Managers
             _currentParameter = parameter;
         }
 
-        public void ResetStack()
+        public void ClearHistory()
         {
             _controlHistory = new List<int>();
             _stateHistory = new List<Dictionary<string, object>>();
@@ -142,7 +142,10 @@ namespace VITacademics.Managers
 
         public Dictionary<string, object> SaveState()
         {
-            SaveCurrentControl();
+            if (_currentControl != null)
+            {
+                SaveCurrentControl();
+            } 
             Dictionary<string, object> state = new Dictionary<string, object>();
             state.Add("controls", _controlHistory);
             state.Add("states", _stateHistory);
@@ -157,11 +160,10 @@ namespace VITacademics.Managers
                 _controlHistory = lastState["controls"] as List<int>;
                 _stateHistory = lastState["states"] as List<Dictionary<string, object>>;
                 _paramterHistory = lastState["parameters"] as List<string>;
-                ReturnToLastControl();
             }
             catch
             {
-                ResetStack();
+                ClearHistory();
             }
         }
     }
