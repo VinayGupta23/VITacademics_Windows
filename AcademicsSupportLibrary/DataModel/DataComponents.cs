@@ -61,8 +61,8 @@ namespace Academics.DataModel
         public override string ToString()
         {
             return String.Format("{0} to {1}",
-                                 this.StartHours.ToString("HH:mm"),
-                                 this.EndHours.ToString("HH:mm"));
+                                 this.StartHours.ToLocalTime().ToString("H:mm"),
+                                 this.EndHours.ToLocalTime().ToString("H:mm"));
         }
     }
 

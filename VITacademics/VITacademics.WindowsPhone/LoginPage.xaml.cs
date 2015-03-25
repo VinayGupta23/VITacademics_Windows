@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using VITacademics.Common;
 using VITacademics.Managers;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -51,11 +50,6 @@ namespace VITacademics
             this.DataContext = this;
         }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             PageManager.RegisterPage(this);
@@ -121,16 +115,17 @@ namespace VITacademics
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            // To prevent on-screen keyboard from automatically displaying after the method executes.
             regNoBox.IsTabStop = false;
             SetState(false);
 
             if (IsRegNoValid() == false)
             {
-                new MessageDialog("Please enter the register number in the correct format and try again.", "Error").ShowAsync();
+                new MessageDialog("Please enter your register number in the correct format and try again.", "Invalid Credentials").ShowAsync();
             }
             else
             {
-                StatusCode statusCode = await Task.Run(() => UserManager.CreateNewUserAsync(RegNo, DOB, Campus));
+                StatusCode statusCode = await UserManager.CreateNewUserAsync(RegNo, DOB, Campus);
 
                 if (statusCode == StatusCode.Success)
                     PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);
@@ -139,6 +134,7 @@ namespace VITacademics
             }
 
             SetState(true);
+            // Re-enable TextBox.
             regNoBox.IsTabStop = true;
 
         }

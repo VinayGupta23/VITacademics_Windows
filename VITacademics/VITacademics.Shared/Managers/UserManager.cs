@@ -6,6 +6,8 @@ using Windows.Security.Credentials;
 using System.Globalization;
 using System.Threading.Tasks;
 using Windows.Storage;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 
 namespace VITacademics.Managers
@@ -15,12 +17,21 @@ namespace VITacademics.Managers
     /// </summary>
     public static class UserManager
     {
+        #region Constants and Fields
+
         private const string RESOURCE_NAME = "VITacademics";
         private const string JSON_FILE_NAME = "UserData.txt";
         private const string CACHE_DATA_OWNER_KEY = "cachedData_owner";
         private const string CACHE_DATA_TIME_KEY = "cachedData_time";
 
+        private static User _currentUser;
         private static StorageFolder _folder = ApplicationData.Current.RoamingFolder;
+        private static bool _isBusy;
+        private delegate Task<StatusCode> Function();
+
+        #endregion
+
+        #region Properties
 
         private static string CachedDataOwner
         {
@@ -39,11 +50,6 @@ namespace VITacademics.Managers
             {
                 App._roamingSettings.Values[CACHE_DATA_OWNER_KEY] = value;
             }
-        }
-        public static User CurrentUser
-        {
-            get;
-            private set;
         }
         /// <summary>
         /// Gets the last point of time the user data was changed (saved or deleted), in UTC format. If unavailable, gets the default value of the data type.
@@ -66,6 +72,28 @@ namespace VITacademics.Managers
                 App._roamingSettings.Values[CACHE_DATA_TIME_KEY] = value;
             }
         }
+        public static User CurrentUser
+        {
+            get { return _currentUser; }
+            private set
+            {
+                _currentUser = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public static bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                _isBusy = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region Private Helper Methods
 
         /// <summary>
         /// Checks if credentials are saved in the Credential Locker and returns the credentials if found, otherwise returns null.
@@ -105,20 +133,32 @@ namespace VITacademics.Managers
             return res;
         }
 
-        /// <summary>
-        /// Parses the Json string to assigns details and returns a fresh instance of the populated user. On failure, the method returns null.
-        /// </summary>
-        /// <param name="jsonString"></param>
-        /// <returns></returns>
-        private static async Task<User> ParseDataAsync(string jsonString)
+        private static async Task<StatusCode> MonitoredTask(Function func)
         {
-            User tempUser = new User(CurrentUser.RegNo, CurrentUser.DateOfBirth, CurrentUser.Campus);
-            bool result = await JsonParser.TryParseDataAsync(tempUser, jsonString);
-            if (result == true)
-                return tempUser;
-            else
-                return null;
+            if (IsBusy == true)
+                return StatusCode.InvalidRequest;
+
+            IsBusy = true;
+            StatusCode result = await func();
+            IsBusy = false;
+            return result;
         }
+
+        #endregion
+
+        #region Event Notifiers
+
+        public static event PropertyChangedEventHandler PropertyChanged;
+
+        private static void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(null, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
+        #region Constructor
 
         /// <summary>
         /// Checks the Credential Locker and assigns current user if available. 
@@ -146,41 +186,9 @@ namespace VITacademics.Managers
                 CurrentUser = null;
         }
 
-        /// <summary>
-        /// Attempts a login with the current user.
-        /// </summary>
-        /// <remarks>
-        /// This method returns a status code of NoData if the current user is null.
-        /// </remarks>
-        /// <returns>
-        /// Returns the specific status code as per the response.
-        /// </returns>
-        public static async Task<StatusCode> LoginUserAsync()
-        {
-            if (CurrentUser != null)
-            {
-                StatusCode code = await NetworkService.TryLoginAsync(CurrentUser);
-                return code;
-            }
-            else
-            {
-                return StatusCode.InvalidRequest;
-            }
-        }
+        #endregion
 
-        /// <summary>
-        /// Clears any saved credentials in the Locker and sets the current user to null.
-        /// </summary>
-        public static void DeleteSavedUser()
-        {
-            CurrentUser = null;
-            try
-            {
-                PasswordCredential credential = GetStoredCredential();
-                new PasswordVault().Remove(credential);
-            }
-            catch { }
-        }
+        #region Public Methods (API)
 
         /// <summary>
         /// Assigns the current user (and logs in) and saves the credentials to the Locker, if a login with the passed parameters was successful.
@@ -193,22 +201,78 @@ namespace VITacademics.Managers
         /// </returns>
         public static async Task<StatusCode> CreateNewUserAsync(string regNo, DateTimeOffset dateOfBirth, string campus)
         {
-            User user = new User(regNo, dateOfBirth, campus);
-            StatusCode status = await NetworkService.TryLoginAsync(user);
-
-            if (status == StatusCode.Success)
+            return await MonitoredTask(async () =>
             {
-                DeleteSavedUser();
-                try
+                User user = new User(regNo, dateOfBirth, campus);
+                StatusCode status = await NetworkService.TryLoginAsync(user);
+
+                if (status == StatusCode.Success)
                 {
-                    // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}{Campus}"
-                    new PasswordVault().Add(
-                        new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
+                    try
+                    {
+                        PasswordCredential credential = GetStoredCredential();
+                        if (credential != null)
+                            new PasswordVault().Remove(credential);
+
+                        // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}{Campus}"
+                        new PasswordVault().Add(
+                            new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
+
+                        CurrentUser = user;
+                    }
+                    catch
+                    {
+                        status = StatusCode.UnknownError;
+                    }
                 }
-                catch { }
-                CurrentUser = user;
+                return status;
             }
-            return status;
+            );
+        }
+
+        /// <summary>
+        /// Attempts a login with the current user.
+        /// </summary>
+        /// <remarks>
+        /// This method returns a status code of NoData if the current user is null.
+        /// </remarks>
+        /// <returns>
+        /// Returns the specific status code as per the response.
+        /// </returns>
+        public static async Task<StatusCode> LoginUserAsync()
+        {
+            return await MonitoredTask(async () =>
+            {
+                if (CurrentUser != null)
+                {
+                    StatusCode code = await NetworkService.TryLoginAsync(CurrentUser);
+                    return code;
+                }
+                else
+                {
+                    return StatusCode.InvalidRequest;
+                }
+            });
+        }
+
+        /// <summary>
+        /// Clears any saved credentials in the Locker and sets the current user to null.
+        /// </summary>
+        public static StatusCode DeleteSavedUser()
+        {
+            if (IsBusy == true)
+                return StatusCode.InvalidRequest;
+            
+            IsBusy = true;
+            CurrentUser = null;
+            try
+            {
+                PasswordCredential credential = GetStoredCredential();
+                new PasswordVault().Remove(credential);
+            }
+            catch { }
+            IsBusy = false;
+            return StatusCode.Success;
         }
 
         /// <summary>
@@ -219,25 +283,30 @@ namespace VITacademics.Managers
         /// </returns>
         public static async Task<StatusCode> RefreshFromServerAsync()
         {
-            if (CurrentUser == null)
-                return StatusCode.InvalidRequest;
-
-            try
+            return await MonitoredTask(async () =>
             {
-                Response<string> response = await NetworkService.TryGetDataAsync(CurrentUser);
-                if (response.Code != StatusCode.Success)
-                    return response.Code;
+                if (CurrentUser == null)
+                    return StatusCode.InvalidRequest;
 
-                await TryCacheDataAsync(response.Content);
+                try
+                {
+                    Response<string> response = await NetworkService.TryGetDataAsync(CurrentUser);
+                    if (response.Code != StatusCode.Success)
+                        return response.Code;
 
-                User temp = await ParseDataAsync(response.Content);
-                if (temp == null)
+                    User temp = JsonParser.TryParseData(response.Content);
+                    if (temp == null)
+                        return StatusCode.UnknownError;
+
+                    CurrentUser = temp;
+                    await TryCacheDataAsync(response.Content);
+                    return StatusCode.Success;
+                }
+                catch
+                {
                     return StatusCode.UnknownError;
-
-                CurrentUser = temp;
-                return StatusCode.Success;
-            }
-            finally { }
+                }
+            });
         }
 
         /// <summary>
@@ -248,28 +317,33 @@ namespace VITacademics.Managers
         /// </returns>
         public static async Task<StatusCode> LoadCacheAsync()
         {
-            if (CurrentUser == null)
-                return StatusCode.InvalidRequest;
-
-            if (CachedDataOwner != CurrentUser.RegNo)
-                return StatusCode.NoData;
-
-            try
+            return await MonitoredTask(async () =>
             {
-                StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);
-                string jsonString = await StorageHelper.TryReadAsync(file);
-                User temp = await ParseDataAsync(jsonString);
-                if (temp == null)
-                    return StatusCode.UnknownError;
-                
-                CurrentUser = temp;
-                return StatusCode.Success;
-            }
-            catch
-            {
-                return StatusCode.NoData;
-            }
+                try
+                {
+                    if (CurrentUser == null)
+                        return StatusCode.InvalidRequest;
+
+                    if (string.Equals(CachedDataOwner, CurrentUser.RegNo, StringComparison.OrdinalIgnoreCase) == false)
+                        return StatusCode.NoData;
+
+                    StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);
+                    string jsonString = await StorageHelper.TryReadAsync(file);
+                    User temp = JsonParser.TryParseData(jsonString);
+                    if (temp == null)
+                        return StatusCode.UnknownError;
+
+                    CurrentUser = temp;
+                    return StatusCode.Success;
+                }
+                catch
+                {
+                    return StatusCode.NoData;
+                }
+            });
         }
+
+        #endregion
 
     }
 }

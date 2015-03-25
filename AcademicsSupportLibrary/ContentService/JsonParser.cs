@@ -11,17 +11,6 @@ namespace Academics.ContentService
     /// </summary>
     public static class JsonParser
     {
-
-        /* Note:
-         * 
-         * All times and dates are converted to IST when generating the data,
-         * since it is only then relevant, due to following reasons:
-         * 1. Usage of the app from different locales must not display changed (different) class hours.
-         *    On user request, timings can be changed, but it is the front end's responsibility.
-         *    
-         * However (on the contrary), refresh date must be retained in its universal time format for consistency across regions in which the client may travel. 
-         */
-
         /// <summary>
         /// Returns the status shown on the Json string passed, or a suitable error code.
         /// </summary>
@@ -149,8 +138,8 @@ namespace Academics.ContentService
             foreach (JsonValue classHoursValue in timingsArray)
             {
                 JsonObject classHoursObject = classHoursValue.GetObject();
-                DateTimeOffset start = GetTime(classHoursObject.GetNamedString("start_time"));
-                DateTimeOffset end = GetTime(classHoursObject.GetNamedString("end_time"));
+                DateTimeOffset start = GetUtcTime(classHoursObject.GetNamedString("start_time"));
+                DateTimeOffset end = GetUtcTime(classHoursObject.GetNamedString("end_time"));
                 DayOfWeek day = (DayOfWeek)((int)classHoursObject.GetNamedNumber("day") + 1);
                 course.AddClassHoursInstance(new ClassHours(course, start, end, day));
             }
@@ -168,11 +157,9 @@ namespace Academics.ContentService
                                      marksObject.GetNamedString(marksType + "_status"));
             }
         }
-        private static DateTimeOffset GetTime(string timeString)
+        private static DateTimeOffset GetUtcTime(string timeString)
         {
-            return new DateTimeOffset(
-                (DateTime.Parse(timeString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal)),
-                new TimeSpan(5, 30, 0));
+            return DateTimeOffset.Parse(timeString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
         }
 
         #endregion
@@ -277,8 +264,7 @@ namespace Academics.ContentService
                 else
                 {
                     markInfo = new PBLCourse.PBLMarkInfo(course, title, maxMarks, weightage,
-                                                         new DateTimeOffset(DateTime.ParseExact(marksObject.GetNamedString("conducted_on"), "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                                                                            new TimeSpan(5, 30, 0)),
+                                                         DateTimeOffset.ParseExact(marksObject.GetNamedString("conducted_on"), "yyyy-MM-dd", CultureInfo.InvariantCulture),
                                                          marksObject.GetNamedNumber("scored_mark"),
                                                          marksObject.GetNamedString("status"));
                     if(markInfo.Marks != null)
