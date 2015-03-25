@@ -155,7 +155,7 @@ namespace Academics.ContentService
                 course.AddClassHoursInstance(new ClassHours(course, start, end, day));
             }
         }
-        private static MarksInfo GetMarksInfo(LtpCourse course, string marksType, string markTitle, JsonObject marksObject)
+        private static MarksInfo GetMarksInfo(LtpCourse course, string markTitle, string marksType, JsonObject marksObject)
         {
             if (marksObject.GetNamedValue(marksType).ValueType == JsonValueType.Null)
             {
@@ -244,7 +244,7 @@ namespace Academics.ContentService
                 temp = course._catMarks[i].Marks;
                 if (temp != null)
                 {
-                    scored += ((double)temp / 15);
+                    scored += ((double)temp * 15 / 50);
                     total += 15;
                 }
             }
