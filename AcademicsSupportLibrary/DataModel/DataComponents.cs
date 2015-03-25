@@ -70,7 +70,8 @@ namespace Academics.DataModel
     {
         private readonly double? _marks;
         private readonly string _status;
-        
+        private readonly string _title;
+
         public double? Marks
         {
             get
@@ -81,10 +82,16 @@ namespace Academics.DataModel
             get
             { return _status; }
         }
+        public string Title
+        {
+            get
+            { return _title; }
+        }
 
-        public MarksInfo(LtpCourse parent, double? marks, string status)
+        public MarksInfo(LtpCourse parent, string title, double? marks, string status)
             : base(parent)
         {
+            _title = title;
             _marks = marks;
             _status = status;
         }

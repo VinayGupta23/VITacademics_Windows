@@ -155,15 +155,15 @@ namespace Academics.ContentService
                 course.AddClassHoursInstance(new ClassHours(course, start, end, day));
             }
         }
-        private static MarksInfo GetMarksInfo(LtpCourse course, string marksType, JsonObject marksObject)
+        private static MarksInfo GetMarksInfo(LtpCourse course, string marksType, string markTitle, JsonObject marksObject)
         {
             if (marksObject.GetNamedValue(marksType).ValueType == JsonValueType.Null)
             {
-                return new MarksInfo(course, null, "");
+                return new MarksInfo(course, markTitle, null, "");
             }
             else
             {
-                return new MarksInfo(course,
+                return new MarksInfo(course, markTitle,
                                      marksObject.GetNamedNumber(marksType),
                                      marksObject.GetNamedString(marksType + "_status"));
             }
@@ -173,6 +173,20 @@ namespace Academics.ContentService
             return new DateTimeOffset(
                 (DateTime.Parse(timeString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal)),
                 new TimeSpan(5, 30, 0));
+        }
+
+        private static string RomanNumeral(int x)
+        {
+            if (x == 1)
+                return "I";
+            if (x == 2)
+                return "II";
+            if (x == 3)
+                return "III";
+            if (x == 4)
+                return "IV";
+            else
+                throw new NotImplementedException();
         }
 
         #endregion
@@ -215,9 +229,9 @@ namespace Academics.ContentService
             // Quiz Marks
             for (int i = 0; i < 3; i++)
             {
-                course._quizMarks[i] = GetMarksInfo(course, "quiz" + (i + 1), marksObject);
+                course._quizMarks[i] = GetMarksInfo(course, "Quiz " + RomanNumeral(i + 1), "quiz" + (i + 1), marksObject);
                 temp = course._quizMarks[i].Marks;
-                if(temp != null)
+                if (temp != null)
                 {
                     scored += (double)temp;
                     total += 5;
@@ -226,8 +240,8 @@ namespace Academics.ContentService
             // CAT Marks
             for (int i = 0; i < 2; i++)
             {
-                course._catMarks[i] = GetMarksInfo(course, "cat" + (i + 1), marksObject);
-                temp = course._quizMarks[i].Marks;
+                course._catMarks[i] = GetMarksInfo(course, "CAT " + RomanNumeral(i + 1), "cat" + (i + 1), marksObject);
+                temp = course._catMarks[i].Marks;
                 if (temp != null)
                 {
                     scored += ((double)temp / 15);
@@ -235,7 +249,7 @@ namespace Academics.ContentService
                 }
             }
             // Assignment Marks
-            course.AssignmentMarks = GetMarksInfo(course, "assignment", marksObject);
+            course.AssignmentMarks = GetMarksInfo(course, "Assignment", "assignment", marksObject);
             temp = course.AssignmentMarks.Marks;
             if (temp != null)
             {
@@ -243,17 +257,17 @@ namespace Academics.ContentService
                 total += 5;
             }
 
-            course.InternalMarksScored = scored;
+            course.InternalMarksScored = Math.Round(scored, 2);
             course.TotalMarksTested = total;
         }
         private static void AssignSpecificDetails(LBCCourse course, JsonObject courseObject)
         {
             course.Title += " Lab";
-            course.LabCamMarks = GetMarksInfo(course, "lab_cam", courseObject.GetNamedObject("marks"));
+            course.LabCamMarks = GetMarksInfo(course,"Lab CAM", "lab_cam", courseObject.GetNamedObject("marks"));
             double? temp = course.LabCamMarks.Marks;
             if (temp != null)
             {
-                course.InternalMarksScored = (double)temp;
+                course.InternalMarksScored = Math.Round((double)temp, 2);
                 course.TotalMarksTested = 50;
             }
         }
@@ -283,7 +297,7 @@ namespace Academics.ContentService
                                                          marksObject.GetNamedString("status"));
                     if(markInfo.Marks != null)
                     {
-                        course.InternalMarksScored += (double)markInfo.Marks * weightage / markInfo.MaxMarks;
+                        course.InternalMarksScored += Math.Round((double)markInfo.Marks * weightage / markInfo.MaxMarks, 2);
                         course.TotalMarksTested += markInfo.Weightage;
                     }
                 }
