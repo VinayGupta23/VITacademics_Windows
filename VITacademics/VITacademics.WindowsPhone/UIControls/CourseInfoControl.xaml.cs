@@ -30,9 +30,9 @@ namespace VITacademics.UIControls
 
         public void GenerateView(string parameter)
         {
+            ContentPresenter contentPresenter = new ContentPresenter();
             try
             {
-                ContentPresenter contentPresenter = new ContentPresenter();
                 Course course =
                     UserManager.CurrentUser.Courses.Single<Course>((Course c) => string.Equals(c.ClassNumber.ToString(), parameter));
                 
@@ -50,9 +50,11 @@ namespace VITacademics.UIControls
                 contentPresenter.Content = course;
                 this.Content = contentPresenter;
             }
-            catch { }
+            catch 
+            {
+                contentPresenter.ContentTemplate = this.Resources["CourseNotFoundTemplate"] as DataTemplate;
+            }
         }
-
 
         public Dictionary<string, object> SaveState()
         {

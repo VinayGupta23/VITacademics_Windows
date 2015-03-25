@@ -147,8 +147,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
-    <controlHelpers:AttendanceStatusToBrushConverter x:Key="attendanceStatusToBrushConverter">
-    </controlHelpers:AttendanceStatusToBrushConverter>
+
+    <controlHelpers:StatusToForegroundConverter x:Key="statusToForegroundConverter">
+    </controlHelpers:StatusToForegroundConverter>
     
 </ResourceDictionary>

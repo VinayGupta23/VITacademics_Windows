@@ -60,12 +60,15 @@ namespace VITacademics.UIControls
 
         public Dictionary<string, object> SaveState()
         {
-            return null;
+            var state = new Dictionary<string,object>(1);
+            state.Add("currentIndex", rootPivot.SelectedIndex);
+            return state;
         }
 
         public void LoadState(Dictionary<string, object> lastState)
         {
-
+            if (lastState != null)
+                rootPivot.SelectedIndex = (int)lastState["currentIndex"];
         }
     }
 }

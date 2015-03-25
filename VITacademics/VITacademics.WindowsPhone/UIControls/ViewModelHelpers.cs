@@ -12,17 +12,38 @@ using Windows.UI.Xaml.Media;
 
 namespace VITacademics.UIControls
 {
-    public sealed class AttendanceStatusToBrushConverter : IValueConverter
+    public sealed class StatusToForegroundConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             string status = value as string;
-            if (status == null)
-                return new SolidColorBrush(Colors.LightGray);
+            if (status == "Present")
+                return new SolidColorBrush(Colors.Green);
+            else if (status == "On Duty")
+                return new SolidColorBrush(Colors.DeepSkyBlue);
             else if (status == "Absent")
                 return new SolidColorBrush(Colors.Red);
             else
-                return new SolidColorBrush(Colors.Green);
+                return new SolidColorBrush(Colors.Gray);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return "";
+        }
+    }
+
+    public sealed class StatusToBackgroundConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            string status = value as string;
+            if (status == "Present")
+                return new SolidColorBrush(Colors.LightGreen);
+            else if (status == "Absent")
+                return new SolidColorBrush(Colors.IndianRed);
+            else
+                return new SolidColorBrush(Colors.LightGray);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
