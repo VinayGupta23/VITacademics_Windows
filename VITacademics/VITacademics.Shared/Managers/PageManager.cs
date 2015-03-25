@@ -42,23 +42,14 @@ namespace VITacademics.Managers
     ///</remarks>
     public static class PageManager
     {
-        #region Constants
-
         private const string NAV_FILE_NAME = "NavHistory.xml";
         private const string STATE_FILE_NAME = "SessionState.xml";
         private const string SESSION_LASTDATE_KEY = "sessionState_lastDate";
         private const string SESSION_OWNER_KEY = "sessionState_owner";
-        private const string SESSION_RELEVANCY_DATE_KEY = "sessionState_relevancyDate";
-
-        #endregion
-
-        #region Fields and Properties
 
         private static readonly StorageFolder _folder = ApplicationData.Current.LocalFolder;
-        private static readonly Type[] _standardKnownTypes;
 
         private static Page _currentPage;
-        private static NavigationType _currentType;
         private static Dictionary<string, object> _pageState;
 
         private static Frame RootFrame
@@ -121,31 +112,6 @@ namespace VITacademics.Managers
                 App._localSettings.Values[SESSION_OWNER_KEY] = value;
             }
         }
-        /// <summary>
-        /// Gets the age of the data for which the session remains valid.
-        /// </summary>
-        public static DateTimeOffset SessionRelevancyDate
-        {
-            get
-            {
-                try
-                {
-                    return (DateTimeOffset)App._localSettings.Values[SESSION_RELEVANCY_DATE_KEY];
-                }
-                catch
-                {
-                    return default(DateTimeOffset);
-                }
-            }
-            private set
-            {
-                App._localSettings.Values[SESSION_RELEVANCY_DATE_KEY] = value;
-            }
-        }
-
-        #endregion
-
-        #region Contructor and Dependencies
 
         static PageManager()
         {
@@ -153,15 +119,10 @@ namespace VITacademics.Managers
 #if WINDOWS_PHONE_APP
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 #endif
-            _standardKnownTypes = new Type[4];
-            _standardKnownTypes[0] = typeof(List<bool>);
-            _standardKnownTypes[1] = typeof(List<int>);
-            _standardKnownTypes[2] = typeof(List<string>);
-            _standardKnownTypes[3] = typeof(List<double>);
         }
 
 #if WINDOWS_PHONE_APP
-        private static void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
+        private static async void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
         {
             if(CanNavigateBack)
             {
@@ -172,41 +133,19 @@ namespace VITacademics.Managers
             {
                 if(_currentPage as IAppReturnControllable != null)
                 {
-                    bool allowExit = (_currentPage as IAppReturnControllable).AllowAppExit();
+                    bool allowExit = await (_currentPage as IAppReturnControllable).AllowAppExit();
                     e.Handled = !allowExit;
                 }
             }
         }
 #endif
 
-        #endregion
-
-        #region Private Helper Methods
-
         private static void CurrentPage_Loaded(object sender, RoutedEventArgs e)
         {
-            (sender as IManageable).LoadState(_pageState);
+            if (_pageState != null)
+                (sender as IManageable).LoadState(_pageState);
             _currentPage.Loaded -= CurrentPage_Loaded;
         }
-
-        private static void RootFrame_Navigated(object sender, NavigationEventArgs e)
-        {
-            if (_currentType == NavigationType.FreshStart)
-            {
-                RootFrame.BackStack.Clear();
-                PageStates.Clear();
-            }
-        }
-
-        private static void ClearPageCache()
-        {
-            RootFrame.CacheSize = 0;
-            RootFrame.CacheSize = 1;
-        }
-
-        #endregion
-
-        #region Public Methods (API)
 
         /// <summary>
         /// Call this method to register the current page to allow management of state.
@@ -219,16 +158,13 @@ namespace VITacademics.Managers
             _currentPage = page;
             _currentPage.Loaded += CurrentPage_Loaded;
         }
-
         public static Frame Initialize()
         {
             RootFrame = new Frame();
-            RootFrame.CacheSize = 1;
-            RootFrame.Navigated += RootFrame_Navigated;
             PageStates = new List<Dictionary<string, object>>();
             return RootFrame;
         }
-        
+
         /// <summary>
         /// Navigates to the desired page, passing a parameter to the next page.
         /// </summary>
@@ -247,8 +183,6 @@ namespace VITacademics.Managers
         public static void NavigateTo(Type pageType, object parameter, NavigationType type)
         {
             _pageState = null;
-            _currentType = type;
-
             if (type == NavigationType.Default)
             {
                 Dictionary<string, object> pageState = (_currentPage as IManageable).SaveState();
@@ -257,9 +191,9 @@ namespace VITacademics.Managers
             }
             else
             {
-                ClearPageCache();
                 RootFrame.Navigate(pageType, parameter);
-                // Clearing of back stack and page states occur in Navigated event handler.
+                RootFrame.BackStack.Clear();
+                PageStates.Clear();
             }
         }
 
@@ -268,7 +202,7 @@ namespace VITacademics.Managers
         /// </summary>
         public static void NavigateBack()
         {
-            if (RootFrame.CanGoBack)
+            try
             {
                 int lastPageIndex = RootFrame.BackStackDepth - 1;
                 _pageState = PageStates[lastPageIndex];
@@ -276,6 +210,7 @@ namespace VITacademics.Managers
                 RootFrame.GoBack();
                 PageStates.RemoveAt(lastPageIndex);
             }
+            catch { }
         }
 
         /// <summary>
@@ -287,7 +222,6 @@ namespace VITacademics.Managers
             try
             {
                 LastSessionSavedDate = default(DateTimeOffset);
-                SessionRelevancyDate = default(DateTimeOffset);
                 LastSessionOwner = null;
 
                 PageStates.Add((_currentPage as IManageable).SaveState());
@@ -295,12 +229,11 @@ namespace VITacademics.Managers
                 StorageFile stateFile = await _folder.CreateFileAsync(STATE_FILE_NAME, CreationCollisionOption.ReplaceExisting);
                 bool result = true;
                 result &= await StorageHelper.TryWriteAsync(navFile, RootFrame.GetNavigationState());
-                result &= await StorageHelper.TryWriteAsync(stateFile, PageStates, _standardKnownTypes);
+                result &= await StorageHelper.TryWriteAsync(stateFile, PageStates);
                 
                 if (result == true)
                 {
                     LastSessionSavedDate = DateTimeOffset.UtcNow;
-                    SessionRelevancyDate = UserManager.CachedDataLastChanged;
                     LastSessionOwner = UserManager.CurrentUser.RegNo;
                 }
             }
@@ -320,7 +253,7 @@ namespace VITacademics.Managers
                 StorageFile navFile = await _folder.GetFileAsync(NAV_FILE_NAME);
                 StorageFile stateFile = await _folder.GetFileAsync(STATE_FILE_NAME);
 
-                PageStates = await StorageHelper.TryReadAsync<List<Dictionary<string, object>>>(stateFile, _standardKnownTypes);
+                PageStates = await StorageHelper.TryReadAsync<List<Dictionary<string, object>>>(stateFile);
                 int topIndex = PageStates.Count - 1;
                 _pageState = PageStates[topIndex];
                 PageStates.RemoveAt(topIndex);
@@ -336,6 +269,5 @@ namespace VITacademics.Managers
             }
         }
 
-        #endregion
     }
 }

@@ -104,7 +104,12 @@ namespace VITacademics
 
                 // Load the desired page by checking some conditions.
                 if (UserManager.CurrentUser != null)
-                    PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);
+                {
+                    // Pre-load cache data before displaying UI.
+                    var status = await UserManager.LoadCacheAsync();
+                    // Send the status of the load to the Main Page for furthur handling.
+                    PageManager.NavigateTo(typeof(MainPage), status, NavigationType.FreshStart);
+                }
                 else
                     PageManager.NavigateTo(typeof(LoginPage), null, NavigationType.FreshStart);
 
@@ -152,10 +157,10 @@ namespace VITacademics
             bool isSessionValid = false;
             if (UserManager.CurrentUser != null)
             {
-                if (string.Equals(UserManager.CurrentUser.RegNo, PageManager.LastSessionOwner, StringComparison.OrdinalIgnoreCase) == true)
+                if (UserManager.CurrentUser.RegNo == PageManager.LastSessionOwner)
                     // To ensure the background service did not update the data cache,
                     // Otherwise the last session (relying on the old cache) becomes invalid.
-                    if (DateTimeOffset.Equals(PageManager.SessionRelevancyDate, UserManager.CachedDataLastChanged) == true)
+                    if (DateTimeOffset.Compare(PageManager.LastSessionSavedDate, UserManager.CachedDataLastChanged) >= 0)
                     {
                         isSessionValid = true;
                     }

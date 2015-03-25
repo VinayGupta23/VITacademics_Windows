@@ -5,9 +5,7 @@
     xmlns:local="using:VITacademics"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    RequestedTheme="Dark">
-    
+    mc:Ignorable="d">
     <Page.Background>
         <LinearGradientBrush ColorInterpolationMode="ScRgbLinearInterpolation" EndPoint="0,1" StartPoint="-0.2,0.5">
             <GradientStop Color="#FF1B1E22"/>

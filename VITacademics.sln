@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcademicsSupportLibrary", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Class Libraries", "Class Libraries", "{1DE6C820-4926-4FB5-8CF2-5DB8C036DCA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataPlotterTools", "DataPlotterTools\DataPlotterTools.csproj", "{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		VITacademics\VITacademics.Shared\VITacademics.Shared.projitems*{597986bf-fee2-417c-86f7-3804ed78cc71}*SharedItemsImports = 4
@@ -88,16 +86,6 @@ Global
 		{7C33B608-C522-44F7-AD99-A6DFFEA77988}.Release|ARM.ActiveCfg = Release|Any CPU
 		{7C33B608-C522-44F7-AD99-A6DFFEA77988}.Release|x64.ActiveCfg = Release|Any CPU
 		{7C33B608-C522-44F7-AD99-A6DFFEA77988}.Release|x86.ActiveCfg = Release|Any CPU
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}.Release|ARM.ActiveCfg = Release|Any CPU
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}.Release|x64.ActiveCfg = Release|Any CPU
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +95,5 @@ Global
 		{260CF57C-DCFE-472B-97DD-449ED491C6BE} = {BE8801F4-2ACE-4502-A63A-FB2AAF8CE0C2}
 		{597986BF-FEE2-417C-86F7-3804ED78CC71} = {BE8801F4-2ACE-4502-A63A-FB2AAF8CE0C2}
 		{7C33B608-C522-44F7-AD99-A6DFFEA77988} = {1DE6C820-4926-4FB5-8CF2-5DB8C036DCA4}
-		{2961DE6B-F3C1-4E04-A708-49B91AC31EFD} = {1DE6C820-4926-4FB5-8CF2-5DB8C036DCA4}
 	EndGlobalSection
 EndGlobal
