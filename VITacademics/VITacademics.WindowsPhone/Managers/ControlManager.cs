@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VITacademics.UIControls;
 
 
@@ -34,6 +31,8 @@ namespace VITacademics.Managers
 
         #endregion
 
+        #region Fields and Properties
+
         private List<int> _controlHistory;
         private List<Dictionary<string, object>> _stateHistory;
         private List<string> _paramterHistory;
@@ -53,11 +52,19 @@ namespace VITacademics.Managers
             get { return (_controlHistory.Count > 0); }
         }
 
+        #endregion
+
+        #region Constructor
+
         public ControlManager(EventHandler<RequestEventArgs> handler)
         {
             _handler = handler;
             ClearHistory();
         }
+
+        #endregion
+
+        #region Private Helper Methods
 
         private void ActionRequestedListener(object sender, RequestEventArgs e)
         {
@@ -71,7 +78,7 @@ namespace VITacademics.Managers
             _stateHistory.Add(_currentControl.SaveState());
         }
 
-        private void LoadCurrentControl(int controlTypeCode, string parameter)
+        private void LoadControl(int controlTypeCode, string parameter)
         {
             switch (controlTypeCode)
             {
@@ -93,6 +100,18 @@ namespace VITacademics.Managers
             _currentParameter = parameter;
         }
 
+        private void RemoveLastControl()
+        {
+            int count = _controlHistory.Count;
+            _controlHistory.RemoveAt(count - 1);
+            _paramterHistory.RemoveAt(count - 1);
+            _stateHistory.RemoveAt(count - 1);
+        }
+
+        #endregion
+
+        #region Public Methods
+
         public void ClearHistory()
         {
             _controlHistory = new List<int>();
@@ -109,7 +128,7 @@ namespace VITacademics.Managers
             }
 
             int controlTypeCode = ControlTypeDictionary[controlType];
-            LoadCurrentControl(controlTypeCode, parameter);
+            LoadControl(controlTypeCode, parameter);
         }
 
         public void ReturnToLastControl()
@@ -123,11 +142,9 @@ namespace VITacademics.Managers
                 string parameter = _paramterHistory[count - 1];
                 var lastState = _stateHistory[count - 1];
 
-                _controlHistory.RemoveAt(count - 1);
-                _paramterHistory.RemoveAt(count - 1);
-                _stateHistory.RemoveAt(count - 1);
+                RemoveLastControl();
 
-                LoadCurrentControl(controlTypeCode, parameter);
+                LoadControl(controlTypeCode, parameter);
                 _currentControl.LoadState(lastState);
             }
         }
@@ -142,14 +159,21 @@ namespace VITacademics.Managers
 
         public Dictionary<string, object> SaveState()
         {
+            List<int> controls = new List<int>(_controlHistory);
+            List<Dictionary<string, object>> states = new List<Dictionary<string,object>>(_stateHistory);
+            List<string> paramters = new List<string>(_paramterHistory);
+
             if (_currentControl != null)
             {
-                SaveCurrentControl();
-            } 
+                controls.Add(ControlTypeDictionary[_currentControl.GetType()]);
+                paramters.Add(_currentParameter);
+                states.Add(_currentControl.SaveState());
+            }
+
             Dictionary<string, object> state = new Dictionary<string, object>();
-            state.Add("controls", _controlHistory);
-            state.Add("states", _stateHistory);
-            state.Add("parameters", _paramterHistory);
+            state.Add("controls", controls);
+            state.Add("states", states);
+            state.Add("parameters", paramters);
             return state;
         }
 
@@ -166,5 +190,8 @@ namespace VITacademics.Managers
                 ClearHistory();
             }
         }
+
+        #endregion
+
     }
 }

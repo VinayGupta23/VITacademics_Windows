@@ -42,7 +42,9 @@ namespace VITacademics
         {
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
+            this.Resuming += App_Resuming;
         }
+
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -142,6 +144,11 @@ namespace VITacademics
             await PageManager.SaveSessionState();
 
             deferral.Complete();
+        }
+
+        private void App_Resuming(object sender, object e)
+        {
+            PageManager.ResumeState();
         }
 
         /// <summary>

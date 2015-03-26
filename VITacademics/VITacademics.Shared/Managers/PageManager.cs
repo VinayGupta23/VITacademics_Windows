@@ -336,6 +336,20 @@ namespace VITacademics.Managers
             }
         }
 
+        /// <summary>
+        /// Manages the page history suitably when the App resumes from a suspended state. Ensure to call this method so that page states are recorded accurately.
+        /// </summary>
+        /// <remarks>
+        /// Ideally, the method call must be placed in the Resuming event handler for the App.
+        /// </remarks>
+        public static void ResumeState()
+        {
+            // The current page's state is added to the history when suspending.
+            // On resumption, the state is not required as the code continues running from its last point.
+            if (PageStates.Count > 0)
+                PageStates.RemoveAt(PageStates.Count - 1);
+        }
+
         #endregion
     }
 }
