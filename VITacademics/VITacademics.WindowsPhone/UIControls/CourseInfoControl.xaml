@@ -96,16 +96,21 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0" Margin="5,0,17,0" DataContext="{Binding Attendance}"
                                         HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource SingleItemContentStyle}">
+                                                <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
+                                            </Style>
+                                        </StackPanel.Resources>
                                         <dp:CompletionRing VoidRegionForeground="LightGray" Margin="0,0,0,10"
                                                    Diameter="105" RingThickness="13"
                                                    PercentageComplete="{Binding Percentage}"></dp:CompletionRing>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <TextBlock Text="Attended " Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-                                            <TextBlock Margin="5,0,0,0" Text="{Binding AttendedClasses}" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                            <TextBlock Text="Attended "></TextBlock>
+                                            <TextBlock Margin="5,0,0,0" Text="{Binding AttendedClasses}"></TextBlock>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <TextBlock Text="Total " Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-                                            <TextBlock Margin="5,0,0,0" Text="{Binding TotalClasses}" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                            <TextBlock Text="Total "></TextBlock>
+                                            <TextBlock Margin="5,0,0,0" Text="{Binding TotalClasses}"></TextBlock>
                                         </StackPanel>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -128,6 +133,44 @@
                             <PivotItem Header="attendance" DataContext="{Binding Attendance}">
                                 <local:AttendanceControl></local:AttendanceControl>
                             </PivotItem>
+                            <PivotItem Header="marks">
+                                <PivotItem.Resources>
+                                    <DataTemplate x:Key="MarkInfoTemplate">
+                                        <Grid Margin="0,10,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border Width="60" Height="60" CornerRadius="3"
+                                                    Background="{Binding Status, Converter={StaticResource statusToBackgroundConverter}}">
+                                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                            </Border>
+                                            <StackPanel Margin="13,0,0,0" Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Title}"
+                                                           Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                                <TextBlock Text="{Binding Status}"
+                                                           Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                    <Style TargetType="ItemsControl">
+                                        <Setter Property="ItemTemplate" Value="{StaticResource MarkInfoTemplate}"></Setter>
+                                    </Style>
+                                </PivotItem.Resources>
+                                <ScrollViewer>
+                                    <StackPanel>
+                                        <TextBlock Text="CAT's (each out of 50)" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                                        <ItemsControl ItemsSource="{Binding CatMarks}"></ItemsControl>
+                                        <TextBlock Text="Quizzes (each out of 5)" Margin="0,23,0,3" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                                        <ItemsControl ItemsSource="{Binding QuizMarks}"></ItemsControl>
+                                        <TextBlock Text="Assignment (out of 5)" Margin="0,23,0,3" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                                        <ContentPresenter ContentTemplate="{StaticResource MarkInfoTemplate}"
+                                                          Content="{Binding}" DataContext="{Binding AssignmentMarks}"></ContentPresenter>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </PivotItem>
                         </Pivot>
                     </DataTemplate>
                     
@@ -138,6 +181,56 @@
                             </PivotItem>
                             <PivotItem Header="attendance" DataContext="{Binding Attendance}">
                                 <local:AttendanceControl></local:AttendanceControl>
+                            </PivotItem>
+                            <PivotItem Header="marks">
+                                <PivotItem.Resources>
+                                    <DataTemplate x:Key="MarkStubTemplate">
+                                        <Grid Margin="0,0,0,20">
+                                            <Grid.Resources>
+                                                <local:NullableDateToStringConverter x:Key="dateToStringConverter"></local:NullableDateToStringConverter>
+                                            </Grid.Resources>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                                <RowDefinition></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Text="{Binding MarksTitle}" Grid.ColumnSpan="2" Margin="0,0,0,7"
+                                                       Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                            
+                                            <Border Width="60" Height="60" CornerRadius="3" Grid.Row="1" Margin="7,0,0,0"
+                                                    Background="{Binding Status, Converter={StaticResource statusToBackgroundConverter}}">
+                                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                            </Border>
+                                            <StackPanel Margin="13,0,0,0" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
+                                                <StackPanel.Resources>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource SingleItemContentStyle}">
+                                                        <Setter Property="Foreground" Value="{ThemeResource PhoneMidBrush}"></Setter>
+                                                    </Style>
+                                                </StackPanel.Resources>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="max marks&#160;"></TextBlock>
+                                                    <TextBlock Text="{Binding MaxMarks}"></TextBlock>
+                                                    <TextBlock Text=", weightage:&#160;"></TextBlock>
+                                                    <TextBlock Text="{Binding Weightage}"></TextBlock>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="conducted on:&#160;"></TextBlock>
+                                                    <TextBlock Text="{Binding ConductedDate, Converter={StaticResource dateToStringConverter}, ConverterParameter='not yet'}"></TextBlock>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </PivotItem.Resources>
+                                <ScrollViewer>
+                                    <ItemsControl ItemsSource="{Binding PblMarks}"
+                                                  ItemTemplate="{StaticResource MarkStubTemplate}"></ItemsControl>
+                                </ScrollViewer>
                             </PivotItem>
                         </Pivot>
                     </DataTemplate>

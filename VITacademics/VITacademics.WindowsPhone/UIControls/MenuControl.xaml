@@ -48,8 +48,7 @@
                     <DataTemplate>
                         <StackPanel Margin="0,13,0,0">
                             <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                            <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource SingleItemContentStyle}"
-                                       Foreground="{ThemeResource PhoneDisabledBrush}"></TextBlock>
+                            <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -65,7 +64,7 @@
                         <StackPanel Margin="0,13,0,0">
                         <TextBlock Text="{Binding Title}"
                                    Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                            <TextBlock Text="{Binding CourseCode}" Foreground="{ThemeResource PhoneDisabledBrush}"
+                            <TextBlock Text="{Binding CourseCode}"
                                        Style="{StaticResource SingleItemContentStyle}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>

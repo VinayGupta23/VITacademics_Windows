@@ -131,6 +131,7 @@
         <Setter Property="TextWrapping" Value="WrapWholeWords"></Setter>
         <Setter Property="TextAlignment" Value="Left"></Setter>
         <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+        <Setter Property="Foreground" Value="{ThemeResource PhoneDisabledBrush}"></Setter>
     </Style>
 
     <Style TargetType="TextBlock" x:Key="LabelTextBlockStyle" BasedOn="{StaticResource BodyTextBlockStyle}">

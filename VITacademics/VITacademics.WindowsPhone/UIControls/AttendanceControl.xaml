@@ -21,6 +21,7 @@
                     <Style TargetType="TextBlock" BasedOn="{StaticResource SingleItemContentStyle}">
                         <Setter Property="TextAlignment" Value="Center"></Setter>
                         <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                        <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
                     </Style>
                     <local:DateToDateStringConverter x:Key="dateToDateStringConverter"></local:DateToDateStringConverter>
                     <local:DateToDayStringConverter x:Key="dateToDayStringConverter"></local:DateToDayStringConverter>

@@ -41,7 +41,7 @@ namespace VITacademics.UIControls
             if (status == "Present")
                 return new SolidColorBrush(Colors.LightGreen);
             else if (status == "Absent")
-                return new SolidColorBrush(Colors.IndianRed);
+                return new SolidColorBrush(Colors.LightSalmon);
             else
                 return new SolidColorBrush(Colors.LightGray);
         }
@@ -62,7 +62,7 @@ namespace VITacademics.UIControls
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            return default(DateTimeOffset);
+            throw new NotImplementedException();
         }
     }
 
@@ -92,7 +92,24 @@ namespace VITacademics.UIControls
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            return default(DateTimeOffset);
+            throw new NotImplementedException();
+        }
+    }
+
+    public sealed class NullableDateToStringConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value == null)
+                return parameter as string;
+            else
+                return ((DateTimeOffset)value).ToString("dd MMM, yyyy");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
         }
     }
 
