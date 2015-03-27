@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:VITacademics.UIControls"
+    xmlns:helpers="using:VITacademics.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -55,7 +56,7 @@
                                                                 <Setter Property="MaxLines" Value="1"></Setter>
                                                                 <Setter Property="TextLineBounds" Value="Tight"></Setter>
                                                             </Style>
-                                                            <local:DateToTimeStringConverter x:Key="dateToTimeStringConverter"></local:DateToTimeStringConverter>
+                                                            <helpers:DateToTimeStringConverter x:Key="dateToTimeStringConverter"></helpers:DateToTimeStringConverter>
                                                         </Grid.Resources>
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="*"></RowDefinition>

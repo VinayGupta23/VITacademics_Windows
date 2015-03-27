@@ -20,4 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Managers\StorageHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\UserManager.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Helpers\" />
+  </ItemGroup>
 </Project>

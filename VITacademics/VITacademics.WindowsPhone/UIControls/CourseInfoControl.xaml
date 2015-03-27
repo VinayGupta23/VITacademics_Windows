@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:VITacademics.UIControls"
+    xmlns:helpers="using:VITacademics.Helpers"
     xmlns:dp="using:DataPlotterTools"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -17,7 +18,7 @@
                 <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
                 <ResourceDictionary>
                     
-                    <local:StatusToBackgroundConverter x:Key="statusToBackgroundConverter"></local:StatusToBackgroundConverter>
+                    <helpers:StatusToBackgroundConverter x:Key="statusToBackgroundConverter"></helpers:StatusToBackgroundConverter>
                     
                     <DataTemplate x:Key="CourseNotFoundTemplate">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -187,7 +188,7 @@
                                     <DataTemplate x:Key="MarkStubTemplate">
                                         <Grid Margin="0,0,0,20">
                                             <Grid.Resources>
-                                                <local:NullableDateToStringConverter x:Key="dateToStringConverter"></local:NullableDateToStringConverter>
+                                                <helpers:NullableDateToStringConverter x:Key="dateToStringConverter"></helpers:NullableDateToStringConverter>
                                             </Grid.Resources>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition></RowDefinition>

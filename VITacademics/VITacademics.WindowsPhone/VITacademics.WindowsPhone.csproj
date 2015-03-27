@@ -83,7 +83,7 @@
     <Compile Include="AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Managers\ControlManager.cs" />
+    <Compile Include="Helpers\ControlManager.cs" />
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -112,7 +112,7 @@
     <Compile Include="UIControls\UserOverviewControl.xaml.cs">
       <DependentUpon>UserOverviewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UIControls\ViewModelHelpers.cs" />
+    <Compile Include="Helpers\ViewDependencies.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

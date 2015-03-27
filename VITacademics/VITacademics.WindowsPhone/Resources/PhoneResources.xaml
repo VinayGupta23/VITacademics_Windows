@@ -2,7 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:VITacademics.Resources"
-    xmlns:controlHelpers="using:VITacademics.UIControls">
+    xmlns:helpers="using:VITacademics.Helpers">
 
     <Style TargetType="AppBarButton" x:Key="TopBarButtonStyle">
         <Setter Property="IsCompact" Value="True"></Setter>
@@ -149,7 +149,7 @@
         </Setter>
     </Style>
 
-    <controlHelpers:StatusToForegroundConverter x:Key="statusToForegroundConverter">
-    </controlHelpers:StatusToForegroundConverter>
+    <helpers:StatusToForegroundConverter x:Key="statusToForegroundConverter">
+    </helpers:StatusToForegroundConverter>
     
 </ResourceDictionary>

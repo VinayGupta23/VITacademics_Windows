@@ -1,32 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using VITacademics.Managers;
 using VITacademics.UIControls;
 
 
-namespace VITacademics.Managers
+namespace VITacademics.Helpers
 {
+
+    public enum ControlTypeCodes
+    {
+        Overview = 0,
+        BasicTimetable = 1,
+        EnhancedTimetable = 2,
+        CourseInfo = 3
+    }
 
     public class ControlManager : IManageable
     {
 
         #region Static Properties and Contructor
 
-        private static readonly Dictionary<Type, int> _controlTypeDictionary;
-        public static ReadOnlyDictionary<Type, int> ControlTypeDictionary
-        {
-            get;
-            private set;
-        }
+        private static readonly Dictionary<Type, ControlTypeCodes> _controlTypeDictionary;
 
         static ControlManager()
         {
-            _controlTypeDictionary = new Dictionary<Type, int>();
-            _controlTypeDictionary.Add(typeof(UserOverviewControl), 0);
-            _controlTypeDictionary.Add(typeof(CourseInfoControl), 1);
-            _controlTypeDictionary.Add(typeof(BasicTimetableControl), 2);
-            _controlTypeDictionary.Add(typeof(EnhancedTimetableControl), 3);
-            ControlTypeDictionary = new ReadOnlyDictionary<Type, int>(_controlTypeDictionary);
+            _controlTypeDictionary = new Dictionary<Type, ControlTypeCodes>();
+            _controlTypeDictionary.Add(typeof(UserOverviewControl), ControlTypeCodes.Overview);
+            _controlTypeDictionary.Add(typeof(CourseInfoControl), ControlTypeCodes.CourseInfo);
+            _controlTypeDictionary.Add(typeof(BasicTimetableControl), ControlTypeCodes.BasicTimetable);
+            _controlTypeDictionary.Add(typeof(EnhancedTimetableControl), ControlTypeCodes.EnhancedTimetable);
+        }
+
+        public static ControlTypeCodes GetTypeCode(IProxiedControl control)
+        {
+            return _controlTypeDictionary[control.GetType()];
+        }
+
+        public static ControlTypeCodes GetTypeCode(Type proxiedControlType)
+        {
+            return _controlTypeDictionary[proxiedControlType];
         }
 
         #endregion
@@ -73,7 +86,7 @@ namespace VITacademics.Managers
 
         private void SaveCurrentControl()
         {
-            _controlHistory.Add(ControlTypeDictionary[_currentControl.GetType()]);
+            _controlHistory.Add((int)GetTypeCode(_currentControl));
             _paramterHistory.Add(_currentParameter);
             _stateHistory.Add(_currentControl.SaveState());
         }
@@ -82,16 +95,16 @@ namespace VITacademics.Managers
         {
             switch (controlTypeCode)
             {
-                case 0:
+                case (int)ControlTypeCodes.Overview:
                     _currentControl = new UserOverviewControl();
                     break;
-                case 1:
+                case (int)ControlTypeCodes.CourseInfo:
                     _currentControl = new CourseInfoControl();
                     break;
-                case 2:
+                case (int)ControlTypeCodes.BasicTimetable:
                     _currentControl = new BasicTimetableControl();
                     break;
-                case 3:
+                case (int)ControlTypeCodes.EnhancedTimetable:
                     _currentControl = new EnhancedTimetableControl();
                     break;
             }
@@ -127,8 +140,8 @@ namespace VITacademics.Managers
                 SaveCurrentControl();
             }
 
-            int controlTypeCode = ControlTypeDictionary[controlType];
-            LoadControl(controlTypeCode, parameter);
+            int controlCode = (int)GetTypeCode(controlType);
+            LoadControl(controlCode, parameter);
         }
 
         public void ReturnToLastControl()
@@ -165,7 +178,7 @@ namespace VITacademics.Managers
 
             if (_currentControl != null)
             {
-                controls.Add(ControlTypeDictionary[_currentControl.GetType()]);
+                controls.Add((int)GetTypeCode(_currentControl));
                 paramters.Add(_currentParameter);
                 states.Add(_currentControl.SaveState());
             }

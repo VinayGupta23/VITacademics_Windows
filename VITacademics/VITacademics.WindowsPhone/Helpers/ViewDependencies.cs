@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
-namespace VITacademics.UIControls
+namespace VITacademics.Helpers
 {
     public sealed class StatusToForegroundConverter : IValueConverter
     {

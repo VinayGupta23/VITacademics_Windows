@@ -50,7 +50,7 @@ namespace VITacademics.UIControls
                 contentPresenter.Content = course;
                 this.Content = contentPresenter;
             }
-            catch 
+            catch
             {
                 contentPresenter.ContentTemplate = this.Resources["CourseNotFoundTemplate"] as DataTemplate;
             }

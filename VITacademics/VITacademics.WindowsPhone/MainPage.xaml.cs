@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using VITacademics.Helpers;
 using VITacademics.Managers;
 using VITacademics.UIControls;
 using Windows.UI;
@@ -258,7 +259,7 @@ namespace VITacademics
 
         #endregion
 
-        #region Navigation Request and Related Handlers
+        #region Navigation and ActionRequest Handlers
 
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
@@ -303,18 +304,26 @@ namespace VITacademics
         private void SetTitleAndContent()
         {
             string titleText = null;
-            Type contentType = _contentControlManager.CurrentControl.GetType();
+            ControlTypeCodes contentTypeCode = ControlManager.GetTypeCode(_contentControlManager.CurrentControl);
 
-            if (contentType == typeof(CourseInfoControl))
-                titleText = "Course Details";
-            else if (contentType == typeof(BasicTimetableControl))
-                titleText = "Timetable";
-            else if (contentType == typeof(EnhancedTimetableControl))
-                titleText = "Daily Buzz";
-            else if (contentType == typeof(UserOverviewControl))
-                titleText = "Overview";
-            else
-                titleText = "VITacademics";
+            switch (contentTypeCode)
+            {
+                case ControlTypeCodes.Overview:
+                    titleText = "Overview";
+                    break;
+                case ControlTypeCodes.BasicTimetable:
+                    titleText = "Timetable";
+                    break;
+                case ControlTypeCodes.EnhancedTimetable:
+                    titleText = "Daily Buzz";
+                    break;
+                case ControlTypeCodes.CourseInfo:
+                    titleText = "Course Details";
+                    break;
+                default:
+                    titleText = "VITacademics";
+                    break;
+            }
 
             contentPresenter.Content = _contentControlManager.CurrentControl;
             NotifyPropertyChanged("CanGoBack");
