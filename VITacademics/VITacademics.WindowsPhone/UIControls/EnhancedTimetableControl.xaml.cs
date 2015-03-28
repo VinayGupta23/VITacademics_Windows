@@ -42,6 +42,20 @@ namespace VITacademics.UIControls
             {
                 (sender.Items[i] as PivotItem).Header = _dates[i].ToString("ddd dd");
             }
+
+            PivotItem curItem = sender.Items[curIndex] as PivotItem;
+            DayInfo dayInfo = _timetable.GetExactDayInfo(_dates[curIndex]);
+            if (dayInfo.RegularClassDetails.Count > 0)
+            {
+                DateTimeOffset dateNow = DateTimeOffset.Now;
+                if (_dates[curIndex].Day == dateNow.Day && _dates[curIndex].DayOfWeek == dateNow.DayOfWeek)
+                    curItem.ContentTemplate = this.Resources["TodayDataTemplate"] as DataTemplate;
+                else
+                    curItem.ContentTemplate = this.Resources["RegularDayDataTemplate"] as DataTemplate;
+            }
+            else
+                curItem.ContentTemplate = this.Resources["EmptyDayDataTemplate"] as DataTemplate;
+            curItem.DataContext = dayInfo;
         }
 
         public void GenerateView(string parameter)
@@ -61,12 +75,28 @@ namespace VITacademics.UIControls
 
         public Dictionary<string, object> SaveState()
         {
-            return null;
+            var state = new Dictionary<string, object>(1);
+            state.Add("selectedDate", _dates[rootPivot.SelectedIndex]);
+            return state;
         }
 
         public void LoadState(Dictionary<string, object> lastState)
         {
-
+            try
+            {
+                if(lastState != null)
+                {
+                    JumpToDate((DateTimeOffset)lastState["selectedDate"]);
+                }
+            }
+            catch { }
         }
+
+        private void JumpToDate(DateTimeOffset requestedDate)
+        {
+            _dates[0] = requestedDate;
+            rootPivot.SelectedIndex = 0;
+        }
+    
     }
 }

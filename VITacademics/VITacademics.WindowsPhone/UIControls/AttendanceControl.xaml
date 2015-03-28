@@ -126,7 +126,7 @@
                                        Style="{StaticResource SingleItemSubHeaderStyle}" 
                                        Text="{Binding Key, Converter={StaticResource dateToDayStringConverter}}"></TextBlock>
                             <TextBlock Grid.Column="2" Style="{StaticResource BodyTextBlockStyle}"
-                                       Text="{Binding Value.Status}" Foreground="{Binding Value.Status, Converter={StaticResource statusToForegroundConverter}}"
+                                       Text="{Binding Value.Status}" Foreground="{Binding Value.Status, Converter={StaticResource StatusToForegroundConverter}}"
                                        HorizontalAlignment="Right"></TextBlock>
                         </Grid>
                     </DataTemplate>

@@ -149,7 +149,7 @@
         </Setter>
     </Style>
 
-    <helpers:StatusToForegroundConverter x:Key="statusToForegroundConverter">
+    <helpers:StatusToForegroundConverter x:Key="StatusToForegroundConverter">
     </helpers:StatusToForegroundConverter>
     
 </ResourceDictionary>

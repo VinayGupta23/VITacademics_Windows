@@ -67,8 +67,12 @@ namespace VITacademics.UIControls
 
         public void LoadState(Dictionary<string, object> lastState)
         {
-            if (lastState != null)
-                rootPivot.SelectedIndex = (int)lastState["currentIndex"];
+            try
+            {
+                if (lastState != null)
+                    rootPivot.SelectedIndex = (int)lastState["currentIndex"];
+            }
+            catch { }
         }
     }
 }
