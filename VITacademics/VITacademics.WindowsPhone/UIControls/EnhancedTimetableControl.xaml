@@ -46,11 +46,11 @@
                     
                     <DataTemplate x:Key="TodayDataTemplate">
                         <StackPanel>
-                            <ListView ItemsSource="{Binding RegularClassDetails}">
+                            <ListView ItemsSource="{Binding RegularClassInfo}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Margin="0,0,0,10">
-                                            <TextBlock Text="{Binding Key.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                            <TextBlock Text="{Binding Item2.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -64,17 +64,20 @@
                     
                     <DataTemplate x:Key="RegularDayDataTemplate">
                         <StackPanel>
-                            <ListView ItemsSource="{Binding RegularClassDetails}">
+                            <ListView ItemsSource="{Binding RegularClassInfo}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Key}"></TextBlock>
+                                        <TextBlock Text="{Binding Item4, Mode=OneWay}"></TextBlock>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
-                            <TextBlock Style="{StaticResource ExtraClassesHeaderBlock}"
-                                       Visibility="{Binding ExtraClassDetails, Converter={StaticResource EnumerableToVisibilityConverter}}"></TextBlock>
-                            <ListView Style="{StaticResource ExtraClassListViewStyle}"
-                                      ItemsSource="{Binding ExtraClassDetails}"></ListView>
+                            <ListView ItemsSource="{Binding ExtraDetails}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}"></TextBlock>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
                         </StackPanel>
                     </DataTemplate>
                     
@@ -83,6 +86,11 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Pivot x:Name="rootPivot" Style="{StaticResource ContentPivotStyle}"></Pivot>
+    <StackPanel>
     
+    <Button Content="Change string" Click="Button_Click"></Button>
+    <Pivot x:Name="rootPivot" Style="{StaticResource ContentPivotStyle}"></Pivot>
+
+    </StackPanel>
+
 </UserControl>

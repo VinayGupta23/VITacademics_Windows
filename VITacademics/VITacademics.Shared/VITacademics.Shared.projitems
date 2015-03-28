@@ -15,12 +15,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\CalenderAwareDayInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\Components.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\PageManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\StorageHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\UserManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Helpers\" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,8 @@
 ﻿using Academics.DataModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -18,11 +20,49 @@ using Windows.UI.Xaml.Navigation;
 
 namespace VITacademics.UIControls
 {
-    public sealed partial class EnhancedTimetableControl : UserControl, IProxiedControl
+    public sealed partial class EnhancedTimetableControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
+
+        public class DayInfoWrapper
+        {
+            public ObservableCollection<Tuple<DateTimeOffset, ClassHours, AttendanceStub, string>> RegularClassInfo
+            {
+                get;
+                private set;
+            }
+
+            public ObservableCollection<string> ExtraDetails
+            {
+                get;
+                set;
+            }
+
+            public DayInfoWrapper(DateTimeOffset date, DayInfo dayInfo)
+            {
+                RegularClassInfo = new ObservableCollection<Tuple<DateTimeOffset, ClassHours, AttendanceStub, string>>();
+                foreach(KeyValuePair<ClassHours, AttendanceStub> item in dayInfo.RegularClassDetails)
+                {
+                    RegularClassInfo.Add(new Tuple<DateTimeOffset, ClassHours, AttendanceStub, string>(
+                                                                    date,
+                                                                    item.Key,
+                                                                    item.Value,
+                                                                    "hello"));
+                    ExtraDetails = new ObservableCollection<string>();
+                    ExtraDetails.Add("Hello");
+                }
+            }
+        }
+
         private Timetable _timetable;
         private DateTimeOffset[] _dates = new DateTimeOffset[5];
         public event EventHandler<RequestEventArgs> ActionRequested;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public DayInfoWrapper DayInfoView
+        {
+            get;
+            set;
+        }
 
         public EnhancedTimetableControl()
         {
@@ -55,7 +95,8 @@ namespace VITacademics.UIControls
             }
             else
                 curItem.ContentTemplate = this.Resources["EmptyDayDataTemplate"] as DataTemplate;
-            curItem.DataContext = dayInfo;
+            DayInfoView = new DayInfoWrapper(_dates[curIndex], dayInfo);
+            curItem.DataContext = DayInfoView;
         }
 
         public void GenerateView(string parameter)
@@ -97,6 +138,16 @@ namespace VITacademics.UIControls
             _dates[0] = requestedDate;
             rootPivot.SelectedIndex = 0;
         }
-    
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            DayInfoView.RegularClassInfo[0] = new Tuple<DateTimeOffset, ClassHours, AttendanceStub, string>(
+                                                    DayInfoView.RegularClassInfo[0].Item1,
+                                                    DayInfoView.RegularClassInfo[0].Item2,
+                                                    DayInfoView.RegularClassInfo[0].Item3,
+                                                    "...world!");
+            DayInfoView.ExtraDetails[0] = "Oh! Hi :)";
+        }
+
     }
 }
