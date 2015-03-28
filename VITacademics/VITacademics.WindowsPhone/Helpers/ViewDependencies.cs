@@ -114,15 +114,13 @@ namespace VITacademics.Helpers
         }
     }
 
-    public sealed class EnumerableToVisibilityConverter : IValueConverter
+    public sealed class BoolToVisibilityConverter : IValueConverter
     {
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (!(value as IEnumerable).GetEnumerator().MoveNext())
-            {
+            if ((bool)value == true)
                 return Visibility.Visible;
-            }
             else
                 return Visibility.Collapsed;
         }
@@ -153,6 +151,29 @@ namespace VITacademics.Helpers
                 return PBCTemplate;
             else
                 return null;
+        }
+    }
+
+    public class ClassInfoTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate ClassNowTemplate { get; set; }
+        public DataTemplate ClassTodayTemplate { get; set; }
+        public DataTemplate ClassGeneralTemplate { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        {
+            CalenderAwareInfoStub infoStub = item as CalenderAwareInfoStub;
+            DateTimeOffset now = DateTimeOffset.Now;
+            if (infoStub.ContextDate.Date == DateTimeOffset.Now.Date)
+            {
+                if (TimeSpan.Compare(infoStub.SessionHours.StartHours.TimeOfDay, now.TimeOfDay) <= 0
+                    && TimeSpan.Compare(now.TimeOfDay, infoStub.SessionHours.StartHours.TimeOfDay) < 0)
+                    return ClassNowTemplate;
+                else
+                    return ClassTodayTemplate;
+            }
+            else
+                return ClassGeneralTemplate;
         }
     }
 }

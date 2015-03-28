@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using VITacademics.Helpers;
 
 
 namespace VITacademics.UIControls
@@ -23,50 +24,44 @@ namespace VITacademics.UIControls
     public sealed partial class EnhancedTimetableControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
 
-        public class DayInfoWrapper
-        {
-            public ObservableCollection<Tuple<DateTimeOffset, ClassHours, AttendanceStub, string>> RegularClassInfo
-            {
-                get;
-                private set;
-            }
-
-            public ObservableCollection<string> ExtraDetails
-            {
-                get;
-                set;
-            }
-
-            public DayInfoWrapper(DateTimeOffset date, DayInfo dayInfo)
-            {
-                RegularClassInfo = new ObservableCollection<Tuple<DateTimeOffset, ClassHours, AttendanceStub, string>>();
-                foreach(KeyValuePair<ClassHours, AttendanceStub> item in dayInfo.RegularClassDetails)
-                {
-                    RegularClassInfo.Add(new Tuple<DateTimeOffset, ClassHours, AttendanceStub, string>(
-                                                                    date,
-                                                                    item.Key,
-                                                                    item.Value,
-                                                                    "hello"));
-                    ExtraDetails = new ObservableCollection<string>();
-                    ExtraDetails.Add("Hello");
-                }
-            }
-        }
-
         private Timetable _timetable;
         private DateTimeOffset[] _dates = new DateTimeOffset[5];
         public event EventHandler<RequestEventArgs> ActionRequested;
         public event PropertyChangedEventHandler PropertyChanged;
+        private DateTimeOffset _currentDate;
+        private DatePickerFlyout datePickerFlyout;
 
-        public DayInfoWrapper DayInfoView
+        public CalenderAwareDayInfo AwareDayInfo
         {
             get;
             set;
+        }
+        public DateTimeOffset CurrentDate
+        {
+            get { return _currentDate; }
+            set
+            {
+                _currentDate = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("CurrentDate"));
+            }
         }
 
         public EnhancedTimetableControl()
         {
             this.InitializeComponent();
+            this.DataContext = this;
+
+            datePickerFlyout = new DatePickerFlyout();
+            datePickerFlyout.MinYear = new DateTimeOffset(DateTime.Now).AddYears(-5);
+            datePickerFlyout.MaxYear = datePickerFlyout.MinYear.AddYears(10);
+            datePickerFlyout.DatePicked += DatePickerFlyout_DatePicked;
+        }
+
+        private void DatePickerFlyout_DatePicked(DatePickerFlyout sender, DatePickedEventArgs args)
+        {
+            if (CurrentDate != args.NewDate)
+                JumpToDate(args.NewDate);
         }
 
         private void Pivot_PivotItemLoading(Pivot sender, PivotItemEventArgs args)
@@ -83,20 +78,9 @@ namespace VITacademics.UIControls
                 (sender.Items[i] as PivotItem).Header = _dates[i].ToString("ddd dd");
             }
 
-            PivotItem curItem = sender.Items[curIndex] as PivotItem;
-            DayInfo dayInfo = _timetable.GetExactDayInfo(_dates[curIndex]);
-            if (dayInfo.RegularClassDetails.Count > 0)
-            {
-                DateTimeOffset dateNow = DateTimeOffset.Now;
-                if (_dates[curIndex].Day == dateNow.Day && _dates[curIndex].DayOfWeek == dateNow.DayOfWeek)
-                    curItem.ContentTemplate = this.Resources["TodayDataTemplate"] as DataTemplate;
-                else
-                    curItem.ContentTemplate = this.Resources["RegularDayDataTemplate"] as DataTemplate;
-            }
-            else
-                curItem.ContentTemplate = this.Resources["EmptyDayDataTemplate"] as DataTemplate;
-            DayInfoView = new DayInfoWrapper(_dates[curIndex], dayInfo);
-            curItem.DataContext = DayInfoView;
+            CurrentDate = _dates[curIndex];
+            AwareDayInfo = new CalenderAwareDayInfo(CurrentDate, _timetable.GetExactDayInfo(_dates[curIndex]));
+            (sender.Items[curIndex] as PivotItem).DataContext = AwareDayInfo;
         }
 
         public void GenerateView(string parameter)
@@ -117,7 +101,7 @@ namespace VITacademics.UIControls
         public Dictionary<string, object> SaveState()
         {
             var state = new Dictionary<string, object>(1);
-            state.Add("selectedDate", _dates[rootPivot.SelectedIndex]);
+            state.Add("selectedDate", CurrentDate);
             return state;
         }
 
@@ -135,18 +119,15 @@ namespace VITacademics.UIControls
 
         private void JumpToDate(DateTimeOffset requestedDate)
         {
-            _dates[0] = requestedDate;
-            rootPivot.SelectedIndex = 0;
+            int index = (rootPivot.SelectedIndex + 1)%5;
+            _dates[index] = requestedDate;
+            rootPivot.SelectedIndex = index;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            DayInfoView.RegularClassInfo[0] = new Tuple<DateTimeOffset, ClassHours, AttendanceStub, string>(
-                                                    DayInfoView.RegularClassInfo[0].Item1,
-                                                    DayInfoView.RegularClassInfo[0].Item2,
-                                                    DayInfoView.RegularClassInfo[0].Item3,
-                                                    "...world!");
-            DayInfoView.ExtraDetails[0] = "Oh! Hi :)";
+            datePickerFlyout.Date = CurrentDate;
+            datePickerFlyout.ShowAt(dateDisplayBlock);
         }
 
     }
