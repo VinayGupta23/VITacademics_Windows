@@ -127,10 +127,16 @@ namespace Academics.ContentService
 
         private static void AssignAttendance(LtpCourse course, JsonObject attendanceObject)
         {
+            int classLength = 1;
+            if(course as LBCCourse != null)
+            {
+                classLength = (int)Char.GetNumericValue(course.Ltpc[2]);
+            }
+
             ushort total = (ushort)attendanceObject.GetNamedNumber("total_classes");
             ushort attended = (ushort)attendanceObject.GetNamedNumber("attended_classes");
             double percentage = attendanceObject.GetNamedNumber("attendance_percentage");
-            course.Attendance = new Attendance(course, total, attended, percentage);
+            course.Attendance = new Attendance(course, total, attended, percentage, classLength);
 
             JsonArray detailsArray = attendanceObject.GetNamedArray("details");
             foreach (JsonValue stubValue in detailsArray)
