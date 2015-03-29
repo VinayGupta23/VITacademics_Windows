@@ -20,7 +20,8 @@
                         <Setter Property="HeaderTemplate">
                             <Setter.Value>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding}" Style="{ThemeResource TitleTextBlockStyle}"></TextBlock>
+                                    <TextBlock Text="{Binding}" Style="{StaticResource GroupHeaderTextBlockStyle}"
+                                               Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>
@@ -37,10 +38,10 @@
         </TransitionCollection>
     </UserControl.Transitions>
 
-    <ScrollViewer Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <StackPanel Margin="19,17,0,0">
+    <ScrollViewer Background="WhiteSmoke">
+        <StackPanel Margin="19,17,19,10">
 
-            <ListView Header="MENU"
+            <ListView Header="menu"
                       ItemsSource="{Binding MenuItems, Mode=OneTime}"
                       ItemClick="MenuList_ItemClick">    
                 
@@ -55,18 +56,29 @@
                 
             </ListView>
 
-            <!-- Trial design -->
             <ListView ItemsSource="{Binding Courses}"
                       ItemClick="CourseList_ItemClick"
-                      Header="COURSES" Margin="0,17,0,0">
+                      Header="all courses" Margin="0,17,0,0">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment"
+                                                Value="Stretch"></Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Margin="0,13,0,0">
-                        <TextBlock Text="{Binding Title}"
-                                   Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                            <TextBlock Text="{Binding CourseCode}"
+                        <Grid Margin="0,13,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Title}" MaxLines="1" Foreground="{ThemeResource PhoneForegroundBrush}"
+                                       Style="{StaticResource SingleItemHeaderStyle}" FontSize="23"></TextBlock>
+                            <TextBlock Text="{Binding CourseCode}" Grid.Row="1"
                                        Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-                        </StackPanel>
+                            <TextBlock Text="{Binding Slot, FallbackValue=''}" Grid.Row="1" HorizontalAlignment="Right"
+                                       Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

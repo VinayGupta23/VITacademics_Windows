@@ -58,6 +58,10 @@
                                         <TextBlock Text="," Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
                                         <TextBlock Margin="5,0,0,0" Text="{Binding CourseOption}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
                                     </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Type:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding SubjectType}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -92,19 +96,22 @@
 
                                 <Grid Margin="0,23,0,0">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                        <ColumnDefinition Width="5*"></ColumnDefinition>
+                                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                        <ColumnDefinition Width="8*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0" Margin="5,0,17,0" DataContext="{Binding Attendance}"
+                                    <StackPanel Grid.Column="1" Margin="5,0,17,0" DataContext="{Binding Attendance}"
                                         HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <StackPanel.Resources>
                                             <Style TargetType="TextBlock" BasedOn="{StaticResource SingleItemContentStyle}">
                                                 <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
                                             </Style>
                                         </StackPanel.Resources>
+                                        <Viewbox>
                                         <dp:CompletionRing VoidRegionForeground="LightGray" Margin="0,0,0,10"
-                                                   Diameter="105" RingThickness="13"
-                                                   PercentageComplete="{Binding Percentage}"></dp:CompletionRing>
+                                                   RingThickness="13" Diameter="105" PercentageComplete="{Binding Percentage}"></dp:CompletionRing>
+                                        </Viewbox>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                             <TextBlock Text="Attended "></TextBlock>
                                             <TextBlock Margin="5,0,0,0" Text="{Binding AttendedClasses}"></TextBlock>
@@ -114,7 +121,7 @@
                                             <TextBlock Margin="5,0,0,0" Text="{Binding TotalClasses}"></TextBlock>
                                         </StackPanel>
                                     </StackPanel>
-                                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <StackPanel Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <TextBlock Text="Internals Scored:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                                         <TextBlock Text="{Binding InternalMarksScored, Mode=OneTime}" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
                                         <TextBlock Text="Marks Tested:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
@@ -250,7 +257,52 @@
                     <DataTemplate x:Key="PBCPivotTemplate">
                         <Pivot Style="{StaticResource ContentPivotStyle}">
                             <PivotItem Header="details">
-                                <TextBlock Text="Viewing PBC Details"></TextBlock>
+                                <StackPanel Margin="10,0,0,0" Grid.Column="1">
+                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" MaxLines="2" TextWrapping="WrapWholeWords"
+                                           Margin="0,0,0,10" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Code:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding CourseCode}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Mode: " Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,1,0" Text="{Binding CourseMode}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                        <TextBlock Text="," Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding CourseOption}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Type:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding SubjectType}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <Border Background="WhiteSmoke" Margin="0,23,0,0" CornerRadius="3">
+                                        <StackPanel Margin="10,7,10,7">
+                                            <TextBlock Text="Additional Details"
+                                               Style="{ThemeResource GroupHeaderTextBlockStyle}"></TextBlock>
+                                            <Grid Margin="0,13,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition></RowDefinition>
+                                                    <RowDefinition></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="Project Title:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                                <TextBlock Grid.Column="1" Margin="10,0,0,0"
+                                                           TextWrapping="WrapWholeWords" MaxLines="3" Text="{Binding ProjectTitle, TargetNullValue='N/A'}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                                <TextBlock Text="Faculty:" Grid.Row="1" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="10,0,0,0"
+                                                           TextWrapping="WrapWholeWords" MaxLines="3" Text="{Binding Faculty, TargetNullValue='N/A'}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                            </Grid>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                </Grid>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
                             </PivotItem>
                         </Pivot>
                     </DataTemplate>

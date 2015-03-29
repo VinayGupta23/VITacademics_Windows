@@ -1,34 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using VITacademics.Managers;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.ApplicationModel.Email;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
 namespace VITacademics
 {
 
     public sealed partial class AboutPage : Page, IManageable
     {
+
+        private const string DEV_EMAIL_ID = "vinaygupta_dev@outlook.com";
+        private const string DEV_NAME = "Vinay Gupta";
+        private StatusBar _statusBar;
+
         public AboutPage()
         {
             this.InitializeComponent();
+            _statusBar = StatusBar.GetForCurrentView();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             PageManager.RegisterPage(this);
+            await _statusBar.ProgressIndicator.HideAsync();
+        }
+
+        protected async override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            await _statusBar.ProgressIndicator.ShowAsync();
+            _statusBar = null;
         }
 
         public Dictionary<string, object> SaveState()
@@ -38,7 +43,16 @@ namespace VITacademics
 
         public void LoadState(Dictionary<string, object> lastState)
         {
+        }
+
+        private async void EmailButton_Click(object sender, RoutedEventArgs e)
+        {
+            EmailMessage emailMsg = new EmailMessage();
             
+            emailMsg.Subject = "Feedback - VITacademics (Windows Phone)";
+            emailMsg.To.Add(new EmailRecipient(DEV_EMAIL_ID, DEV_NAME));
+
+            await EmailManager.ShowComposeNewEmailAsync(emailMsg);
         }
     }
 }

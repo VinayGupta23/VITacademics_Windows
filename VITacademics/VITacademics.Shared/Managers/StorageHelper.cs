@@ -38,6 +38,7 @@ namespace VITacademics.Managers
                 serializer.WriteObject(writeStream, contentGraph);
                 result = true;
             }
+            catch { }
             finally
             {
                 if (writeStream != null)

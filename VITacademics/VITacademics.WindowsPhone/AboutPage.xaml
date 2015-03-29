@@ -6,9 +6,86 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource AlternateDarkBrush}">
 
-    <Grid>
+    <Page.Resources>
+        <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
+    </Page.Resources>
+    
+    <ScrollViewer Margin="0,0,0,0">
+        <Grid Margin="0,50,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="4*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
 
-    </Grid>
+            <Viewbox Grid.Column="1">
+                <StackPanel>
+                    <Image Source="ms-appx:///Assets/AppLogo.png" Width="200" Height="200"></Image>
+                    <TextBlock Text="VITacademics" Style="{StaticResource HeaderTextBlockStyle}"
+                           HorizontalAlignment="Center"></TextBlock>
+                    <TextBlock Text="beta" HorizontalAlignment="Center"
+                           Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                </StackPanel>
+            </Viewbox>
+
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Margin="19,45,19,0">
+                <StackPanel.Resources>
+                    <Style TargetType="TextBlock" x:Key="ContentTextStyle" BasedOn="{StaticResource SingleItemContentStyle}">
+                        <Setter Property="TextWrapping" Value="WrapWholeWords"></Setter>
+                        <Setter Property="MaxLines" Value="4"></Setter>
+                        <Setter Property="Foreground" Value="Silver"></Setter>
+                    </Style>
+                    <TextBlock x:Name="textBlock" Style="{StaticResource ContentTextStyle}"></TextBlock>
+                    <Style TargetType="RichTextBlock">
+                        <Setter Property="IsTextSelectionEnabled" Value="False"></Setter>
+                    </Style>
+                </StackPanel.Resources>
+
+                <TextBlock Text="developed by" Style="{StaticResource LabelTextBlockStyle}"
+                    HorizontalAlignment="Center" Margin="0,0,0,5"></TextBlock>
+                <TextBlock Text="Vinay Gupta"
+                    HorizontalAlignment="Center" Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
+                <TextBlock Text="13BEC0749"
+                    HorizontalAlignment="Center" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
+                <TextBlock Text="VIT University, Vellore"
+                    HorizontalAlignment="Center" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+
+                <TextBlock Text="contact and feedback" Margin="0,55,0,5"
+                           Foreground="{ThemeResource PhoneForegroundBrush}" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                <TextBlock Text="Have any suggestions? Found a bug? We'd love to hear from you! Contact the developer:"
+                           Style="{StaticResource ContentTextStyle}"></TextBlock>
+                <Button Margin="0,13,0,0" Content="send email" Click="EmailButton_Click"></Button>
+
+                <RichTextBlock Margin="0,30,0,0">
+                    <Paragraph Foreground="Silver" FontSize="{Binding FontSize, ElementName=textBlock}">
+                        VITacademics for Windows Phone 8.1 is an independently developed project. Contribute to its development
+                        <Hyperlink Foreground="{ThemeResource PhoneAccentBrush}"
+                                   NavigateUri="https://github.com/VinayGupta23/VITacademics_Windows">
+                            here
+                        </Hyperlink>.
+                    </Paragraph>
+                </RichTextBlock>
+
+                <TextBlock Text="VITacademics backend server" Margin="0,30,0,7"
+                    Foreground="{ThemeResource PhoneForegroundBrush}" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+
+                <RichTextBlock Margin="0,0,0,20">
+                    <Paragraph Foreground="Silver" FontSize="{Binding FontSize, ElementName=textBlock}">
+                        The app's supporting backend API server. View its contributors or contribute to its development
+                        <Hyperlink Foreground="{ThemeResource PhoneAccentBrush}"
+                                   NavigateUri="https://github.com/aneesh-neelam/VITacademics">
+                            here
+                        </Hyperlink>.
+                    </Paragraph>
+                </RichTextBlock>
+
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </Page>

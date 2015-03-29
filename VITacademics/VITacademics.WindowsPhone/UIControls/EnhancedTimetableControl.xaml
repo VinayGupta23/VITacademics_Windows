@@ -136,7 +136,7 @@
                                             <ListView ItemsSource="{Binding RegularClassesInfo}" ItemClick="List_ItemClick"
                                                       ItemTemplateSelector="{StaticResource classInfoTemplateSelector}"></ListView>
 
-                                            <TextBlock Text="EXTRA CLASSES" Margin="0,20,0,0" Style="{ThemeResource TitleTextBlockStyle}"
+                                            <TextBlock Text="extra classes" Margin="0,25,0,0" Style="{StaticResource GroupHeaderTextBlockStyle}"
                                                        Visibility="{Binding HadExtraClasses, Converter={StaticResource boolToVisibilityConverter}}"></TextBlock>
 
                                             <ListView ItemsSource="{Binding ExtraClassesInfo}" Margin="0,13,0,0">
@@ -189,7 +189,10 @@
 
         <Button Content="{Binding CurrentDate, Converter={StaticResource dateConverter}}" Background="WhiteSmoke"
                 Foreground="{ThemeResource PhoneAccentBrush}" BorderBrush="Transparent" BorderThickness="0"
-                x:Name="dateDisplayBlock" Click="DateButton_Click" Margin="7,-2,0,0"></Button>
+                x:Name="dateDisplayButton" Click="DateButton_Click" Margin="7,-2,0,0"></Button>
+        <Button Content="see today" Background="WhiteSmoke" Foreground="{ThemeResource PhoneAccentBrush}"
+                HorizontalAlignment="Right" BorderBrush="Transparent" BorderThickness="0"
+                Click="ViewTodayButton_Click" Margin="0,-2,7,0"></Button>
     </Grid>
     
 </UserControl>

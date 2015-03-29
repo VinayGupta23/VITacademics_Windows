@@ -122,6 +122,11 @@ namespace VITacademics.UIControls
         {
             try
             {
+                addFlyout.Hide();
+                modifyFlyout.Hide();
+                _datePickerFlyout.Hide();
+                eventMessageFlyout.Hide();
+                
                 _timetable = Timetable.GetTimetable(UserManager.CurrentUser.Courses);
                 List<PivotItem> pivotItems = new List<PivotItem>(5);
                 for (int i = 0; i < 5; i++)
@@ -162,7 +167,7 @@ namespace VITacademics.UIControls
         private void DateButton_Click(object sender, RoutedEventArgs e)
         {
             _datePickerFlyout.Date = CurrentDate;
-            _datePickerFlyout.ShowAt(dateDisplayBlock);
+            _datePickerFlyout.ShowAt(dateDisplayButton);
         }
 
         private void ItemRootGrid_Holding(object sender, HoldingRoutedEventArgs e)
@@ -200,6 +205,11 @@ namespace VITacademics.UIControls
             if(ActionRequested != null)
                 ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl),
                                         (e.ClickedItem as CalenderAwareInfoStub).SessionHours.Parent.ClassNumber.ToString()));
+        }
+
+        private void ViewTodayButton_Click(object sender, RoutedEventArgs e)
+        {
+            JumpToDate(DateTimeOffset.Now);
         }
 
     }
