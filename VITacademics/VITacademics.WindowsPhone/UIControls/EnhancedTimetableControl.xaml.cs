@@ -29,7 +29,14 @@ namespace VITacademics.UIControls
         public event EventHandler<RequestEventArgs> ActionRequested;
         public event PropertyChangedEventHandler PropertyChanged;
         private DateTimeOffset _currentDate;
-        private DatePickerFlyout datePickerFlyout;
+        private DatePickerFlyout _datePickerFlyout;
+        private CalenderAwareInfoStub _currentStub;
+
+        public List<string> EventMessages
+        {
+            get;
+            set;
+        }
 
         public CalenderAwareDayInfo AwareDayInfo
         {
@@ -52,11 +59,21 @@ namespace VITacademics.UIControls
             this.InitializeComponent();
             this.DataContext = this;
 
-            datePickerFlyout = new DatePickerFlyout();
-            datePickerFlyout.MinYear = new DateTimeOffset(DateTime.Now).AddYears(-5);
-            datePickerFlyout.MaxYear = datePickerFlyout.MinYear.AddYears(10);
-            datePickerFlyout.DatePicked += DatePickerFlyout_DatePicked;
+            _datePickerFlyout = new DatePickerFlyout();
+            _datePickerFlyout.MinYear = new DateTimeOffset(DateTime.Now).AddYears(-5);
+            _datePickerFlyout.MaxYear = _datePickerFlyout.MinYear.AddYears(10);
+            _datePickerFlyout.DatePicked += DatePickerFlyout_DatePicked;
+
+            EventMessages = new List<string>();
+            EventMessages.Add("Quiz I");
+            EventMessages.Add("Quiz II");
+            EventMessages.Add("Quiz III");
+            EventMessages.Add("Assignment deadline");
+            EventMessages.Add("Class test");
+            EventMessages.Add("Record submission");
+            EventMessages.Add("LAB Mid-Term");
         }
+
 
         private void DatePickerFlyout_DatePicked(DatePickerFlyout sender, DatePickedEventArgs args)
         {
@@ -75,12 +92,29 @@ namespace VITacademics.UIControls
             _dates[previousIndex] = _dates[curIndex].AddDays(-1);
             for (int i = 0; i < 5; i++)
             {
-                (sender.Items[i] as PivotItem).Header = _dates[i].ToString("ddd dd");
+                string header;
+                DateTimeOffset date = DateTimeOffset.Now.Date;
+                if (_dates[i].Date == date)
+                    header = "today";
+                else if (_dates[i].AddDays(-1).Date == date)
+                    header = "tomorrow";
+                else
+                    header = _dates[i].ToString("ddd dd");
+
+                (sender.Items[i] as PivotItem).Header = header;
             }
 
             CurrentDate = _dates[curIndex];
             AwareDayInfo = new CalenderAwareDayInfo(CurrentDate, _timetable.GetExactDayInfo(_dates[curIndex]));
             (sender.Items[curIndex] as PivotItem).DataContext = AwareDayInfo;
+            LoadAppointmentsAsync();
+        }
+
+        private async void LoadAppointmentsAsync()
+        {
+            await CalendarHelper.LoadCalendar();
+            foreach (CalenderAwareInfoStub stub in AwareDayInfo.RegularClassesInfo)
+                await CalendarHelper.AssignAppointmentIfAvailable(stub);
         }
 
         public void GenerateView(string parameter)
@@ -119,15 +153,44 @@ namespace VITacademics.UIControls
 
         private void JumpToDate(DateTimeOffset requestedDate)
         {
-            int index = (rootPivot.SelectedIndex + 1)%5;
+            int index = (rootPivot.SelectedIndex + 1) % 5;
             _dates[index] = requestedDate;
             rootPivot.SelectedIndex = index;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void DateButton_Click(object sender, RoutedEventArgs e)
         {
-            datePickerFlyout.Date = CurrentDate;
-            datePickerFlyout.ShowAt(dateDisplayBlock);
+            _datePickerFlyout.Date = CurrentDate;
+            _datePickerFlyout.ShowAt(dateDisplayBlock);
+        }
+
+        private void ItemRootGrid_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            CalenderAwareInfoStub stub = (sender as FrameworkElement).DataContext as CalenderAwareInfoStub;
+            if(stub.AppointmentInfo == null)
+            {
+                addFlyout.ShowAt(sender as FrameworkElement);
+            }
+            else
+            {
+                modifyFlyout.ShowAt(sender as FrameworkElement);
+            }
+            _currentStub = stub;
+        }
+
+        private async void WriteEventMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            await eventMessageFlyout.ShowAtAsync(rootPivot);
+            if (_currentStub != null)
+                await CalendarHelper.WriteAppointment(_currentStub, eventMessageFlyout.SelectedItem as string);
+            _currentStub = null;
+        }
+
+        private async void DeleteEventMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentStub != null)
+                await CalendarHelper.RemoveAppointment(_currentStub);
+            _currentStub = null;
         }
 
     }

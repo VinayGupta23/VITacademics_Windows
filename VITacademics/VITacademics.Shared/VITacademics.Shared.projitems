@@ -15,7 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\CalenderAwareDayInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewDependencies.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\Components.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\PageManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\StorageHelper.cs" />

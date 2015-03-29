@@ -17,10 +17,21 @@ namespace VITacademics.Helpers
         private readonly DateTimeOffset _contextDate;
         private readonly ClassHours _sessionHours;
         private readonly AttendanceStub _attendanceInfo;
+        private Tuple<string, string> _appointmentInfo;
 
         public DateTimeOffset ContextDate { get { return _contextDate; } }
         public ClassHours SessionHours { get { return _sessionHours; } }
         public AttendanceStub AttendanceInfo { get { return _attendanceInfo; } }
+        public Tuple<string, string> AppointmentInfo
+        {
+            get { return _appointmentInfo; }
+            internal set
+            {
+                _appointmentInfo = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("AppointmentInfo"));
+            }
+        }
 
         public CalenderAwareInfoStub(DateTimeOffset contextDate, KeyValuePair<ClassHours, AttendanceStub> infoPair)
         {

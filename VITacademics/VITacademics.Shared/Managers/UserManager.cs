@@ -179,7 +179,11 @@ namespace VITacademics.Managers
                 catch
                 {
                     // Corrupt data
+#if WINDOWS_PHONE_APP
+                    DeleteSavedUserAsync();
+#else
                     DeleteSavedUser();
+#endif
                 }
             }
             else
@@ -255,6 +259,27 @@ namespace VITacademics.Managers
             });
         }
 
+       
+#if WINDOWS_PHONE_APP
+        /// <summary>
+        /// Clears any saved credentials in the Locker and sets the current user to null. This call also deletes the app calendar.
+        /// </summary>
+        public static async Task<StatusCode> DeleteSavedUserAsync()
+        {
+            return await MonitoredTask(async () =>
+            {
+                CurrentUser = null;
+                await VITacademics.Helpers.CalendarHelper.DeleteCalendar();
+                try
+                {
+                    PasswordCredential credential = GetStoredCredential();
+                    new PasswordVault().Remove(credential);
+                }
+                catch { }
+                return StatusCode.Success;
+            });
+        }
+#else
         /// <summary>
         /// Clears any saved credentials in the Locker and sets the current user to null.
         /// </summary>
@@ -274,6 +299,7 @@ namespace VITacademics.Managers
             IsBusy = false;
             return StatusCode.Success;
         }
+#endif
 
         /// <summary>
         /// Refreshes and assigns the user details by requesting fresh data from the server. On success, the data is also cached before the function returns.

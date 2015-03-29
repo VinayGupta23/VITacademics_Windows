@@ -20,6 +20,28 @@
                     <helpers:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"></helpers:BoolToVisibilityConverter>
                     <helpers:NullableDateToStringConverter x:Key="dateConverter"></helpers:NullableDateToStringConverter>
                     <helpers:DateToTimeStringConverter x:Key="dateToTimeConverter"></helpers:DateToTimeStringConverter>
+
+                    <MenuFlyout x:Name="addFlyout" Placement="Bottom">
+                        <MenuFlyout.MenuFlyoutPresenterStyle>
+                            <Style TargetType="MenuFlyoutPresenter">
+                                <Setter Property="RequestedTheme" Value="Light"></Setter>
+                            </Style>
+                        </MenuFlyout.MenuFlyoutPresenterStyle>
+                        <MenuFlyoutItem Text="add event" Click="WriteEventMenuItem_Click"></MenuFlyoutItem>
+                    </MenuFlyout>
+
+                    <MenuFlyout x:Name="modifyFlyout" Placement="Bottom">
+                        <MenuFlyout.MenuFlyoutPresenterStyle>
+                            <Style TargetType="MenuFlyoutPresenter">
+                                <Setter Property="RequestedTheme" Value="Light"></Setter>
+                            </Style>
+                        </MenuFlyout.MenuFlyoutPresenterStyle>
+                        <MenuFlyoutItem Text="delete event" Click="DeleteEventMenuItem_Click"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="edit event" Click="WriteEventMenuItem_Click"></MenuFlyoutItem>
+                    </MenuFlyout>
+                    
+                    <ListPickerFlyout x:Name="eventMessageFlyout" Placement="Full"
+                                      ItemsSource="{Binding EventMessages}"></ListPickerFlyout>
                     
                     <Style TargetType="ListView">
                         <Setter Property="ItemContainerStyle">
@@ -32,11 +54,12 @@
                         </Setter>
                     </Style>
                     
+                    <!-- Pending -->
                     <DataTemplate x:Key="classNowDataTemplate">
                     </DataTemplate>
                     
                     <DataTemplate x:Key="classTodayDataTemplate">
-                        <Grid Margin="0,0,0,17">
+                        <Grid Margin="0,0,0,17" IsHoldingEnabled="True" Holding="ItemRootGrid_Holding">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -47,7 +70,7 @@
                             <Border Grid.Column="0" Width="80" Height="80" Margin="0,0,10,0"
                                     Background="WhiteSmoke" BorderThickness="0,0,0,13"
                                     BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
-                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <StackPanel IsHoldingEnabled="True" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <TextBlock Grid.Row="0" Text="{Binding SessionHours.Parent.Venue}"
                                                Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
                                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
@@ -56,25 +79,26 @@
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
-                            <StackPanel Grid.Column="1">
+                            <StackPanel Grid.Column="1" IsHoldingEnabled="True">
                                 <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                                
-                                <Grid Height="25">
+
+                                <Grid Height="25" IsHoldingEnabled="True">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition></ColumnDefinition>
                                         <ColumnDefinition></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemContentStyle}"
-                                               Foreground="{ThemeResource PhoneForegroundBrush}"></TextBlock>
+                                               Foreground="{ThemeResource PhoneForegroundBrush}" VerticalAlignment="Center"></TextBlock>
                                     <local:GoMissAttendanceInfo Grid.Column="1" HorizontalAlignment="Right" 
                                         DataContext="{Binding SessionHours.Parent.Attendance}"></local:GoMissAttendanceInfo>
                                 </Grid>
-                                </StackPanel>
+                                <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}" Style="{StaticResource LabelTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
+                            </StackPanel>
                         </Grid>
                     </DataTemplate>
                     
                     <DataTemplate x:Key="classGeneralDataTemplate">
-                        <Grid Margin="0,0,0,17">
+                        <Grid Margin="0,0,0,17" IsHoldingEnabled="True" Holding="ItemRootGrid_Holding">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -82,10 +106,11 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"></RowDefinition>
                             </Grid.RowDefinitions>
+                            
                             <Border Grid.Column="0" Width="80" Height="80" Margin="0,0,10,0"
-                                    Background="WhiteSmoke" BorderThickness="0,0,0,13"
+                                    Background="WhiteSmoke" BorderThickness="0,0,0,13" IsHoldingEnabled="True"
                                     BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
-                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                <StackPanel IsHoldingEnabled="True" HorizontalAlignment="Center" VerticalAlignment="Center"
                                             DataContext="{Binding SessionHours.Parent}">
                                     <TextBlock Text="{Binding CourseCode}" Style="{StaticResource LabelTextBlockStyle}"
                                                HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
@@ -93,9 +118,10 @@
                                                HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
                                 </StackPanel>
                             </Border>
-                            <StackPanel Grid.Column="1">
+                            <StackPanel IsHoldingEnabled="True" Grid.Column="1">
                                 <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
                                 <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemContentStyle}" Foreground="{ThemeResource PhoneForegroundBrush}"></TextBlock>
+                                <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}" Style="{StaticResource LabelTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
                             </StackPanel>
                         </Grid>
                         
@@ -160,7 +186,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Pivot x:Name="rootPivot" Grid.Row="1" Margin="0,-15,0,0"
+        <Pivot x:Name="rootPivot" Grid.Row="1" Margin="0,-17,0,0"
                Style="{StaticResource ContentPivotStyle}">
             <Pivot.TitleTemplate>
                 <DataTemplate>
@@ -171,7 +197,7 @@
 
         <Button Content="{Binding CurrentDate, Converter={StaticResource dateConverter}}" Background="WhiteSmoke"
                 Foreground="{ThemeResource PhoneAccentBrush}" BorderBrush="Transparent" BorderThickness="0"
-                x:Name="dateDisplayBlock" Click="Button_Click" Margin="7,0,0,0"></Button>
+                x:Name="dateDisplayBlock" Click="DateButton_Click" Margin="7,-2,0,0"></Button>
     </Grid>
     
 </UserControl>

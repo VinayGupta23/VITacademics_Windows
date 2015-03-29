@@ -28,5 +28,6 @@
   </Applications>
   <Capabilities>
     <Capability Name="internetClientServer" />
+    <m3:Capability Name="appointments" />
   </Capabilities>
 </Package>

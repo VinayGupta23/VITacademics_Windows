@@ -83,6 +83,8 @@
     <Compile Include="AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CalendarHelper.cs" />
+    <Compile Include="Helpers\CalenderAwareDayInfo.cs" />
     <Compile Include="Helpers\ControlManager.cs" />
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -115,7 +117,6 @@
     <Compile Include="UIControls\UserOverviewControl.xaml.cs">
       <DependentUpon>UserOverviewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\ViewDependencies.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
