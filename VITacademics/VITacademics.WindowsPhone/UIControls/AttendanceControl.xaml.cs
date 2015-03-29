@@ -153,22 +153,22 @@ namespace VITacademics.UIControls
 
         private void AttendMinusButton_Click(object sender, RoutedEventArgs e)
         {
-            WillAttendCount--;
+            WillAttendCount -= (short)_attendance.SingleClassLength;
         }
 
         private void AttendPlusButton_Click(object sender, RoutedEventArgs e)
         {
-            WillAttendCount++;
+            WillAttendCount += (short)_attendance.SingleClassLength;
         }
 
         private void MissMinusButton_Click(object sender, RoutedEventArgs e)
         {
-            WillMissCount--;
+            WillMissCount -= (short)_attendance.SingleClassLength;
         }
 
         private void MissPlusButton_Click(object sender, RoutedEventArgs e)
         {
-            WillMissCount++;
+            WillMissCount += (short)_attendance.SingleClassLength;
         }
 
         private void TargetBox_LostFocus(object sender, RoutedEventArgs e)
