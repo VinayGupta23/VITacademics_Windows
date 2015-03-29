@@ -14,12 +14,15 @@ namespace Academics.ContentService
 
         /* Note:
          * 
-         * All times and dates are converted to IST when generating the data,
-         * since it is only then relevant, due to following reasons:
+         * I. All times and dates are converted to IST when generating the data,
+         *    since it is only then relevant, due to following reasons:
          * 1. Usage of the app from different locales must not display changed (different) class hours.
          *    On user request, timings can be changed, but it is the front end's responsibility.
          *    
-         * However (on the contrary), refresh date must be retained in its universal time format for consistency across regions in which the client may travel. 
+         *    However (on the contrary), refresh date must be retained in its universal time format for consistency across regions in which the client may travel. 
+         *
+         * II. Any course that is not supported is skipped from the list as of the current parsing.
+         * 
          */
 
         /// <summary>
@@ -103,6 +106,7 @@ namespace Academics.ContentService
                             course = new PBLCourse();
                             break;
                         case 5:
+                        case 6:
                             course = new PBCCourse();
                             break;
                         default:
@@ -206,6 +210,7 @@ namespace Academics.ContentService
             course.CourseCode = courseObject.GetNamedString("course_code");
             course.CourseMode = courseObject.GetNamedString("course_mode");
             course.CourseOption = courseObject.GetNamedString("course_option");
+            course.SubjectType = courseObject.GetNamedString("subject_type");
             course.Faculty = courseObject.GetNamedString("faculty");
             course.Title = courseObject.GetNamedString("course_title");
         }
