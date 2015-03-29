@@ -13,13 +13,15 @@ namespace Academics.DataModel
         public ushort AttendedClasses { get; private set; }
         public double Percentage { get; private set; }
         public ReadOnlyDictionary<DateTimeOffset, AttendanceStub> Details { get; private set; }
+        public int SingleClassLength { get; private set; }
 
-        public Attendance(LtpCourse course, ushort totalClasses, ushort attendedClasses, double percentage)
+        public Attendance(LtpCourse course, ushort totalClasses, ushort attendedClasses, double percentage, int singleClassLength)
             : base(course)
         {
             TotalClasses = totalClasses;
             AttendedClasses = attendedClasses;
             Percentage = percentage;
+            SingleClassLength = singleClassLength;
 
             _details = new SortedDictionary<DateTimeOffset, AttendanceStub>();
             Details = new ReadOnlyDictionary<DateTimeOffset, AttendanceStub>(_details);
