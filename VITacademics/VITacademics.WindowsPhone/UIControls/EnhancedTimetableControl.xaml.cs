@@ -181,9 +181,10 @@ namespace VITacademics.UIControls
         private async void WriteEventMenuItem_Click(object sender, RoutedEventArgs e)
         {
             await eventMessageFlyout.ShowAtAsync(rootPivot);
-            if (_currentStub != null)
+            if (_currentStub != null && eventMessageFlyout.SelectedItem != null)
                 await CalendarHelper.WriteAppointment(_currentStub, eventMessageFlyout.SelectedItem as string);
             _currentStub = null;
+            eventMessageFlyout.SelectedItem = null;
         }
 
         private async void DeleteEventMenuItem_Click(object sender, RoutedEventArgs e)

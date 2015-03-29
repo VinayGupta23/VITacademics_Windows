@@ -187,12 +187,13 @@ namespace VITacademics
             UserManager.PropertyChanged += UserManager_PropertyChanged;
             _menu.ActionRequested += ProxiedControl_ActionRequested;
 
-            if (freshData == false && AppSettings.AutoRefresh == true)
-                RefreshButton_Click(null, null);
-
             loadingScreenPresenter.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             _isCached = true;
             IsIdle = !UserManager.IsBusy;
+
+            if (freshData == false && AppSettings.AutoRefresh == true)
+                RefreshButton_Click(null, null);
+
         }
 
         #endregion

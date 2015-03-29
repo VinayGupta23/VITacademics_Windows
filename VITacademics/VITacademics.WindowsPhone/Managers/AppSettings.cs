@@ -36,7 +36,6 @@ namespace VITacademics.Managers
                 _settingsContainer.Values[AUTO_REFRESH_KEY] = value;
             }
         }
-
         public static ControlTypeCodes DefaultControlType
         {
             get
@@ -51,6 +50,11 @@ namespace VITacademics.Managers
             {
                 _settingsContainer.Values[DEFAULT_CONTROL_KEY] = (int)value;
             }
+        }
+
+        public static void DeleteAllSettings()
+        {
+            _settingsContainer.Values.Clear();
         }
 
     }

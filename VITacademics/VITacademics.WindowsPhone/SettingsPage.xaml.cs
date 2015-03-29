@@ -84,6 +84,12 @@ namespace VITacademics
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
+            if(UserManager.IsBusy == true)
+            {
+                await new MessageDialog("Please wait while your last requested task completes.", "Busy").ShowAsync();
+                return;
+            }
+            
             MessageDialog msgDialog = new MessageDialog("This will log you out and delete all calendar appointments. Are you sure you want to continue?", "Logout?");
             msgDialog.Commands.Add(new UICommand("Logout", LogOutUser));
             msgDialog.Commands.Add(new UICommand("Cancel", LogOutUser));
