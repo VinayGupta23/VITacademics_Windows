@@ -16,73 +16,144 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
                 <ResourceDictionary>
+
+                    <helpers:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"></helpers:BoolToVisibilityConverter>
+                    <helpers:NullableDateToStringConverter x:Key="dateConverter"></helpers:NullableDateToStringConverter>
                     
-                    <helpers:EnumerableToVisibilityConverter x:Key="EnumerableToVisibilityConverter"></helpers:EnumerableToVisibilityConverter>
-                    
-                    <Style TargetType="TextBlock" x:Key="ExtraClassesHeaderBlock" BasedOn="{StaticResource TitleTextBlockStyle}">
-                        <Setter Property="Text" Value="EXTRA CLASSES"></Setter>
-                    </Style>
-                    
-                    <Style TargetType="ListView" x:Key="ExtraClassListViewStyle">
-                        <Setter Property="IsItemClickEnabled" Value="True"></Setter>
-                        <Setter Property="ItemTemplate">
+                    <Style TargetType="ListView">
+                        <Setter Property="ItemContainerStyle">
                             <Setter.Value>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Key.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                                </DataTemplate>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment"
+                                            Value="Stretch"></Setter>
+                                </Style>
                             </Setter.Value>
                         </Setter>
                     </Style>
                     
-                    <DataTemplate x:Key="EmptyDayDataTemplate">
-                        <StackPanel>
-                            <TextBlock x:Name="textBlock" Text="You have no classes today." Style="{ThemeResource GroupHeaderTextBlockStyle}"></TextBlock>
-                            <TextBlock Margin="0,13,0,0" Style="{StaticResource ExtraClassesHeaderBlock}"
-                                       Visibility="{Binding ExtraClassDetails, Converter={StaticResource EnumerableToVisibilityConverter}}"></TextBlock>
-                            <ListView Style="{StaticResource ExtraClassListViewStyle}"
-                                      ItemsSource="{Binding ExtraClassDetails}"></ListView>
-                        </StackPanel>
+                    <DataTemplate x:Key="classNowDataTemplate">
+                        <Grid Margin="0,0,0,15" Background="WhiteSmoke" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Rectangle Fill="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}"
+                                       Width="15" Height="80" Grid.RowSpan="3" Margin="0,0,10,0"></Rectangle>
+
+                            <TextBlock Grid.Column="1" Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding SessionHours}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+
+                        </Grid>
                     </DataTemplate>
                     
-                    <DataTemplate x:Key="TodayDataTemplate">
-                        <StackPanel>
-                            <ListView ItemsSource="{Binding RegularClassDetails}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,0,0,10">
-                                            <TextBlock Text="{Binding Key.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <TextBlock Style="{StaticResource ExtraClassesHeaderBlock}"
-                                       Visibility="{Binding ExtraClassDetails, Converter={StaticResource EnumerableToVisibilityConverter}}"></TextBlock>
-                            <ListView Style="{StaticResource ExtraClassListViewStyle}"
-                                      ItemsSource="{Binding ExtraClassDetails}"></ListView>
-                        </StackPanel>
+                    <DataTemplate x:Key="classTodayDataTemplate">
+                        <Grid Margin="0,0,0,17">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Column="0" Width="80" Height="80" Margin="0,0,10,0"
+                                    Background="WhiteSmoke" BorderThickness="0,0,0,13"
+                                    BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            DataContext="{Binding SessionHours.Parent}">
+                                    <TextBlock Text="{Binding CourseCode}" Style="{StaticResource LabelTextBlockStyle}"
+                                               HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
+                                    <TextBlock Text="{Binding Venue}" Style="{StaticResource LabelTextBlockStyle}"
+                                               HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemContentStyle}" Foreground="Black"></TextBlock>
+                            </StackPanel>
+                        </Grid>
                     </DataTemplate>
                     
-                    <DataTemplate x:Key="RegularDayDataTemplate">
-                        <StackPanel>
-                            <ListView ItemsSource="{Binding RegularClassDetails}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Key}"></TextBlock>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <TextBlock Style="{StaticResource ExtraClassesHeaderBlock}"
-                                       Visibility="{Binding ExtraClassDetails, Converter={StaticResource EnumerableToVisibilityConverter}}"></TextBlock>
-                            <ListView Style="{StaticResource ExtraClassListViewStyle}"
-                                      ItemsSource="{Binding ExtraClassDetails}"></ListView>
-                        </StackPanel>
+                    <DataTemplate x:Key="classGeneralDataTemplate">
+                        <Grid Margin="0,0,0,17">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Column="0" Width="80" Height="80" Margin="0,0,10,0"
+                                    Background="WhiteSmoke"
+                                    BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
+                                <local:GoMissAttendanceInfo DataContext="{Binding SessionHours.Parent.Attendance}"></local:GoMissAttendanceInfo>
+                            </Border>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemContentStyle}" Foreground="Black"></TextBlock>
+                            </StackPanel>
+                        </Grid>
                     </DataTemplate>
+
+                    <helpers:ClassInfoTemplateSelector x:Key="classInfoTemplateSelector"
+                                                       ClassGeneralTemplate="{StaticResource classGeneralDataTemplate}"
+                                                       ClassNowTemplate="{StaticResource classNowDataTemplate}"
+                                                       ClassTodayTemplate="{StaticResource classGeneralDataTemplate}"></helpers:ClassInfoTemplateSelector>
+                    
+                    <Style TargetType="PivotItem">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <ScrollViewer>
+                                        <StackPanel>
+                                            <TextBlock Text="You have no classes today." Style="{ThemeResource GroupHeaderTextBlockStyle}"
+                                                   Visibility="{Binding IsEmptyDay, Converter={StaticResource boolToVisibilityConverter}}"></TextBlock>
+
+                                            <ListView ItemsSource="{Binding RegularClassesInfo}"
+                                                  ItemTemplateSelector="{StaticResource classInfoTemplateSelector}"></ListView>
+
+                                            <TextBlock Text="EXTRA CLASSES" Style="{ThemeResource TitleTextBlockStyle}"
+                                                   Visibility="{Binding HadExtraClasses, Converter={StaticResource boolToVisibilityConverter}}"></TextBlock>
+
+                                            <ListView ItemsSource="{Binding ExtraClassesInfo}">
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate></DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
                     
                 </ResourceDictionary>        
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Pivot x:Name="rootPivot" Style="{StaticResource ContentPivotStyle}"></Pivot>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Pivot x:Name="rootPivot" Grid.Row="1" Margin="0,-15,0,0"
+               Style="{StaticResource ContentPivotStyle}">
+            <Pivot.TitleTemplate>
+                <DataTemplate>
+                    <TextBlock Visibility="Collapsed"></TextBlock>
+                </DataTemplate>
+            </Pivot.TitleTemplate>
+        </Pivot>
+
+        <Button Content="{Binding CurrentDate, Converter={StaticResource dateConverter}}" Background="WhiteSmoke"
+                Foreground="{ThemeResource PhoneAccentBrush}" BorderBrush="Transparent" BorderThickness="0"
+                x:Name="dateDisplayBlock" Click="Button_Click" Margin="7,0,0,0"></Button>
+    </Grid>
     
 </UserControl>

@@ -106,6 +106,9 @@
     <Compile Include="UIControls\EnhancedTimetableControl.xaml.cs">
       <DependentUpon>EnhancedTimetableControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIControls\GoMissAttendanceInfo.xaml.cs">
+      <DependentUpon>GoMissAttendanceInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UIControls\MenuControl.xaml.cs">
       <DependentUpon>MenuControl.xaml</DependentUpon>
     </Compile>
@@ -168,6 +171,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UIControls\EnhancedTimetableControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIControls\GoMissAttendanceInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
