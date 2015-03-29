@@ -69,9 +69,10 @@ namespace VITacademics.UIControls
             EventMessages.Add("Quiz II");
             EventMessages.Add("Quiz III");
             EventMessages.Add("Assignment deadline");
-            EventMessages.Add("Class test");
             EventMessages.Add("Record submission");
             EventMessages.Add("LAB Mid-Term");
+            EventMessages.Add("Class test");
+            EventMessages.Add("Class cancelled");
         }
 
 

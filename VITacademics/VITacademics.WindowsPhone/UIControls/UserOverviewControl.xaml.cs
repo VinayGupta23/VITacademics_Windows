@@ -14,18 +14,18 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace VITacademics.UIControls
 {
     public sealed partial class UserOverviewControl : UserControl, IProxiedControl
     {
+
+        public event EventHandler<RequestEventArgs> ActionRequested;
+
         public UserOverviewControl()
         {
             this.InitializeComponent();
         }
-
-        public event EventHandler<RequestEventArgs> ActionRequested;
 
         public void GenerateView(string parameter)
         {
@@ -39,7 +39,6 @@ namespace VITacademics.UIControls
 
         public void LoadState(Dictionary<string, object> lastState)
         {
-
         }
     }
 }

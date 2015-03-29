@@ -55,15 +55,14 @@ namespace VITacademics.Helpers
                 appt.StartTime = infoStub.ContextDate.Date.Add(infoStub.SessionHours.StartHours.TimeOfDay);
                 appt.Duration = infoStub.SessionHours.EndHours - infoStub.SessionHours.StartHours;
                 appt.Reminder = TimeSpan.FromMinutes(15);
-                appt.Subject = string.Format("{0} - {1}", infoStub.SessionHours.Parent.CourseCode, message);
                 appt.Location = infoStub.SessionHours.Parent.Venue;
             }
             else
             {
                 appt = await _calendar.GetAppointmentAsync(infoStub.AppointmentInfo.Item1);
-                appt.Subject = message;
             }
 
+            appt.Subject = string.Format("{0} - {1}", infoStub.SessionHours.Parent.CourseCode, message);
             await _calendar.SaveAppointmentAsync(appt);
             infoStub.AppointmentInfo = new Tuple<string, string>(appt.LocalId, appt.Subject);
         }

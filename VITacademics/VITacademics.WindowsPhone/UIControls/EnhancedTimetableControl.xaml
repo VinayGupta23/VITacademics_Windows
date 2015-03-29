@@ -19,6 +19,7 @@
 
                     <helpers:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"></helpers:BoolToVisibilityConverter>
                     <helpers:NullableDateToStringConverter x:Key="dateConverter"></helpers:NullableDateToStringConverter>
+                    <helpers:DateToTimeStringConverter x:Key="timeConverter"></helpers:DateToTimeStringConverter>
                     
                     <MenuFlyout x:Name="addFlyout" Placement="Bottom">
                         <MenuFlyout.MenuFlyoutPresenterStyle>
@@ -51,7 +52,6 @@
                                 </Style>
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="IsHoldingEnabled" Value="True"></Setter>
                         <Setter Property="IsItemClickEnabled" Value="True"></Setter>
                     </Style>
 
@@ -60,7 +60,7 @@
                     </DataTemplate>
                     
                     <DataTemplate x:Key="classTodayDataTemplate">
-                        <Grid Margin="0,0,0,17" IsHoldingEnabled="True" Holding="ItemRootGrid_Holding">
+                        <Grid Margin="0,0,0,17" Holding="ItemRootGrid_Holding" IsHoldingEnabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -69,37 +69,28 @@
                                 <RowDefinition Height="Auto"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Border Grid.Column="0" Width="80" Height="80" Margin="0,0,10,0"
-                                    Background="WhiteSmoke" BorderThickness="0,0,0,13"
+                                    Background="WhiteSmoke" BorderThickness="0,0,0,3"
                                     BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
-                                <StackPanel IsHoldingEnabled="True" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Grid.Row="0" Text="{Binding SessionHours.Parent.Venue}"
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Grid.Row="0" Text="{Binding SessionHours.Parent.Venue}" Foreground="DimGray"
                                                Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
-                                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <TextBlock Text="{Binding SessionHours.Parent.Attendance.Percentage}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                        <TextBlock Margin="2,0,0,0" Text="%" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding SessionHours.StartHours, Converter={StaticResource timeConverter}}"
+                                               Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
+                                    <TextBlock Text="{Binding SessionHours.EndHours, Converter={StaticResource timeConverter}}"
+                                               Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
                                 </StackPanel>
                             </Border>
-                            <StackPanel Grid.Column="1" IsHoldingEnabled="True">
+                            <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-
-                                <Grid Height="25">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemContentStyle}"
-                                               Foreground="{ThemeResource PhoneForegroundBrush}" VerticalAlignment="Center"></TextBlock>
-                                    <local:GoMissAttendanceInfo Grid.Column="1" HorizontalAlignment="Right" 
-                                        DataContext="{Binding SessionHours.Parent.Attendance}"></local:GoMissAttendanceInfo>
-                                </Grid>
+                                <local:GoMissAttendanceInfo Height="25" Grid.Column="1" Margin="-8,0,0,0"
+                                                            DataContext="{Binding SessionHours.Parent.Attendance}"></local:GoMissAttendanceInfo>
                                 <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}" Style="{StaticResource LabelTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
                             </StackPanel>
                         </Grid>
                     </DataTemplate>
                     
                     <DataTemplate x:Key="classGeneralDataTemplate">
-                        <Grid Margin="0,0,0,17" IsHoldingEnabled="True" Holding="ItemRootGrid_Holding">
+                        <Grid Margin="0,0,0,17" Holding="ItemRootGrid_Holding" IsHoldingEnabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -111,7 +102,7 @@
                             <Border Grid.Column="0" Width="80" Height="80" Margin="0,0,10,0"
                                     Background="WhiteSmoke" BorderThickness="0,0,0,13"
                                     BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
-                                <StackPanel IsHoldingEnabled="True" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
                                             DataContext="{Binding SessionHours.Parent}">
                                     <TextBlock Text="{Binding CourseCode}" Style="{StaticResource LabelTextBlockStyle}"
                                                HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
@@ -119,9 +110,9 @@
                                                HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
                                 </StackPanel>
                             </Border>
-                            <StackPanel IsHoldingEnabled="True" Grid.Column="1">
+                            <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                                <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemContentStyle}" Foreground="{ThemeResource PhoneForegroundBrush}"></TextBlock>
+                                <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemSubHeaderStyle}" Foreground="{ThemeResource PhoneMidBrush}"></TextBlock>
                                 <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}" Style="{StaticResource LabelTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
                             </StackPanel>
                         </Grid>
@@ -143,7 +134,7 @@
                                                    Visibility="{Binding IsEmptyDay, Converter={StaticResource boolToVisibilityConverter}}"></TextBlock>
 
                                             <ListView ItemsSource="{Binding RegularClassesInfo}" ItemClick="List_ItemClick"
-                                                  ItemTemplateSelector="{StaticResource classInfoTemplateSelector}"></ListView>
+                                                      ItemTemplateSelector="{StaticResource classInfoTemplateSelector}"></ListView>
 
                                             <TextBlock Text="EXTRA CLASSES" Margin="0,20,0,0" Style="{ThemeResource TitleTextBlockStyle}"
                                                        Visibility="{Binding HadExtraClasses, Converter={StaticResource boolToVisibilityConverter}}"></TextBlock>
