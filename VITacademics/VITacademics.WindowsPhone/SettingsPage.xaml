@@ -6,10 +6,48 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource AlternateDarkBrush}">
 
-    <Grid>
-        <Button HorizontalAlignment="Center" VerticalAlignment="Center"
-                Content="Log Out" Click="Button_Click"></Button>
-    </Grid>
+    <Page.Resources>
+        <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
+    </Page.Resources>
+    
+    <StackPanel Margin="19,0,15,0">
+        <StackPanel.Resources>
+            <DataTemplate x:Key="LabelHeaderTemplate">
+                <TextBlock Text="{Binding}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+            </DataTemplate>
+        </StackPanel.Resources>
+        
+        <TextBlock Text="VITACADEMICS" Margin="0,10,0,0"
+                   Style="{ThemeResource TitleTextBlockStyle}"></TextBlock>
+        <TextBlock Text="settings" Style="{ThemeResource HeaderTextBlockStyle}"></TextBlock>
+        
+        <TextBlock Margin="0,40,0,0" Text="Logged in as:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+        <TextBlock Text="{Binding RegNo, Mode=OneTime}" Style="{ThemeResource SubheaderTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
+    
+        <ComboBox Margin="0,20,0,0" ItemsSource="{Binding HomePageOptions}" DisplayMemberPath="Key"
+                  Header="Home Page" HeaderTemplate="{StaticResource LabelHeaderTemplate}"
+                  SelectionChanged="PageComboBox_SelectionChanged"
+                  x:Name="comboBox" SelectedItem="{Binding CurrentDefaultView, Mode=OneTime}"></ComboBox>
+
+        <ToggleSwitch Grid.Row="1" Margin="0,20,0,0" Toggled="RefreshOption_Toggled"
+                      x:Name="toggleSwitch" Grid.Column="1" OnContent="Yes" OffContent="No"
+                      Header="Auto refresh on startup" HeaderTemplate="{StaticResource LabelHeaderTemplate}"
+                      VerticalAlignment="Bottom" IsOn="{Binding AllowRefresh, Mode=OneTime}"></ToggleSwitch>
+
+        <Grid Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="Reset App" VerticalAlignment="Center" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                <TextBlock Margin="0,0,20,0" Grid.Row="1" Text="Log out and reset all data" Style="{ThemeResource BodyTextBlockStyle}"></TextBlock>
+            </StackPanel>
+            <Button Grid.Column="1" Content="LogOut" Click="LogoutButton_Click"
+                    VerticalAlignment="Top"></Button>
+        </Grid>
+        
+    </StackPanel>
 </Page>

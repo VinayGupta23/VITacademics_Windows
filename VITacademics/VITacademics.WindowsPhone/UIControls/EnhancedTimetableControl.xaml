@@ -19,8 +19,7 @@
 
                     <helpers:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"></helpers:BoolToVisibilityConverter>
                     <helpers:NullableDateToStringConverter x:Key="dateConverter"></helpers:NullableDateToStringConverter>
-                    <helpers:DateToTimeStringConverter x:Key="dateToTimeConverter"></helpers:DateToTimeStringConverter>
-
+                    
                     <MenuFlyout x:Name="addFlyout" Placement="Bottom">
                         <MenuFlyout.MenuFlyoutPresenterStyle>
                             <Style TargetType="MenuFlyoutPresenter">
@@ -42,7 +41,7 @@
                     
                     <ListPickerFlyout x:Name="eventMessageFlyout" Placement="Full"
                                       ItemsSource="{Binding EventMessages}"></ListPickerFlyout>
-                    
+
                     <Style TargetType="ListView">
                         <Setter Property="ItemContainerStyle">
                             <Setter.Value>
@@ -52,8 +51,10 @@
                                 </Style>
                             </Setter.Value>
                         </Setter>
+                        <Setter Property="IsHoldingEnabled" Value="True"></Setter>
+                        <Setter Property="IsItemClickEnabled" Value="True"></Setter>
                     </Style>
-                    
+
                     <!-- Pending -->
                     <DataTemplate x:Key="classNowDataTemplate">
                     </DataTemplate>
@@ -82,7 +83,7 @@
                             <StackPanel Grid.Column="1" IsHoldingEnabled="True">
                                 <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
 
-                                <Grid Height="25" IsHoldingEnabled="True">
+                                <Grid Height="25">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition></ColumnDefinition>
                                         <ColumnDefinition></ColumnDefinition>
@@ -108,7 +109,7 @@
                             </Grid.RowDefinitions>
                             
                             <Border Grid.Column="0" Width="80" Height="80" Margin="0,0,10,0"
-                                    Background="WhiteSmoke" BorderThickness="0,0,0,13" IsHoldingEnabled="True"
+                                    Background="WhiteSmoke" BorderThickness="0,0,0,13"
                                     BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
                                 <StackPanel IsHoldingEnabled="True" HorizontalAlignment="Center" VerticalAlignment="Center"
                                             DataContext="{Binding SessionHours.Parent}">
@@ -141,7 +142,7 @@
                                             <TextBlock Text="You have no classes today." Style="{ThemeResource GroupHeaderTextBlockStyle}"
                                                    Visibility="{Binding IsEmptyDay, Converter={StaticResource boolToVisibilityConverter}}"></TextBlock>
 
-                                            <ListView ItemsSource="{Binding RegularClassesInfo}"
+                                            <ListView ItemsSource="{Binding RegularClassesInfo}" ItemClick="List_ItemClick"
                                                   ItemTemplateSelector="{StaticResource classInfoTemplateSelector}"></ListView>
 
                                             <TextBlock Text="EXTRA CLASSES" Margin="0,20,0,0" Style="{ThemeResource TitleTextBlockStyle}"

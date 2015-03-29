@@ -193,5 +193,12 @@ namespace VITacademics.UIControls
             _currentStub = null;
         }
 
+        private void List_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if(ActionRequested != null)
+                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl),
+                                        (e.ClickedItem as CalenderAwareInfoStub).SessionHours.Parent.ClassNumber.ToString()));
+        }
+
     }
 }

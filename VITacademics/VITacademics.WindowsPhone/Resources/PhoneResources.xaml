@@ -68,6 +68,8 @@
                                                         To="{ThemeResource PhoneForegroundColor}"></ColorAnimation>
                                     </Storyboard>
                                 </VisualState>
+                                <VisualState x:Name="Disabled">
+                                </VisualState>
                                 <VisualState x:Name="Normal">
                                 </VisualState>
                             </VisualStateGroup>

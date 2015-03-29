@@ -174,17 +174,21 @@ namespace VITacademics
             if (status == StatusCode.Success)
             {
                 if (freshData == false && _contentControlManager.CanGoBack)
-                {
                     _contentControlManager.ReturnToLastControl();
-                    SetTitleAndContent();
-                }
+                else
+                    _contentControlManager.NavigateToControl(AppSettings.DefaultControlType, null);
+                SetTitleAndContent();
+                
                 _menu.GenerateView(null);
                 IsContentAvailable = true;
             }
-
+            
             DisplayStatus(status, !freshData);
             UserManager.PropertyChanged += UserManager_PropertyChanged;
             _menu.ActionRequested += ProxiedControl_ActionRequested;
+
+            if (freshData == false && AppSettings.AutoRefresh == true)
+                RefreshButton_Click(null, null);
 
             loadingScreenPresenter.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             _isCached = true;
@@ -211,7 +215,7 @@ namespace VITacademics
         {
             _statusBar.ProgressIndicator.Text = "Refreshing...";
             _statusBar.ProgressIndicator.ProgressValue = null;
-            _statusBar.ProgressIndicator.ShowAsync();
+            await _statusBar.ProgressIndicator.ShowAsync();
 
             StatusCode code = await UserManager.RefreshFromServerAsync();
 

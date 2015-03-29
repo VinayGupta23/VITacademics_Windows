@@ -144,6 +144,16 @@ namespace VITacademics.Helpers
             LoadControl(controlCode, parameter);
         }
 
+        public void NavigateToControl(ControlTypeCodes typeCode, string parameter)
+        {
+            if (_currentControl != null)
+            {
+                SaveCurrentControl();
+            }
+
+            LoadControl((int)typeCode, parameter);
+        }
+
         public void ReturnToLastControl()
         {
             int count = _controlHistory.Count;

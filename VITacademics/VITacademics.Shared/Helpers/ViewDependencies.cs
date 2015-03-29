@@ -36,11 +36,12 @@ namespace VITacademics.Helpers
 
     public sealed class StatusToBackgroundConverter : IValueConverter
     {
+
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             string status = value as string;
             if (status == "Present")
-                return new SolidColorBrush(Colors.LightGreen);
+                return new SolidColorBrush(ColorHelper.FromArgb(255, 140, 220, 132));
             else if (status == "Absent")
                 return new SolidColorBrush(Colors.LightSalmon);
             else

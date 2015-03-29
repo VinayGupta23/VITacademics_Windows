@@ -15,13 +15,13 @@
 
     <Grid x:Name="infoGrid">
         <StackPanel Orientation="Horizontal">
-            <Button Margin="-7,0,0,0" Foreground="Green"
+            <Button Margin="-7,0,0,0" Foreground="Green" IsEnabled="False"
                     Style="{StaticResource UpwardTriangleButton}"></Button>
             <TextBlock Margin="-7,0,0,0" Text="{Binding GoPercentage}" VerticalAlignment="Center"
                        Foreground="Green" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
 
             <Button Margin="-7,0,0,0" Style="{StaticResource DownwardTriangleButton}"
-                    Foreground="Brown"></Button>
+                    Foreground="Brown" IsEnabled="False"></Button>
             <TextBlock Margin="-7,0,0,0" Text="{Binding MissPercentage}" VerticalAlignment="Center"
                        Foreground="Brown" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
         </StackPanel>

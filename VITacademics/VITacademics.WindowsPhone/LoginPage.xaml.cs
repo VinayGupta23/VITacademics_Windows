@@ -45,6 +45,7 @@ namespace VITacademics
             this.InitializeComponent();
 
             datePicker.MaxYear = DateTimeOffset.UtcNow.AddYears(-1);
+            datePicker.MinYear = DateTimeOffset.Now.AddYears(-30);
             SetState(true);
 
             this.DataContext = this;
