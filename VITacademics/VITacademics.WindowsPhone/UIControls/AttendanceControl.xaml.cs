@@ -91,7 +91,7 @@ namespace VITacademics.UIControls
                     if (double.IsInfinity(req) || double.IsNaN(req) || req < 0)
                         return "Sorry, you can't reach your target :/";
                     else
-                        return String.Format("Need to attend at least {0} class{1}.", Math.Floor(req + 1), req == 1 ? "" : "es");
+                        return String.Format("Need to attend at least {0} class hour{1}.", Math.Floor(req + 1), req == 1 ? "" : "s");
                 }
             }
         }

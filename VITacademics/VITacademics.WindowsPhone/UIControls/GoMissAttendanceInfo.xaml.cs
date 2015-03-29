@@ -49,10 +49,12 @@ namespace VITacademics.UIControls
 
             Attendance a = this.DataContext as Attendance;
             Percentage = (int)a.Percentage;
-            GoPercentage = (int)Math.Ceiling((double)(a.AttendedClasses + 1) * 100.00 / (a.TotalClasses + 1));
-            MissPercentage = (int)Math.Ceiling((double)a.AttendedClasses * 100.00 / (a.TotalClasses + 1));
+
+            GoPercentage = (int)Math.Ceiling((double)(a.AttendedClasses + a.SingleClassLength) * 100.00 / (a.TotalClasses + a.SingleClassLength));
+            MissPercentage = (int)Math.Ceiling((double)a.AttendedClasses * 100.00 / (a.TotalClasses + a.SingleClassLength));
 
             infoGrid.DataContext = this;
         }
+
     }
 }

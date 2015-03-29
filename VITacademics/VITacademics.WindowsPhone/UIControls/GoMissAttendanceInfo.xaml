@@ -6,33 +6,25 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="80"
-    d:DesignWidth="80">
+    d:DesignHeight="30"
+    d:DesignWidth="100">
     
     <UserControl.Resources>
         <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid x:Name="infoGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>    
-        
-        <Button Style="{StaticResource UpwardTriangleButton}" Foreground="Green"></Button>
-        <TextBlock Grid.Column="1" Text="{Binding GoPercentage}" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-        
-        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Percentage}"
-                   TextAlignment="Center" VerticalAlignment="Center"
-                   Style="{ThemeResource SingleItemHeaderStyle}"></TextBlock>
-        
-        <Button Grid.Row="2" Style="{StaticResource DownwardTriangleButton}" Foreground="Red"></Button>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding MissPercentage}" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-        
+        <StackPanel Orientation="Horizontal">
+            <Button Margin="-7,0,0,0" Foreground="Green"
+                    Style="{StaticResource UpwardTriangleButton}"></Button>
+            <TextBlock Margin="-7,0,0,0" Text="{Binding GoPercentage}" VerticalAlignment="Center"
+                       Foreground="Green" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+
+            <Button Margin="-7,0,0,0" Style="{StaticResource DownwardTriangleButton}"
+                    Foreground="Brown"></Button>
+            <TextBlock Margin="-7,0,0,0" Text="{Binding MissPercentage}" VerticalAlignment="Center"
+                       Foreground="Brown" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+        </StackPanel>
     </Grid>
+
 </UserControl>
