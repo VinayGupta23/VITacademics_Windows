@@ -25,6 +25,7 @@ namespace Academics.DataModel
         public string Title { get; internal set; }
         public string CourseMode { get; internal set; }
         public string CourseOption { get; internal set; }
+        public string SubjectType { get; internal set; }
         public string Faculty { get; internal set; }
     }
 
