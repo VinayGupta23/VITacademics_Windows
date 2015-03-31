@@ -6,7 +6,96 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:helpers="using:VITacademics.Helpers"
     d:DesignHeight="720"
-    d:DesignWidth="420">
+    d:DesignWidth="420"
+    RequestedTheme="Light">
     
+    <UserControl.Resources>
+        <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
+    </UserControl.Resources>
+    
+    <ScrollViewer>
+        <StackPanel Margin="19,20,19,0">
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock Text="Total Credits&#160;&#160;" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right"
+                           Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                <TextBlock Text="{Binding TotalCredits}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right"
+                           Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+            </StackPanel>
+            
+            <ListView Margin="0,20,0,0" IsItemClickEnabled="True" ItemClick="ListView_ItemClick"
+                      ItemsSource="{Binding CourseList}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="WhiteSmoke" Margin="10,10,10,10">
+                            <Grid Margin="10,3,10,5" VerticalAlignment="Center" HorizontalAlignment="Stretch"> 
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                
+                                <TextBlock Text="{Binding Title}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                                           Style="{StaticResource GroupHeaderTextBlockStyle}"
+                                           Foreground="{ThemeResource PhoneAccentBrush}" MaxLines="1"></TextBlock>
+                                <StackPanel Orientation="Horizontal" Grid.Row="1">
+                                    <TextBlock Text="Internals:&#160;" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                    <TextBlock Text="{Binding InternalMarksScored}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Grid.Row="2">
+                                        <TextBlock Text="Uploaded for:&#160;" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                    <TextBlock Text="{Binding TotalMarksTested}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                </StackPanel>
+
+                                <TextBlock Text="Attendance" Grid.Row="1" HorizontalAlignment="Right" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
+                                    <StackPanel.Resources>
+                                        <helpers:AttendanceToForegroundConverter x:Key="attendanceToForegroundConverter"></helpers:AttendanceToForegroundConverter>
+                                    </StackPanel.Resources>
+                                    <TextBlock Text="{Binding Attendance.Percentage}" Style="{StaticResource TitleTextBlockStyle}"
+                                               Foreground="{Binding Attendance.Percentage, Converter={StaticResource attendanceToForegroundConverter}}"></TextBlock>
+                                    <TextBlock Margin="2,0,0,0" Text="%" Style="{StaticResource TitleTextBlockStyle}"
+                                               Foreground="{Binding Attendance.Percentage, Converter={StaticResource attendanceToForegroundConverter}}"></TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <ListView Margin="0,10,0,0" IsItemClickEnabled="True" ItemClick="ListView_ItemClick"
+                      ItemsSource="{Binding NltpCourseList}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="WhiteSmoke" Margin="10,10,10,10">
+                            <Grid Margin="10,3,10,5" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding Title}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                                           Style="{StaticResource GroupHeaderTextBlockStyle}"
+                                           Foreground="{ThemeResource PhoneAccentBrush}" MaxLines="1"></TextBlock>
+                                <TextBlock Text="{Binding CourseCode}" MaxLines="1" Grid.Row="1"
+                                           Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

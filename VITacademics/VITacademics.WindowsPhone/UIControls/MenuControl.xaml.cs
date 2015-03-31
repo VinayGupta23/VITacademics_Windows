@@ -16,7 +16,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace VITacademics.UIControls
 {
@@ -70,7 +69,7 @@ namespace VITacademics.UIControls
             this.InitializeComponent();
 
             MenuItems = new List<MenuItem>();
-            MenuItems.Add(new MenuItem("overview", "a summary of marks and attendance, today's schedule"));
+            MenuItems.Add(new MenuItem("overview", "a summary of marks and attendance"));
             MenuItems.Add(new MenuItem("timetable", "your regular schedule of classes"));
             MenuItems.Add(new MenuItem("daily buzz", "your daily activity and schedule all in one place"));
 

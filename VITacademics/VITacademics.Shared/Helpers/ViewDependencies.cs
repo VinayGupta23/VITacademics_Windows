@@ -177,4 +177,25 @@ namespace VITacademics.Helpers
                 return ClassGeneralTemplate;
         }
     }
+
+    public class AttendanceToForegroundConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            double val = (double)value;
+
+            if (val > 75)
+                return new SolidColorBrush(Colors.Green);
+            if (val == 75)
+                return new SolidColorBrush(Colors.Brown);
+            else
+                return new SolidColorBrush(Colors.Red);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
