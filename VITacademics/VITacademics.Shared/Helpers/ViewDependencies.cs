@@ -137,6 +137,7 @@ namespace VITacademics.Helpers
         public DataTemplate CBLTemplate { get; set; }
         public DataTemplate PBLTemplate { get; set; }
         public DataTemplate LBCTemplate { get; set; }
+        public DataTemplate RBLTemplate { get; set; }
         public DataTemplate PBCTemplate { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
@@ -150,6 +151,8 @@ namespace VITacademics.Helpers
                 return LBCTemplate;
             else if (contentType == typeof(PBCCourse))
                 return PBCTemplate;
+            else if (contentType == typeof(RBLCourse))
+                return RBLTemplate;
             else
                 return null;
         }

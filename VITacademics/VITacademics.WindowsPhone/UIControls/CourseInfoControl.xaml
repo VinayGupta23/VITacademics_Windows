@@ -132,7 +132,50 @@
                             </StackPanel>
                         </ScrollViewer>
                     </DataTemplate>
-                    
+
+                    <DataTemplate x:Key="CustomMarkStubTemplate">
+                        <Grid Margin="0,0,0,20">
+                            <Grid.Resources>
+                                <helpers:NullableDateToStringConverter x:Key="dateToStringConverter"></helpers:NullableDateToStringConverter>
+                            </Grid.Resources>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{Binding MarksTitle}" Grid.ColumnSpan="2" Margin="0,0,0,7"
+                                                       Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+
+                            <Border Width="60" Height="60" CornerRadius="3" Grid.Row="1" Margin="7,0,0,0"
+                                                    Background="{Binding Status, Converter={StaticResource statusToBackgroundConverter}}">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                            </Border>
+                            <StackPanel Margin="13,0,0,0" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
+                                <StackPanel.Resources>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource SingleItemContentStyle}">
+                                        <Setter Property="Foreground" Value="{ThemeResource PhoneMidBrush}"></Setter>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="max marks&#160;"></TextBlock>
+                                    <TextBlock Text="{Binding MaxMarks}"></TextBlock>
+                                    <TextBlock Text=", weightage:&#160;"></TextBlock>
+                                    <TextBlock Text="{Binding Weightage}"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="conducted on:&#160;"></TextBlock>
+                                    <TextBlock Text="{Binding ConductedDate, Converter={StaticResource dateToStringConverter}, ConverterParameter='not yet'}"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+
+                        </Grid>
+                    </DataTemplate>
+
                     <DataTemplate x:Key="CBLPivotTemplate">
                         <Pivot Style="{StaticResource ContentPivotStyle}">
                             <PivotItem Header="details">
@@ -191,53 +234,26 @@
                                 <local:AttendanceControl></local:AttendanceControl>
                             </PivotItem>
                             <PivotItem Header="marks">
-                                <PivotItem.Resources>
-                                    <DataTemplate x:Key="MarkStubTemplate">
-                                        <Grid Margin="0,0,0,20">
-                                            <Grid.Resources>
-                                                <helpers:NullableDateToStringConverter x:Key="dateToStringConverter"></helpers:NullableDateToStringConverter>
-                                            </Grid.Resources>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition></RowDefinition>
-                                                <RowDefinition></RowDefinition>
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                            </Grid.ColumnDefinitions>
-
-                                            <TextBlock Text="{Binding MarksTitle}" Grid.ColumnSpan="2" Margin="0,0,0,7"
-                                                       Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
-                                            
-                                            <Border Width="60" Height="60" CornerRadius="3" Grid.Row="1" Margin="7,0,0,0"
-                                                    Background="{Binding Status, Converter={StaticResource statusToBackgroundConverter}}">
-                                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                           Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                            </Border>
-                                            <StackPanel Margin="13,0,0,0" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
-                                                <StackPanel.Resources>
-                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource SingleItemContentStyle}">
-                                                        <Setter Property="Foreground" Value="{ThemeResource PhoneMidBrush}"></Setter>
-                                                    </Style>
-                                                </StackPanel.Resources>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="max marks&#160;"></TextBlock>
-                                                    <TextBlock Text="{Binding MaxMarks}"></TextBlock>
-                                                    <TextBlock Text=", weightage:&#160;"></TextBlock>
-                                                    <TextBlock Text="{Binding Weightage}"></TextBlock>
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="conducted on:&#160;"></TextBlock>
-                                                    <TextBlock Text="{Binding ConductedDate, Converter={StaticResource dateToStringConverter}, ConverterParameter='not yet'}"></TextBlock>
-                                                </StackPanel>
-                                            </StackPanel>
-
-                                        </Grid>
-                                    </DataTemplate>
-                                </PivotItem.Resources>
                                 <ScrollViewer>
                                     <ItemsControl ItemsSource="{Binding PblMarks}"
-                                                  ItemTemplate="{StaticResource MarkStubTemplate}"></ItemsControl>
+                                                  ItemTemplate="{StaticResource CustomMarkStubTemplate}"></ItemsControl>
+                                </ScrollViewer>
+                            </PivotItem>
+                        </Pivot>
+                    </DataTemplate>
+                    
+                    <DataTemplate x:Key="RBLPivotTemplate">
+                        <Pivot Style="{StaticResource ContentPivotStyle}">
+                            <PivotItem Header="details">
+                                <ContentPresenter ContentTemplate="{StaticResource LtpCourseTemplate}"></ContentPresenter>
+                            </PivotItem>
+                            <PivotItem Header="attendance" DataContext="{Binding Attendance}">
+                                <local:AttendanceControl></local:AttendanceControl>
+                            </PivotItem>
+                            <PivotItem Header="marks">
+                                <ScrollViewer>
+                                    <ItemsControl ItemsSource="{Binding RblMarks}"
+                                                  ItemTemplate="{StaticResource CustomMarkStubTemplate}"></ItemsControl>
                                 </ScrollViewer>
                             </PivotItem>
                         </Pivot>
@@ -312,8 +328,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <!-- For testing purposes only, delete after completion -->
+    <!-- For testing purposes only, uncomment the following and modify suitably:
     <ContentPresenter ContentTemplate="{StaticResource LtpCourseTemplate}"></ContentPresenter>
-    <!-- End of testing code -->
+    End of testing code -->
     
 </UserControl>

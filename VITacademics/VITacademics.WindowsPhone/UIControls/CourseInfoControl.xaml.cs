@@ -45,8 +45,10 @@ namespace VITacademics.UIControls
                     contentPresenter.ContentTemplate = this.Resources["LBCPivotTemplate"] as DataTemplate;
                 else if (contentType == typeof(PBCCourse))
                     contentPresenter.ContentTemplate = this.Resources["PBCPivotTemplate"] as DataTemplate;
+                else if (contentType == typeof(RBLCourse))
+                    contentPresenter.ContentTemplate = this.Resources["RBLPivotTemplate"] as DataTemplate;
                 else
-                    contentPresenter.ContentTemplate = this.Resources["CBLPivotTemplate"] as DataTemplate;
+                    contentPresenter.ContentTemplate = null;
                 contentPresenter.Content = course;
                 this.Content = contentPresenter;
             }
