@@ -26,67 +26,27 @@ namespace Academics.DataModel
 
     public sealed class PBLCourse : LtpCourse
     {
-        public class PBLMarkInfo : LtpCourseComponent
-        {
-            private readonly string _marksTitle;
-            private readonly int _maxMarks;
-            private readonly int _weightage;
-            private readonly DateTimeOffset? _conductedDate;
-            private readonly double? _marks;
-            private readonly string _status;
+        internal List<CustomMarkInfo> _pblMarks;
 
-            public string MarksTitle
-            {
-                get
-                { return _marksTitle; }
-            }
-            public int MaxMarks
-            {
-                get
-                { return _maxMarks; }
-            }
-            public int Weightage
-            {
-                get
-                { return _weightage; }
-            }
-            public DateTimeOffset? ConductedDate
-            {
-                get
-                { return _conductedDate; }
-            }
-            public double? Marks
-            {
-                get
-                { return _marks; }
-            }
-            public string Status
-            {
-                get
-                { return _status; }
-            }
-
-            public PBLMarkInfo(LtpCourse parent, string marksTitle, int maxMarks, int weightage, DateTimeOffset? conductedDate, double? marks, string status)
-                : base(parent)
-            {
-                _marksTitle = marksTitle;
-                _maxMarks = maxMarks;
-                _weightage = weightage;
-                _conductedDate = conductedDate;
-                _marks = marks;
-                _status = status;
-            }
-
-        }
-
-        internal List<PBLMarkInfo> _pblMarks;
-
-        public ReadOnlyCollection<PBLMarkInfo> PblMarks { get; private set; }
+        public ReadOnlyCollection<CustomMarkInfo> PblMarks { get; private set; }
 
         public PBLCourse()
         {
-            _pblMarks = new List<PBLMarkInfo>();
-            PblMarks = new ReadOnlyCollection<PBLMarkInfo>(_pblMarks);
+            _pblMarks = new List<CustomMarkInfo>();
+            PblMarks = new ReadOnlyCollection<CustomMarkInfo>(_pblMarks);
+        }
+    }
+
+    public sealed class RBLCourse : LtpCourse
+    {
+        internal List<CustomMarkInfo> _rblMarks;
+
+        public ReadOnlyCollection<CustomMarkInfo> RblMarks { get; private set; }
+
+        public RBLCourse()
+        {
+            _rblMarks = new List<CustomMarkInfo>();
+            RblMarks = new ReadOnlyCollection<CustomMarkInfo>(_rblMarks);
         }
     }
 

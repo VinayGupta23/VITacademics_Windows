@@ -97,4 +97,57 @@ namespace Academics.DataModel
         }
     }
 
+    public class CustomMarkInfo : LtpCourseComponent
+    {
+        private readonly string _marksTitle;
+        private readonly int _maxMarks;
+        private readonly int _weightage;
+        private readonly DateTimeOffset? _conductedDate;
+        private readonly double? _marks;
+        private readonly string _status;
+
+        public string MarksTitle
+        {
+            get
+            { return _marksTitle; }
+        }
+        public int MaxMarks
+        {
+            get
+            { return _maxMarks; }
+        }
+        public int Weightage
+        {
+            get
+            { return _weightage; }
+        }
+        public DateTimeOffset? ConductedDate
+        {
+            get
+            { return _conductedDate; }
+        }
+        public double? Marks
+        {
+            get
+            { return _marks; }
+        }
+        public string Status
+        {
+            get
+            { return _status; }
+        }
+
+        public CustomMarkInfo(LtpCourse parent, string marksTitle, int maxMarks, int weightage, DateTimeOffset? conductedDate, double? marks, string status)
+            : base(parent)
+        {
+            _marksTitle = marksTitle;
+            _maxMarks = maxMarks;
+            _weightage = weightage;
+            _conductedDate = conductedDate;
+            _marks = marks;
+            _status = status;
+        }
+
+    }
+
 }
