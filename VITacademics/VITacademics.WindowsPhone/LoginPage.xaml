@@ -10,7 +10,7 @@
     
     <Page.Background>
         <LinearGradientBrush ColorInterpolationMode="ScRgbLinearInterpolation" EndPoint="0,1" StartPoint="-0.2,0.5">
-            <GradientStop Color="#FF1B1E22"/>
+            <GradientStop Color="{Binding Color, Source={StaticResource AlternateDarkBrush}}"/>
             <GradientStop Color="#FF363D3F" Offset="0.7"/>
         </LinearGradientBrush>
     </Page.Background>

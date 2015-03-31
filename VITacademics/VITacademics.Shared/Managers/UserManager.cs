@@ -269,7 +269,7 @@ namespace VITacademics.Managers
             return await MonitoredTask(async () =>
             {
                 CurrentUser = null;
-                await VITacademics.Helpers.CalendarHelper.DeleteCalendar();
+                await VITacademics.Helpers.CalendarHelper.DeleteCalendarAsync();
                 AppSettings.DeleteAllSettings();
                 try
                 {

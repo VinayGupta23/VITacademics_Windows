@@ -15,7 +15,7 @@ namespace VITacademics.Helpers
         private static AppointmentStore _store;
         private static AppointmentCalendar _calendar;
 
-        public static async Task LoadCalendar()
+        public static async Task LoadCalendarAsync()
         {
             if (UserManager.CurrentUser == null)
                 throw new InvalidOperationException("There is no user available.");
@@ -37,13 +37,13 @@ namespace VITacademics.Helpers
             await _calendar.SaveAsync();
         }
 
-        public static async Task DeleteCalendar()
+        public static async Task DeleteCalendarAsync()
         {
             if (_calendar != null)
                 await _calendar.DeleteAsync();
         }
 
-        public static async Task WriteAppointment(CalenderAwareInfoStub infoStub, string message)
+        public static async Task WriteAppointmentAsync(CalenderAwareInfoStub infoStub, string message)
         {
             if (_calendar == null)
                 throw new InvalidOperationException();
@@ -67,7 +67,7 @@ namespace VITacademics.Helpers
             infoStub.AppointmentInfo = new Tuple<string, string>(appt.LocalId, appt.Subject);
         }
 
-        public static async Task RemoveAppointment(CalenderAwareInfoStub infoStub)
+        public static async Task RemoveAppointmentAsync(CalenderAwareInfoStub infoStub)
         {
             if (_calendar == null)
                 throw new InvalidOperationException();
@@ -79,7 +79,7 @@ namespace VITacademics.Helpers
             infoStub.AppointmentInfo = null;
         }
 
-        public static async Task AssignAppointmentIfAvailable(CalenderAwareInfoStub infoStub)
+        public static async Task AssignAppointmentIfAvailableAsync(CalenderAwareInfoStub infoStub)
         {
             if (_calendar == null)
                 throw new InvalidOperationException();

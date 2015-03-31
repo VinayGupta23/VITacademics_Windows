@@ -58,12 +58,7 @@ namespace VITacademics.UIControls
         {
             this.InitializeComponent();
             this.DataContext = this;
-
-            _datePickerFlyout = new DatePickerFlyout();
-            _datePickerFlyout.MinYear = new DateTimeOffset(DateTime.Now).AddYears(-5);
-            _datePickerFlyout.MaxYear = _datePickerFlyout.MinYear.AddYears(10);
-            _datePickerFlyout.DatePicked += DatePickerFlyout_DatePicked;
-
+            
             EventMessages = new List<string>();
             EventMessages.Add("Quiz I");
             EventMessages.Add("Quiz II");
@@ -80,6 +75,7 @@ namespace VITacademics.UIControls
         {
             if (CurrentDate != args.NewDate)
                 JumpToDate(args.NewDate);
+            sender.DatePicked -= DatePickerFlyout_DatePicked;
         }
 
         private void Pivot_PivotItemLoading(Pivot sender, PivotItemEventArgs args)
@@ -113,9 +109,9 @@ namespace VITacademics.UIControls
 
         private async void LoadAppointmentsAsync()
         {
-            await CalendarHelper.LoadCalendar();
+            await CalendarHelper.LoadCalendarAsync();
             foreach (CalenderAwareInfoStub stub in AwareDayInfo.RegularClassesInfo)
-                await CalendarHelper.AssignAppointmentIfAvailable(stub);
+                await CalendarHelper.AssignAppointmentIfAvailableAsync(stub);
         }
 
         public void GenerateView(string parameter)
@@ -124,7 +120,8 @@ namespace VITacademics.UIControls
             {
                 addFlyout.Hide();
                 modifyFlyout.Hide();
-                _datePickerFlyout.Hide();
+                if (_datePickerFlyout != null)
+                    _datePickerFlyout.Hide();
                 eventMessageFlyout.Hide();
                 
                 _timetable = Timetable.GetTimetable(UserManager.CurrentUser.Courses);
@@ -166,7 +163,9 @@ namespace VITacademics.UIControls
 
         private void DateButton_Click(object sender, RoutedEventArgs e)
         {
+            _datePickerFlyout = new DatePickerFlyout();
             _datePickerFlyout.Date = CurrentDate;
+            _datePickerFlyout.DatePicked += DatePickerFlyout_DatePicked;
             _datePickerFlyout.ShowAt(dateDisplayButton);
         }
 
@@ -188,7 +187,7 @@ namespace VITacademics.UIControls
         {
             await eventMessageFlyout.ShowAtAsync(rootPivot);
             if (_currentStub != null && eventMessageFlyout.SelectedItem != null)
-                await CalendarHelper.WriteAppointment(_currentStub, eventMessageFlyout.SelectedItem as string);
+                await CalendarHelper.WriteAppointmentAsync(_currentStub, eventMessageFlyout.SelectedItem as string);
             _currentStub = null;
             eventMessageFlyout.SelectedItem = null;
         }
@@ -196,7 +195,7 @@ namespace VITacademics.UIControls
         private async void DeleteEventMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (_currentStub != null)
-                await CalendarHelper.RemoveAppointment(_currentStub);
+                await CalendarHelper.RemoveAppointmentAsync(_currentStub);
             _currentStub = null;
         }
 

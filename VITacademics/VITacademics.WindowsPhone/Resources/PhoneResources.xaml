@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:VITacademics.Resources"
     xmlns:helpers="using:VITacademics.Helpers">
 
     <Style TargetType="AppBarButton" x:Key="TopBarButtonStyle">
