@@ -14,7 +14,7 @@
     </Page.Resources>
     
     <ScrollViewer Margin="0,0,0,0">
-        <Grid Margin="0,50,0,0">
+        <Grid Margin="0,55,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="4*"></ColumnDefinition>
@@ -40,7 +40,7 @@
                     <Style TargetType="TextBlock" x:Key="ContentTextStyle" BasedOn="{StaticResource SingleItemContentStyle}">
                         <Setter Property="TextWrapping" Value="WrapWholeWords"></Setter>
                         <Setter Property="MaxLines" Value="4"></Setter>
-                        <Setter Property="Foreground" Value="Silver"></Setter>
+                        <Setter Property="Foreground" Value="{ThemeResource PhoneMidBrush}"></Setter>
                     </Style>
                     <TextBlock x:Name="textBlock" Style="{StaticResource ContentTextStyle}"></TextBlock>
                     <Style TargetType="RichTextBlock">
@@ -57,16 +57,16 @@
                 <TextBlock Text="VIT University, Vellore"
                     HorizontalAlignment="Center" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
 
-                <TextBlock Text="contact and feedback" Margin="0,55,0,5"
+                <TextBlock Text="contact and feedback" Margin="0,60,0,5"
                            Foreground="{ThemeResource PhoneForegroundBrush}" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
                 <TextBlock Text="Have any suggestions? Found a bug? We'd love to hear from you! Contact the developer:"
                            Style="{StaticResource ContentTextStyle}"></TextBlock>
                 <Button Margin="0,13,0,0" Content="send email" Click="EmailButton_Click"></Button>
 
                 <RichTextBlock Margin="0,30,0,0">
-                    <Paragraph Foreground="Silver" FontSize="{Binding FontSize, ElementName=textBlock}">
+                    <Paragraph Foreground="{Binding Foreground, ElementName=textBlock}" FontSize="{Binding FontSize, ElementName=textBlock}">
                         VITacademics for Windows Phone 8.1 is an independently developed project. Contribute to its development
-                        <Hyperlink Foreground="{ThemeResource PhoneAccentBrush}"
+                        <Hyperlink Foreground="{ThemeResource PhoneAccentBrush}" FontSize="{Binding FontSize, ElementName=textBlock}"
                                    NavigateUri="https://github.com/VinayGupta23/VITacademics_Windows">
                             here
                         </Hyperlink>.
@@ -74,12 +74,12 @@
                 </RichTextBlock>
 
                 <TextBlock Text="VITacademics backend server" Margin="0,30,0,7"
-                    Foreground="{ThemeResource PhoneForegroundBrush}" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                           Foreground="{ThemeResource PhoneForegroundBrush}" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
 
                 <RichTextBlock Margin="0,0,0,20">
-                    <Paragraph Foreground="Silver" FontSize="{Binding FontSize, ElementName=textBlock}">
+                    <Paragraph Foreground="{Binding Foreground, ElementName=textBlock}" FontSize="{Binding FontSize, ElementName=textBlock}">
                         The app's supporting backend API server. View its contributors or contribute to its development
-                        <Hyperlink Foreground="{ThemeResource PhoneAccentBrush}"
+                        <Hyperlink Foreground="{ThemeResource PhoneAccentBrush}" FontSize="{Binding FontSize, ElementName=textBlock}"
                                    NavigateUri="https://github.com/aneesh-neelam/VITacademics">
                             here
                         </Hyperlink>.
