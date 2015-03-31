@@ -25,6 +25,7 @@ namespace VITacademics.Managers
         private const string CACHE_DATA_TIME_KEY = "cachedData_time";
 
         private static User _currentUser;
+        private static Timetable _timetable;
         private static StorageFolder _folder = ApplicationData.Current.RoamingFolder;
         private static bool _isBusy;
         private delegate Task<StatusCode> Function();
@@ -326,6 +327,7 @@ namespace VITacademics.Managers
                         return StatusCode.UnknownError;
 
                     CurrentUser = temp;
+                    _timetable = Timetable.GetTimetable(temp.Courses);
                     await TryCacheDataAsync(response.Content);
                     return StatusCode.Success;
                 }
@@ -361,6 +363,7 @@ namespace VITacademics.Managers
                         return StatusCode.UnknownError;
 
                     CurrentUser = temp;
+                    _timetable = Timetable.GetTimetable(temp.Courses);
                     return StatusCode.Success;
                 }
                 catch
@@ -368,6 +371,20 @@ namespace VITacademics.Managers
                     return StatusCode.NoData;
                 }
             });
+        }
+
+        public static Timetable GetCurrentTimetable()
+        {
+            if (_timetable != null)
+                return _timetable;
+
+            if (CurrentUser != null)
+            {
+                _timetable = Timetable.GetTimetable(CurrentUser.Courses);
+                return _timetable;
+            }
+            else
+                return null;
         }
 
         #endregion

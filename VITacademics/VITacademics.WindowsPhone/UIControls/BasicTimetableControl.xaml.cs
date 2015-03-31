@@ -31,7 +31,7 @@ namespace VITacademics.UIControls
         {
             try
             {
-                Timetable timetable = Timetable.GetTimetable(UserManager.CurrentUser.Courses);
+                Timetable timetable = UserManager.GetCurrentTimetable();
                 int j = 0;
                 List<PivotItem> pivotItems = new List<PivotItem>(7);
                 for (int i = 0; i < 7; i++)

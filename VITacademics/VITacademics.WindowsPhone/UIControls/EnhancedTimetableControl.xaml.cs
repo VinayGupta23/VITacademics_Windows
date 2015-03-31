@@ -123,8 +123,8 @@ namespace VITacademics.UIControls
                 if (_datePickerFlyout != null)
                     _datePickerFlyout.Hide();
                 eventMessageFlyout.Hide();
-                
-                _timetable = Timetable.GetTimetable(UserManager.CurrentUser.Courses);
+
+                _timetable = UserManager.GetCurrentTimetable();
                 List<PivotItem> pivotItems = new List<PivotItem>(5);
                 for (int i = 0; i < 5; i++)
                     pivotItems.Add(new PivotItem());
