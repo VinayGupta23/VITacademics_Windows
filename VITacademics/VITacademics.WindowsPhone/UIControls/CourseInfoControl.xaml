@@ -18,7 +18,9 @@
                 <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
                 <ResourceDictionary>
                     
-                    <helpers:StatusToBackgroundConverter x:Key="statusToBackgroundConverter"></helpers:StatusToBackgroundConverter>
+                    <helpers:StatusToBrushConverter x:Key="StatusToBackgroundConverter"
+                                                    PresentBrush="#8CDC84" AbsentBrush="LightSalmon" OnDutyBrush="LightSkyBlue" FallbackBrush="LightGray">
+                    </helpers:StatusToBrushConverter>
                     
                     <DataTemplate x:Key="CourseNotFoundTemplate">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -136,7 +138,7 @@
                     <DataTemplate x:Key="CustomMarkStubTemplate">
                         <Grid Margin="0,0,0,20">
                             <Grid.Resources>
-                                <helpers:NullableDateToStringConverter x:Key="dateToStringConverter"></helpers:NullableDateToStringConverter>
+                                <helpers:NullableDateToStringConverter x:Key="NullableDateToStringConverter"></helpers:NullableDateToStringConverter>
                             </Grid.Resources>
                             <Grid.RowDefinitions>
                                 <RowDefinition></RowDefinition>
@@ -151,7 +153,7 @@
                                                        Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
 
                             <Border Width="60" Height="60" CornerRadius="3" Grid.Row="1" Margin="7,0,0,0"
-                                                    Background="{Binding Status, Converter={StaticResource statusToBackgroundConverter}}">
+                                                    Background="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}">
                                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                             </Border>
@@ -169,7 +171,7 @@
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="conducted on:&#160;"></TextBlock>
-                                    <TextBlock Text="{Binding ConductedDate, Converter={StaticResource dateToStringConverter}, ConverterParameter='not yet'}"></TextBlock>
+                                    <TextBlock Text="{Binding ConductedDate, Converter={StaticResource NullableDateToStringConverter}, ConverterParameter='not yet'}"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
 
@@ -194,7 +196,7 @@
                                             </Grid.ColumnDefinitions>
 
                                             <Border Width="60" Height="60" CornerRadius="3"
-                                                    Background="{Binding Status, Converter={StaticResource statusToBackgroundConverter}}">
+                                                    Background="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}">
                                                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                                             </Border>

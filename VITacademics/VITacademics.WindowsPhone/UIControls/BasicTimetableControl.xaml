@@ -56,16 +56,16 @@
                                                                 <Setter Property="MaxLines" Value="1"></Setter>
                                                                 <Setter Property="TextLineBounds" Value="Tight"></Setter>
                                                             </Style>
-                                                            <helpers:DateToTimeStringConverter x:Key="dateToTimeStringConverter"></helpers:DateToTimeStringConverter>
                                                         </Grid.Resources>
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition Height="*"></RowDefinition>
                                                             <RowDefinition Height="1*"></RowDefinition>
                                                             <RowDefinition Height="*"></RowDefinition>
                                                         </Grid.RowDefinitions>
-                                                        <TextBlock Grid.Row="0" Text="{Binding StartHours, Converter={StaticResource dateToTimeStringConverter}}"></TextBlock>
+                                                        <TextBlock Grid.Row="0"
+                                                                   Text="{Binding StartHours, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='HH:mm'}"></TextBlock>
                                                         <TextBlock Grid.Row="1" Text="to"></TextBlock>
-                                                        <TextBlock Grid.Row="2" Text="{Binding EndHours, Converter={StaticResource dateToTimeStringConverter}}"></TextBlock>
+                                                        <TextBlock Grid.Row="2" Text="{Binding EndHours, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='HH:mm'}"></TextBlock>
                                                     </Grid>
                                                 </Border>
 

@@ -1,9 +1,16 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:helpers="using:VITacademics.Helpers"
     xmlns:local="using:VITacademics.Resources">
 
     <SolidColorBrush x:Key="AlternateDarkBrush"
                      Color="#FF1B1E22"></SolidColorBrush>
-    
+
+    <helpers:StatusToBrushConverter x:Key="StatusToForegroundConverter"
+                                    PresentBrush="Green" AbsentBrush="Red" OnDutyBrush="DeepSkyBlue" FallbackBrush="Gray">
+    </helpers:StatusToBrushConverter>
+
+    <helpers:DateTimeToStringConverter x:Key="DateTimeToStringConverter"></helpers:DateTimeToStringConverter>
+
 </ResourceDictionary>

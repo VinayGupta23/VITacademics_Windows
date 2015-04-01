@@ -13,53 +13,25 @@ using Windows.UI.Xaml.Media;
 
 namespace VITacademics.Helpers
 {
-    public sealed class StatusToForegroundConverter : IValueConverter
+
+    public sealed class StatusToBrushConverter : IValueConverter
     {
+        public SolidColorBrush PresentBrush { get; set; }
+        public SolidColorBrush AbsentBrush { get; set; }
+        public SolidColorBrush OnDutyBrush { get; set; }
+        public SolidColorBrush FallbackBrush { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             string status = value as string;
             if (status == "Present")
-                return new SolidColorBrush(Colors.Green);
+                return PresentBrush;
             else if (status == "On Duty")
-                return new SolidColorBrush(Colors.DeepSkyBlue);
+                return OnDutyBrush;
             else if (status == "Absent")
-                return new SolidColorBrush(Colors.Red);
+                return AbsentBrush;
             else
-                return new SolidColorBrush(Colors.Gray);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            return "";
-        }
-    }
-
-    public sealed class StatusToBackgroundConverter : IValueConverter
-    {
-
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            string status = value as string;
-            if (status == "Present")
-                return new SolidColorBrush(ColorHelper.FromArgb(255, 140, 220, 132));
-            else if (status == "Absent")
-                return new SolidColorBrush(Colors.LightSalmon);
-            else
-                return new SolidColorBrush(Colors.LightGray);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            return "";
-        }
-    }
-
-    public sealed class DateToDateStringConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            DateTimeOffset date = ((DateTimeOffset)value);
-            return date.ToString("dd-MMM-yy");
+                return FallbackBrush;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
@@ -68,28 +40,34 @@ namespace VITacademics.Helpers
         }
     }
 
-    public sealed class DateToDayStringConverter : IValueConverter
+    public class AttendanceToForegroundConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            double val = (double)value;
+
+            if (val > 75)
+                return new SolidColorBrush(Colors.Green);
+            if (val == 75)
+                return new SolidColorBrush(Colors.Brown);
+            else
+                return new SolidColorBrush(Colors.Red);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public sealed class DateTimeToStringConverter : IValueConverter
     {
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             DateTimeOffset date = (DateTimeOffset)value;
-            return date.ToString("dddd");
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
-    
-    public sealed class DateToTimeStringConverter : IValueConverter
-    {
-
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            DateTimeOffset date = ((DateTimeOffset)value);
-            return date.ToString("HH:mm");
+            return date.ToString(parameter as string);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
@@ -100,7 +78,6 @@ namespace VITacademics.Helpers
 
     public sealed class NullableDateToStringConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (value == null)
@@ -132,32 +109,6 @@ namespace VITacademics.Helpers
         }
     }
 
-    public class CourseTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate CBLTemplate { get; set; }
-        public DataTemplate PBLTemplate { get; set; }
-        public DataTemplate LBCTemplate { get; set; }
-        public DataTemplate RBLTemplate { get; set; }
-        public DataTemplate PBCTemplate { get; set; }
-
-        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
-        {
-            Type contentType = (container as FrameworkElement).DataContext.GetType();
-            if (contentType == typeof(CBLCourse))
-                return CBLTemplate;
-            else if (contentType == typeof(PBLCourse))
-                return PBLTemplate;
-            else if (contentType == typeof(LBCCourse))
-                return LBCTemplate;
-            else if (contentType == typeof(PBCCourse))
-                return PBCTemplate;
-            else if (contentType == typeof(RBLCourse))
-                return RBLTemplate;
-            else
-                return null;
-        }
-    }
-
     public class ClassInfoTemplateSelector : DataTemplateSelector
     {
         public DataTemplate ClassNowTemplate { get; set; }
@@ -181,24 +132,4 @@ namespace VITacademics.Helpers
         }
     }
 
-    public class AttendanceToForegroundConverter : IValueConverter
-    {
-
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            double val = (double)value;
-
-            if (val > 75)
-                return new SolidColorBrush(Colors.Green);
-            if (val == 75)
-                return new SolidColorBrush(Colors.Brown);
-            else
-                return new SolidColorBrush(Colors.Red);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

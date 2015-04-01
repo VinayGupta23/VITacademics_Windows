@@ -24,8 +24,6 @@
                         <Setter Property="HorizontalAlignment" Value="Center"></Setter>
                         <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
                     </Style>
-                    <helpers:DateToDateStringConverter x:Key="dateToDateStringConverter"></helpers:DateToDateStringConverter>
-                    <helpers:DateToDayStringConverter x:Key="dateToDayStringConverter"></helpers:DateToDayStringConverter>
                 </ResourceDictionary>
                 
             </ResourceDictionary.MergedDictionaries>
@@ -120,11 +118,11 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>   
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Style="{StaticResource TitleTextBlockStyle}"
-                                       Text="{Binding Key, Converter={StaticResource dateToDateStringConverter}}"
+                                       Text="{Binding Key, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='dd-MMM-yy'}"
                                        HorizontalAlignment="Left"></TextBlock>
                             <TextBlock Grid.Column="1" Foreground="Black"
                                        Style="{StaticResource SingleItemSubHeaderStyle}" 
-                                       Text="{Binding Key, Converter={StaticResource dateToDayStringConverter}}"></TextBlock>
+                                       Text="{Binding Key, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='dddd'}"></TextBlock>
                             <TextBlock Grid.Column="2" Style="{StaticResource BodyTextBlockStyle}"
                                        Text="{Binding Value.Status}" Foreground="{Binding Value.Status, Converter={StaticResource StatusToForegroundConverter}}"
                                        HorizontalAlignment="Right"></TextBlock>
