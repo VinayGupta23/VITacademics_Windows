@@ -27,6 +27,9 @@
             
             <ListView Margin="0,20,0,0" IsItemClickEnabled="True" ItemClick="ListView_ItemClick"
                       ItemsSource="{Binding CourseList}">
+                <ListView.Resources>
+                    <helpers:AttendanceToForegroundConverter x:Key="AttendanceToForegroundConverter"></helpers:AttendanceToForegroundConverter>
+                </ListView.Resources>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
@@ -35,10 +38,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border Background="WhiteSmoke" Margin="5,10,5,10">
-                            <Grid Margin="10,3,10,5" VerticalAlignment="Center" HorizontalAlignment="Stretch"> 
-                                <Grid.Resources>
-                                    <helpers:AttendanceToForegroundConverter x:Key="AttendanceToForegroundConverter"></helpers:AttendanceToForegroundConverter>
-                                </Grid.Resources>
+                            <Grid Margin="10,3,10,5" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
                                     <RowDefinition></RowDefinition>
                                     <RowDefinition></RowDefinition>
@@ -92,7 +92,7 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="WhiteSmoke" Margin="10,10,10,10">
+                        <Border Background="WhiteSmoke" Margin="5,10,5,10">
                             <Grid Margin="10,3,10,5" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
                                     <RowDefinition></RowDefinition>

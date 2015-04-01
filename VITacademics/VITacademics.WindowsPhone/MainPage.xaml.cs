@@ -346,7 +346,8 @@ namespace VITacademics
                 MenuButton_Click(null, null);
                 return false;
             }
-            else if (ControlManager.GetCode(_contentControlManager.CurrentControl) != AppSettings.DefaultControlType)
+            else if (_contentControlManager.CurrentControl != null
+                && ControlManager.GetCode(_contentControlManager.CurrentControl) != AppSettings.DefaultControlType)
             {
                 _contentControlManager.ClearHistory();
                 ProxiedControl_ActionRequested(this,

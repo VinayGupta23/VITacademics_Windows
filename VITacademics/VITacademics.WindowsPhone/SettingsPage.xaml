@@ -69,12 +69,12 @@
                 </StackPanel.Resources>
             <TextBlock Text="setting up calendar events" Margin="0,17,0,7"
                    Style="{StaticResource HelpHeaderTextBlockStyle}"></TextBlock>
-            <TextBlock Text="in the daily buzz page, hold on the title of any item in the list, to open a context menu. Choose add event and select the type of event, and you're done!"
+            <TextBlock Text="You can now add events to your classes that appear in your calendar! In the daily buzz page, simply hold on the title of any course, to show the event menu."
                    Style="{StaticResource HelpContentTextBlockStyle}"></TextBlock>
 
-            <TextBlock Text="viewing course details" Margin="0,17,0,7"
+            <TextBlock Text="analysing attendance" Margin="0,17,0,7"
                    Style="{StaticResource HelpHeaderTextBlockStyle}"></TextBlock>
-            <TextBlock Text="You can also view your course details from the timetable or daily buzz page! Just tap on a course in the list."
+            <TextBlock Text="Analysing your attendance was never this easy! Check out the new set target feature along with the linked attend and miss buttons in the course details page."
                    Style="{StaticResource HelpContentTextBlockStyle}"></TextBlock>
             </StackPanel>
         </PivotItem>

@@ -271,7 +271,7 @@ namespace VITacademics.Managers
             {
                 CurrentUser = null;
                 await VITacademics.Helpers.CalendarHelper.DeleteCalendarAsync();
-                AppSettings.DeleteAllSettings();
+                AppSettings.ResetToDefaults();
                 try
                 {
                     PasswordCredential credential = GetStoredCredential();

@@ -52,7 +52,7 @@ namespace VITacademics.Managers
             }
         }
 
-        public static void DeleteAllSettings()
+        public static void ResetToDefaults()
         {
             _settingsContainer.Values.Clear();
         }

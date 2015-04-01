@@ -66,13 +66,13 @@
                                     Background="WhiteSmoke" BorderThickness="0,0,0,3"
                                     BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Grid.Row="0" Text="{Binding SessionHours.Parent.Venue}" Foreground="DimGray"
-                                               Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
+                                    <TextBlock Text="{Binding SessionHours.Parent.Venue}"
+                                               Style="{StaticResource SingleItemContentStyle}" HorizontalAlignment="Center"></TextBlock>
                                     <TextBlock Text="{Binding SessionHours.StartHours, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='HH:mm'}"
                                                Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
                                     <TextBlock Text="{Binding SessionHours.EndHours, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='HH:mm'}"
                                                Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
-                                </StackPanel>
+                                    </StackPanel>
                             </Border>
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
@@ -100,7 +100,7 @@
                                             DataContext="{Binding SessionHours.Parent}">
                                     <TextBlock Text="{Binding CourseCode}" Style="{StaticResource LabelTextBlockStyle}"
                                                HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
-                                    <TextBlock Text="{Binding Venue}" Style="{StaticResource LabelTextBlockStyle}"
+                                    <TextBlock Text="{Binding Venue}" Style="{StaticResource SingleItemContentStyle}"
                                                HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
                                 </StackPanel>
                             </Border>
@@ -132,10 +132,10 @@
                                             <TextBlock Text="extra classes" Margin="0,25,0,0" Style="{StaticResource GroupHeaderTextBlockStyle}"
                                                        Visibility="{Binding HadExtraClasses, Converter={StaticResource BoolToVisibilityConverter}}"></TextBlock>
 
-                                            <ListView ItemsSource="{Binding ExtraClassesInfo}" Margin="0,13,0,0">
+                                            <ListView ItemsSource="{Binding ExtraClassesInfo}" Margin="0,15,0,0">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Grid Margin="0,0,0,10">
+                                                        <Grid Margin="0,0,0,13">
                                                             <Grid.RowDefinitions>
                                                                 <RowDefinition></RowDefinition>
                                                                 <RowDefinition></RowDefinition>
@@ -148,7 +148,8 @@
                                                                        Style="{StaticResource SingleItemContentStyle}"></TextBlock>
                                                             <TextBlock Grid.Row="1" Text="{Binding Key.Venue}"
                                                                        HorizontalAlignment="Right" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-                                                            <TextBlock Grid.Row="2" Text="{Binding Value.Status}" Style="{StaticResource LabelTextBlockStyle}" TextLineBounds="TrimToBaseline"
+                                                            <TextBlock Grid.Row="2" Text="{Binding Value.Status}" Style="{StaticResource LabelTextBlockStyle}"
+                                                                       Margin="0,2,0,0" TextLineBounds="TrimToCapHeight"
                                                                        Foreground="{Binding Value.Status, Converter={StaticResource StatusToForegroundConverter}}"></TextBlock>
                                                         </Grid>
                                                     </DataTemplate>
