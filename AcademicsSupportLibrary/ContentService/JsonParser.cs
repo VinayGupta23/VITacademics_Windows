@@ -328,7 +328,10 @@ namespace Academics.ContentService
         }
         private static void AssignSpecificDetails(PBCCourse course, JsonObject courseObject)
         {
-            course.ProjectTitle = courseObject.GetNamedString("project_title");
+            if (courseObject.GetNamedValue("project_title").ValueType != JsonValueType.Null)
+                course.ProjectTitle = courseObject.GetNamedString("project_title");
+            else
+                course.ProjectTitle = null;
         }
 
         // Private API
