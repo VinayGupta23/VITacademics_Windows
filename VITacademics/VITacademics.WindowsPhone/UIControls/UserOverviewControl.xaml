@@ -34,36 +34,49 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="WhiteSmoke" Margin="10,10,10,10">
+                        <Border Background="WhiteSmoke" Margin="5,10,5,10">
                             <Grid Margin="10,3,10,5" VerticalAlignment="Center" HorizontalAlignment="Stretch"> 
+                                <Grid.Resources>
+                                    <helpers:AttendanceToForegroundConverter x:Key="AttendanceToForegroundConverter"></helpers:AttendanceToForegroundConverter>
+                                </Grid.Resources>
                                 <Grid.RowDefinitions>
                                     <RowDefinition></RowDefinition>
                                     <RowDefinition></RowDefinition>
                                     <RowDefinition></RowDefinition>
                                 </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
                                 
                                 <TextBlock Text="{Binding Title}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
-                                           Style="{StaticResource GroupHeaderTextBlockStyle}"
+                                           Grid.ColumnSpan="2" Style="{StaticResource GroupHeaderTextBlockStyle}"
                                            Foreground="{ThemeResource PhoneAccentBrush}" MaxLines="1"></TextBlock>
-                                <StackPanel Orientation="Horizontal" Grid.Row="1">
-                                    <TextBlock Text="Internals:&#160;" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                    <TextBlock Text="{Binding InternalMarksScored}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
-                                </StackPanel>
+                                
+                                    <TextBlock Text="Internals" Grid.Row="1" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                    
                                 <StackPanel Orientation="Horizontal" Grid.Row="2">
-                                        <TextBlock Text="Uploaded for:&#160;" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                    <TextBlock Text="{Binding TotalMarksTested}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                    <TextBlock Text="{Binding InternalMarksScored}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                    <TextBlock Text="&#160;/&#160;" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                    <TextBlock Text="{Binding TotalMarksTested}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                                 </StackPanel>
 
-                                <TextBlock Text="Attendance" Grid.Row="1" HorizontalAlignment="Right" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
-                                    <StackPanel.Resources>
-                                        <helpers:AttendanceToForegroundConverter x:Key="attendanceToForegroundConverter"></helpers:AttendanceToForegroundConverter>
-                                    </StackPanel.Resources>
-                                    <TextBlock Text="{Binding Attendance.Percentage}" Style="{StaticResource TitleTextBlockStyle}"
-                                               Foreground="{Binding Attendance.Percentage, Converter={StaticResource attendanceToForegroundConverter}}"></TextBlock>
-                                    <TextBlock Margin="2,0,0,0" Text="%" Style="{StaticResource TitleTextBlockStyle}"
-                                               Foreground="{Binding Attendance.Percentage, Converter={StaticResource attendanceToForegroundConverter}}"></TextBlock>
+                                <TextBlock Text="Attendance" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right"
+                                           Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0"
+                                            HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Attendance.Percentage}" TextLineBounds="Tight"
+                                               Foreground="{Binding Attendance.Percentage, Converter={StaticResource AttendanceToForegroundConverter}}"
+                                               Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                    <TextBlock Margin="2,0,0,0" Text="%" TextLineBounds="Tight"
+                                               Foreground="{Binding Attendance.Percentage, Converter={StaticResource AttendanceToForegroundConverter}}"
+                                               Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
                                 </StackPanel>
+                                
+                                <ProgressBar Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch"
+                                             Foreground="{Binding Attendance.Percentage, Converter={StaticResource AttendanceToForegroundConverter}}"
+                                             Value="{Binding Attendance.Percentage}" Height="7" VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                             Background="LightGray"></ProgressBar>
                             </Grid>
                         </Border>
                     </DataTemplate>

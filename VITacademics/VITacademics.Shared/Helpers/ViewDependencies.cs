@@ -111,7 +111,6 @@ namespace VITacademics.Helpers
 
     public class ClassInfoTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate ClassNowTemplate { get; set; }
         public DataTemplate ClassTodayTemplate { get; set; }
         public DataTemplate ClassGeneralTemplate { get; set; }
 
@@ -121,11 +120,7 @@ namespace VITacademics.Helpers
             DateTimeOffset now = DateTimeOffset.Now;
             if (infoStub.ContextDate.Date == DateTimeOffset.Now.Date)
             {
-                if (TimeSpan.Compare(infoStub.SessionHours.StartHours.TimeOfDay, now.TimeOfDay) <= 0
-                    && TimeSpan.Compare(now.TimeOfDay, infoStub.SessionHours.StartHours.TimeOfDay) < 0)
-                    return ClassNowTemplate;
-                else
-                    return ClassTodayTemplate;
+                return ClassTodayTemplate;
             }
             else
                 return ClassGeneralTemplate;

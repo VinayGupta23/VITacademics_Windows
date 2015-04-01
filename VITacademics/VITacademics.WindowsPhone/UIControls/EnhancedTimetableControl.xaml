@@ -53,10 +53,6 @@
                         <Setter Property="IsItemClickEnabled" Value="True"></Setter>
                     </Style>
 
-                    <!-- Pending -->
-                    <DataTemplate x:Key="classNowDataTemplate">
-                    </DataTemplate>
-                    
                     <DataTemplate x:Key="classTodayDataTemplate">
                         <Grid Margin="0,0,0,17" Holding="ItemRootGrid_Holding" IsHoldingEnabled="True">
                             <Grid.ColumnDefinitions>
@@ -119,7 +115,6 @@
 
                     <helpers:ClassInfoTemplateSelector x:Key="classInfoTemplateSelector"
                                                        ClassGeneralTemplate="{StaticResource classGeneralDataTemplate}"
-                                                       ClassNowTemplate="{StaticResource classTodayDataTemplate}"
                                                        ClassTodayTemplate="{StaticResource classTodayDataTemplate}"></helpers:ClassInfoTemplateSelector>
                     
                     <Style TargetType="PivotItem">
