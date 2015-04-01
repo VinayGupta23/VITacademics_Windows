@@ -42,7 +42,7 @@ namespace VITacademics.Managers
             {
                 object val = _settingsContainer.Values[DEFAULT_CONTROL_KEY];
                 if (val == null)
-                    return ControlTypeCodes.EnhancedTimetable;
+                    return ControlTypeCodes.Overview;
                 else
                     return (ControlTypeCodes)(int)val;
             }

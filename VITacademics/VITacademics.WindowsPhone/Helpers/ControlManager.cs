@@ -32,14 +32,22 @@ namespace VITacademics.Helpers
             _controlTypeDictionary.Add(typeof(EnhancedTimetableControl), ControlTypeCodes.EnhancedTimetable);
         }
 
-        public static ControlTypeCodes GetTypeCode(IProxiedControl control)
+        public static ControlTypeCodes GetCode(IProxiedControl control)
         {
             return _controlTypeDictionary[control.GetType()];
         }
 
-        public static ControlTypeCodes GetTypeCode(Type proxiedControlType)
+        public static ControlTypeCodes GetCode(Type proxiedControlType)
         {
             return _controlTypeDictionary[proxiedControlType];
+        }
+
+        public static Type GetTypeFromCode(ControlTypeCodes code)
+        {
+            foreach (var pair in _controlTypeDictionary)
+                if (pair.Value == code)
+                    return pair.Key;
+            return null;
         }
 
         #endregion
@@ -86,7 +94,7 @@ namespace VITacademics.Helpers
 
         private void SaveCurrentControl()
         {
-            _controlHistory.Add((int)GetTypeCode(_currentControl));
+            _controlHistory.Add((int)GetCode(_currentControl));
             _paramterHistory.Add(_currentParameter);
             _stateHistory.Add(_currentControl.SaveState());
         }
@@ -140,7 +148,7 @@ namespace VITacademics.Helpers
                 SaveCurrentControl();
             }
 
-            int controlCode = (int)GetTypeCode(controlType);
+            int controlCode = (int)GetCode(controlType);
             LoadControl(controlCode, parameter);
         }
 
@@ -188,7 +196,7 @@ namespace VITacademics.Helpers
 
             if (_currentControl != null)
             {
-                controls.Add((int)GetTypeCode(_currentControl));
+                controls.Add((int)GetCode(_currentControl));
                 paramters.Add(_currentParameter);
                 states.Add(_currentControl.SaveState());
             }

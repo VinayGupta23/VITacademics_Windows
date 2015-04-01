@@ -309,7 +309,7 @@ namespace VITacademics
         private void SetTitleAndContent()
         {
             string titleText = null;
-            ControlTypeCodes contentTypeCode = ControlManager.GetTypeCode(_contentControlManager.CurrentControl);
+            ControlTypeCodes contentTypeCode = ControlManager.GetCode(_contentControlManager.CurrentControl);
 
             switch (contentTypeCode)
             {
@@ -344,6 +344,13 @@ namespace VITacademics
             if (IsMenuOpen == true)
             {
                 MenuButton_Click(null, null);
+                return false;
+            }
+            else if (ControlManager.GetCode(_contentControlManager.CurrentControl) != AppSettings.DefaultControlType)
+            {
+                _contentControlManager.ClearHistory();
+                ProxiedControl_ActionRequested(this,
+                           new RequestEventArgs(ControlManager.GetTypeFromCode(AppSettings.DefaultControlType), null));
                 return false;
             }
             else
