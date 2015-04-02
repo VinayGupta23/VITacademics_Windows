@@ -10,7 +10,7 @@
     d:DesignHeight="720"
     d:DesignWidth="420"
     RequestedTheme="Light">
-
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -77,7 +77,13 @@
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
                                 <local:GoMissAttendanceInfo Height="25" Grid.Column="1" Margin="-8,0,0,0"
-                                                            DataContext="{Binding SessionHours.Parent.Attendance}"></local:GoMissAttendanceInfo>
+                                                            DataContext="{Binding SessionHours.Parent.Attendance}">
+                                    <local:GoMissAttendanceInfo.Transitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition FromVerticalOffset="5" FromHorizontalOffset="0"></EntranceThemeTransition>
+                                        </TransitionCollection>
+                                    </local:GoMissAttendanceInfo.Transitions>
+                                </local:GoMissAttendanceInfo>
                                 <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}" Style="{StaticResource LabelTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
                             </StackPanel>
                         </Grid>
@@ -105,9 +111,12 @@
                                 </StackPanel>
                             </Border>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                                <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemSubHeaderStyle}" Foreground="{ThemeResource PhoneMidBrush}"></TextBlock>
-                                <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}" Style="{StaticResource LabelTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
+                                <TextBlock Text="{Binding SessionHours.Parent.Title}"
+                                           Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemSubHeaderStyle}"
+                                           Foreground="{ThemeResource PhoneMidBrush}"></TextBlock>
+                                <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}"
+                                           Style="{StaticResource LabelTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
                             </StackPanel>
                         </Grid>
                         

@@ -67,14 +67,14 @@
                         <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
                     </Style>
                 </StackPanel.Resources>
-            <TextBlock Text="setting up calendar events" Margin="0,17,0,7"
+            <TextBlock Text="setting up reminders" Margin="0,17,0,7"
                    Style="{StaticResource HelpHeaderTextBlockStyle}"></TextBlock>
-            <TextBlock Text="You can now add events to your classes that appear in your calendar! In the daily buzz page, simply hold on the title of any course, to show the event menu."
+            <TextBlock Text="You can now add event reminders via the app that sync to your calendar! In the Daily Buzz page, simply hold on the title of any course to show the event menu."
                    Style="{StaticResource HelpContentTextBlockStyle}"></TextBlock>
 
-            <TextBlock Text="analysing attendance" Margin="0,17,0,7"
+            <TextBlock Text="tracking attendance" Margin="0,17,0,7"
                    Style="{StaticResource HelpHeaderTextBlockStyle}"></TextBlock>
-            <TextBlock Text="Analysing your attendance was never this easy! Check out the new set target feature along with the linked attend and miss buttons in the course details page."
+            <TextBlock Text="Analysing your attendance was never this easy! Check out the new 'Set Target' feature in the course details page."
                    Style="{StaticResource HelpContentTextBlockStyle}"></TextBlock>
             </StackPanel>
         </PivotItem>

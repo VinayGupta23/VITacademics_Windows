@@ -11,6 +11,16 @@
     d:DesignWidth="420"
     RequestedTheme="Light">
     
+    <UserControl.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                    <CommonNavigationTransitionInfo IsStaggeringEnabled="True"></CommonNavigationTransitionInfo>
+                </NavigationThemeTransition.DefaultNavigationTransitionInfo>
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </UserControl.Transitions>
+    
     <UserControl.Resources> 
         <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>        
     </UserControl.Resources>
@@ -37,7 +47,7 @@
 
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid Margin="0,0,0,13">
+                                            <Grid Margin="0,0,0,13" CommonNavigationTransitionInfo.IsStaggerElement="True">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="80"></RowDefinition>
                                                 </Grid.RowDefinitions>
@@ -80,14 +90,18 @@
                                                                Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
 
                                                     <TextBlock Grid.Row="1" Text="{Binding CourseCode, Mode=OneTime}"
-                                                           Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
+                                                           Style="{StaticResource SingleItemSubHeaderStyle}"
+                                                               Pivot.SlideInAnimationGroup="GroupOne"></TextBlock>
                                                     <TextBlock Grid.Row="2" Text="{Binding CourseMode, Mode=OneTime}"
-                                                           Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                                           Style="{StaticResource SingleItemContentStyle}"
+                                                               Pivot.SlideInAnimationGroup="GroupOne"></TextBlock>
 
                                                     <TextBlock Grid.Row="1" Text="{Binding Slot, Mode=OneTime}"
-                                                           HorizontalAlignment="Right" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
+                                                           HorizontalAlignment="Right" Style="{StaticResource SingleItemSubHeaderStyle}"
+                                                               Pivot.SlideInAnimationGroup="GroupOne"></TextBlock>
                                                     <TextBlock Grid.Row="2" Text="{Binding Venue, Mode=OneTime}"
-                                                            HorizontalAlignment="Right" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                                            HorizontalAlignment="Right" Style="{StaticResource SingleItemContentStyle}"
+                                                               Pivot.SlideInAnimationGroup="GroupOne"></TextBlock>
 
                                                 </Grid>
                                             </Grid>

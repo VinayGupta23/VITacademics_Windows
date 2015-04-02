@@ -27,6 +27,11 @@
             
             <ListView Margin="0,20,0,0" IsItemClickEnabled="True" ItemClick="ListView_ItemClick"
                       ItemsSource="{Binding CourseList}">
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition FromVerticalOffset="-7" FromHorizontalOffset="0"></EntranceThemeTransition>
+                    </TransitionCollection>
+                </ListView.ItemContainerTransitions>
                 <ListView.Resources>
                     <helpers:AttendanceToForegroundConverter x:Key="AttendanceToForegroundConverter"></helpers:AttendanceToForegroundConverter>
                 </ListView.Resources>
