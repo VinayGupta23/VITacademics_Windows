@@ -109,11 +109,11 @@
             
             <ItemsControl ItemsSource="{Binding Details}"
                           Margin="10,17,10,0">
-                <ItemsControl.ItemContainerTransitions>
+                <ItemsControl.Transitions>
                     <TransitionCollection>
-                        <EntranceThemeTransition FromHorizontalOffset="0" FromVerticalOffset="15"></EntranceThemeTransition>
+                        <EntranceThemeTransition FromHorizontalOffset="0" FromVerticalOffset="13"></EntranceThemeTransition>
                     </TransitionCollection>
-                </ItemsControl.ItemContainerTransitions>
+                </ItemsControl.Transitions>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="30" Margin="0,0,0,13">

@@ -215,6 +215,15 @@ namespace VITacademics.Managers
                 {
                     try
                     {
+                        if(CurrentUser != null)
+                        {
+#if WINDOWS_PHONE_APP
+                            await DeleteSavedUserAsync();
+#else
+                            DeleteSavedUser();
+#endif
+                        }
+
                         PasswordCredential credential = GetStoredCredential();
                         if (credential != null)
                             new PasswordVault().Remove(credential);
@@ -270,7 +279,7 @@ namespace VITacademics.Managers
             return await MonitoredTask(async () =>
             {
                 CurrentUser = null;
-                await VITacademics.Helpers.CalendarHelper.DeleteCalendarAsync();
+                await CalendarManager.DeleteCalendarAsync();
                 AppSettings.ResetToDefaults();
                 try
                 {

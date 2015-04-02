@@ -169,6 +169,7 @@ namespace VITacademics
                         freshData = true;
                     }
                 }
+                await CalendarManager.LoadCalendarAsync();
             });
 
             if (status == StatusCode.Success)

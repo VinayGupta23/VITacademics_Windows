@@ -5,15 +5,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VITacademics.Managers;
 using Windows.ApplicationModel.Appointments;
+using VITacademics.Helpers;
 
-namespace VITacademics.Helpers
+
+namespace VITacademics.Managers
 {
-    public static class CalendarHelper
+    public static class CalendarManager
     {
         private static AppointmentStore _store;
         private static AppointmentCalendar _calendar;
+
+        private static async Task GetOrCreateCalendar()
+        {
+            if (_store == null)
+            {
+                _store = await AppointmentManager.RequestStoreAsync(AppointmentStoreAccessType.AppCalendarsReadWrite);
+            }
+            var appCalendars = await _store.FindAppointmentCalendarsAsync();
+            if (appCalendars.Count == 0)
+            {
+                _calendar = await _store.CreateAppointmentCalendarAsync("Academics Calendar");
+                _calendar.OtherAppWriteAccess = AppointmentCalendarOtherAppWriteAccess.None;
+                await _calendar.SaveAsync();
+            }
+            else
+                _calendar = appCalendars[0];
+        }
 
         public static async Task LoadCalendarAsync()
         {
@@ -23,24 +41,15 @@ namespace VITacademics.Helpers
             if (_calendar != null)
                 return;
 
-            if(_store == null)
-            {
-                _store = await AppointmentManager.RequestStoreAsync(AppointmentStoreAccessType.AppCalendarsReadWrite);
-            }
-            var appCalendars = await _store.FindAppointmentCalendarsAsync();
-            if (appCalendars.Count == 0)
-                _calendar = await _store.CreateAppointmentCalendarAsync("Academics Calendar");
-            else
-                _calendar = appCalendars[0];
-
-            _calendar.OtherAppWriteAccess = AppointmentCalendarOtherAppWriteAccess.None;
-            await _calendar.SaveAsync();
+            await GetOrCreateCalendar();
         }
 
-        public static async Task DeleteCalendarAsync()
+        internal static async Task DeleteCalendarAsync()
         {
-            if (_calendar != null)
-                await _calendar.DeleteAsync();
+            if (_calendar == null)
+                await GetOrCreateCalendar();
+
+            await _calendar.DeleteAsync();
         }
 
         public static async Task WriteAppointmentAsync(CalenderAwareInfoStub infoStub, string message)
@@ -85,7 +94,7 @@ namespace VITacademics.Helpers
                 throw new InvalidOperationException();
 
             DateTimeOffset startDate = infoStub.ContextDate.Date.Add(infoStub.SessionHours.StartHours.TimeOfDay);
-            var appts = await _calendar.FindAppointmentsAsync(startDate.AddMinutes(-1), TimeSpan.FromMinutes(2));
+            var appts = await _calendar.FindAppointmentsAsync(startDate, TimeSpan.FromMinutes(1));
             if (appts.Count == 0)
                 infoStub.AppointmentInfo = null;
             else

@@ -16,22 +16,29 @@
     </UserControl.Resources>
     
     <ScrollViewer>
+        <ScrollViewer.Resources>
+            <Style TargetType="Border" x:Key="AnimatedBorderStyle">
+                <Setter Property="Transitions">
+                    <Setter.Value>
+                        <TransitionCollection>
+                            <ContentThemeTransition></ContentThemeTransition>
+                        </TransitionCollection>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ScrollViewer.Resources>
+        
         <StackPanel Margin="19,20,19,0">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock Text="Total Credits&#160;&#160;" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right"
                            Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                <TextBlock Text="{Binding TotalCredits}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right"
+                <TextBlock Text="{Binding TotalCredits, Mode=OneWay}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right"
                            Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
             </StackPanel>
             
             <ListView Margin="0,20,0,0" IsItemClickEnabled="True" ItemClick="ListView_ItemClick"
-                      ItemsSource="{Binding CourseList}">
-                <ListView.ItemContainerTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition FromVerticalOffset="-7" FromHorizontalOffset="0"></EntranceThemeTransition>
-                    </TransitionCollection>
-                </ListView.ItemContainerTransitions>
+                      ItemsSource="{Binding CourseList, Mode=OneWay}">
                 <ListView.Resources>
                     <helpers:AttendanceToForegroundConverter x:Key="AttendanceToForegroundConverter"></helpers:AttendanceToForegroundConverter>
                 </ListView.Resources>
@@ -42,7 +49,7 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="WhiteSmoke" Margin="5,10,5,10">
+                        <Border Background="WhiteSmoke" Margin="5,10,5,10" Style="{StaticResource AnimatedBorderStyle}">
                             <Grid Margin="10,3,10,5" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
                                     <RowDefinition></RowDefinition>
@@ -89,7 +96,7 @@
             </ListView>
 
             <ListView Margin="0,10,0,0" IsItemClickEnabled="True" ItemClick="ListView_ItemClick"
-                      ItemsSource="{Binding NltpCourseList}">
+                      ItemsSource="{Binding NltpCourseList, Mode=OneWay}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
@@ -97,7 +104,7 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="WhiteSmoke" Margin="5,10,5,10">
+                        <Border Background="WhiteSmoke" Margin="5,10,5,10" Style="{StaticResource AnimatedBorderStyle}">
                             <Grid Margin="10,3,10,5" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
                                     <RowDefinition></RowDefinition>

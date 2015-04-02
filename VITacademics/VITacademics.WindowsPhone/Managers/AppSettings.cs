@@ -14,11 +14,11 @@ namespace VITacademics.Managers
         private const string AUTO_REFRESH_KEY = "autoRefresh";
         private const string DEFAULT_CONTROL_KEY = "defaultControlCode";
 
-        private static ApplicationDataContainer _settingsContainer;
+        private static readonly ApplicationDataContainer _settingsContainer;
 
         static AppSettings()
         {
-           _settingsContainer = ApplicationData.Current.RoamingSettings.CreateContainer(APP_SETTINGS_CONTAINER_NAME, ApplicationDataCreateDisposition.Always);
+           _settingsContainer = App._roamingSettings.CreateContainer(APP_SETTINGS_CONTAINER_NAME, ApplicationDataCreateDisposition.Always);
         }
 
         public static bool AutoRefresh

@@ -71,13 +71,6 @@ namespace VITacademics.UIControls
         }
 
 
-        private void DatePickerFlyout_DatePicked(DatePickerFlyout sender, DatePickedEventArgs args)
-        {
-            if (CurrentDate != args.NewDate)
-                JumpToDate(args.NewDate);
-            sender.DatePicked -= DatePickerFlyout_DatePicked;
-        }
-
         private void Pivot_PivotItemLoading(Pivot sender, PivotItemEventArgs args)
         {
             int curIndex = sender.SelectedIndex;
@@ -109,9 +102,8 @@ namespace VITacademics.UIControls
 
         private async void LoadAppointmentsAsync()
         {
-            await CalendarHelper.LoadCalendarAsync();
             foreach (CalenderAwareInfoStub stub in AwareDayInfo.RegularClassesInfo)
-                await CalendarHelper.AssignAppointmentIfAvailableAsync(stub);
+                await CalendarManager.AssignAppointmentIfAvailableAsync(stub);
         }
 
         public void GenerateView(string parameter)
@@ -169,6 +161,13 @@ namespace VITacademics.UIControls
             _datePickerFlyout.ShowAt(dateDisplayButton);
         }
 
+        private void DatePickerFlyout_DatePicked(DatePickerFlyout sender, DatePickedEventArgs args)
+        {
+            if (CurrentDate != args.NewDate)
+                JumpToDate(args.NewDate);
+            sender.DatePicked -= DatePickerFlyout_DatePicked;
+        }
+
         private void ItemRootGrid_Holding(object sender, HoldingRoutedEventArgs e)
         {
             CalenderAwareInfoStub stub = (sender as FrameworkElement).DataContext as CalenderAwareInfoStub;
@@ -187,7 +186,7 @@ namespace VITacademics.UIControls
         {
             await eventMessageFlyout.ShowAtAsync(rootPivot);
             if (_currentStub != null && eventMessageFlyout.SelectedItem != null)
-                await CalendarHelper.WriteAppointmentAsync(_currentStub, eventMessageFlyout.SelectedItem as string);
+                await CalendarManager.WriteAppointmentAsync(_currentStub, eventMessageFlyout.SelectedItem as string);
             _currentStub = null;
             eventMessageFlyout.SelectedItem = null;
         }
@@ -195,7 +194,7 @@ namespace VITacademics.UIControls
         private async void DeleteEventMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (_currentStub != null)
-                await CalendarHelper.RemoveAppointmentAsync(_currentStub);
+                await CalendarManager.RemoveAppointmentAsync(_currentStub);
             _currentStub = null;
         }
 
