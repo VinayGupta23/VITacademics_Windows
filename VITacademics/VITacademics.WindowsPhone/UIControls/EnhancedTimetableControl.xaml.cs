@@ -68,8 +68,9 @@ namespace VITacademics.UIControls
             EventMessages.Add("LAB Mid-Term");
             EventMessages.Add("Class test");
             EventMessages.Add("Class cancelled");
-        }
 
+            GoogleAnalytics.EasyTracker.GetTracker().SendView("Daily Buzz");
+        }
 
         private void Pivot_PivotItemLoading(Pivot sender, PivotItemEventArgs args)
         {

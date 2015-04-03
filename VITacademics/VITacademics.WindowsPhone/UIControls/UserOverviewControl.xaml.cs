@@ -63,6 +63,8 @@ namespace VITacademics.UIControls
         {
             this.InitializeComponent();
             this.DataContext = this;
+
+            GoogleAnalytics.EasyTracker.GetTracker().SendView("Overview");
         }
 
         public void GenerateView(string parameter)

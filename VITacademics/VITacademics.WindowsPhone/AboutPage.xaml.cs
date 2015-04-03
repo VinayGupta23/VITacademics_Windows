@@ -22,6 +22,8 @@ namespace VITacademics
         {
             this.InitializeComponent();
             _statusBar = StatusBar.GetForCurrentView();
+
+            GoogleAnalytics.EasyTracker.GetTracker().SendView("About Page");
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)

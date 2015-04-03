@@ -25,6 +25,8 @@ namespace VITacademics.UIControls
         public BasicTimetableControl()
         {
             this.InitializeComponent();
+
+            GoogleAnalytics.EasyTracker.GetTracker().SendView("Timetable");
         }
 
         public void GenerateView(string parameter)

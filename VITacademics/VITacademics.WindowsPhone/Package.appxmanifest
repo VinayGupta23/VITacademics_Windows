@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="1253b655-bfd9-4bfe-bccd-026bb7c42e10" Publisher="CN=Vinay" Version="1.0.0.0" />
+  <Identity Name="1253b655-bfd9-4bfe-bccd-026bb7c42e10" Publisher="CN=Vinay" Version="3.0.0.0" />
   <mp:PhoneIdentity PhoneProductId="1253b655-bfd9-4bfe-bccd-026bb7c42e10" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>VITacademics</DisplayName>
