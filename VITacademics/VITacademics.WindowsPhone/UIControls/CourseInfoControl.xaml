@@ -96,7 +96,7 @@
                                     </StackPanel>
                                 </Border>
 
-                                <Grid Margin="0,23,0,0">
+                                <Grid Margin="0,23,0,10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                         <ColumnDefinition Width="5*"></ColumnDefinition>
@@ -219,7 +219,7 @@
                                         <TextBlock Text="Quizzes (each out of 5)" Margin="0,23,0,3" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
                                         <ItemsControl ItemsSource="{Binding QuizMarks}"></ItemsControl>
                                         <TextBlock Text="Assignment (out of 5)" Margin="0,23,0,3" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
-                                        <ContentPresenter ContentTemplate="{StaticResource MarkInfoTemplate}"
+                                        <ContentPresenter ContentTemplate="{StaticResource MarkInfoTemplate}" Margin="0,0,0,10"
                                                           Content="{Binding}" DataContext="{Binding AssignmentMarks}"></ContentPresenter>
                                     </StackPanel>
                                 </ScrollViewer>
