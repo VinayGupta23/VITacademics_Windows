@@ -50,7 +50,8 @@
             </Grid.ColumnDefinitions>
 
             <TextBox  x:Name="regNoBox" Header="Register Number" Text="{Binding RegNo, Mode=TwoWay}"
-                      Grid.Row="0" Grid.Column="0" Margin="0,0,17,0" IsTextPredictionEnabled="False"></TextBox>
+                      Grid.Row="0" Grid.Column="0" Margin="0,0,17,0" IsTextPredictionEnabled="False"
+                      InputScope="Search" KeyDown="RegNoBox_KeyDown"></TextBox>
             <DatePicker x:Name="datePicker" Header="Date of Birth" Date="{Binding DOB, Mode=TwoWay}"
                         Grid.Row="0" Grid.Column="1" Margin="17,0,0,0"></DatePicker>
             <TextBlock Text="Campus"

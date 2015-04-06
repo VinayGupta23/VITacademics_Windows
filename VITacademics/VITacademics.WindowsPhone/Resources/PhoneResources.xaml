@@ -128,7 +128,7 @@
     </Style>
     
     <Style TargetType="TextBlock" x:Key="SingleItemContentStyle" BasedOn="{StaticResource ListViewItemContentTextBlockStyle}">
-        <Setter Property="MaxLines" Value="2"></Setter>
+        <Setter Property="MaxLines" Value="1"></Setter>
         <Setter Property="TextWrapping" Value="WrapWholeWords"></Setter>
         <Setter Property="TextAlignment" Value="Left"></Setter>
         <Setter Property="HorizontalAlignment" Value="Left"></Setter>

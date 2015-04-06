@@ -72,8 +72,8 @@
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding Title}" MaxLines="1" Foreground="{ThemeResource PhoneForegroundBrush}"
-                                       Style="{StaticResource SingleItemHeaderStyle}" FontSize="23"></TextBlock>
+                            <TextBlock Text="{Binding Title}" FontSize="23"
+                                       Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
                             <TextBlock Text="{Binding CourseCode}" Grid.Row="1"
                                        Style="{StaticResource SingleItemContentStyle}"></TextBlock>
                             <TextBlock Text="{Binding Slot, FallbackValue=''}" Grid.Row="1" HorizontalAlignment="Right"

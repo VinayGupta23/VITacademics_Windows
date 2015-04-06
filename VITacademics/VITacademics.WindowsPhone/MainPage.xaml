@@ -20,6 +20,8 @@
             <CommandBar.PrimaryCommands>
                 <AppBarButton Icon="AllApps" Label="menu" Click="MenuButton_Click"
                               IsEnabled="{Binding IsContentAvailable, Mode=OneWay}"></AppBarButton>
+                <AppBarButton Icon="Calendar" Label="today" Click="ViewTodayButton_Click"
+                              IsEnabled="{Binding IsContentAvailable, Mode=OneWay}"></AppBarButton>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="settings" Click="SettingsButton_Click"></AppBarButton>

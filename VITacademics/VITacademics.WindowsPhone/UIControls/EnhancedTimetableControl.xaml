@@ -181,7 +181,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Pivot x:Name="rootPivot" Grid.Row="1" Margin="0,-17,0,0"
+        <Pivot x:Name="rootPivot" Grid.Row="1" Margin="0,-13,0,0"
                Style="{StaticResource ContentPivotStyle}">
             <Pivot.TitleTemplate>
                 <DataTemplate>
@@ -190,12 +190,9 @@
             </Pivot.TitleTemplate>
         </Pivot>
 
-        <Button Content="{Binding CurrentDate, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='dd MMM, yyyy'}" Background="WhiteSmoke"
-                Foreground="{ThemeResource PhoneAccentBrush}" BorderBrush="Transparent" BorderThickness="0"
-                x:Name="dateDisplayButton" Click="DateButton_Click" Margin="7,-2,0,0"></Button>
-        <Button Content="see today" Background="WhiteSmoke" Foreground="{ThemeResource PhoneAccentBrush}"
-                HorizontalAlignment="Right" BorderBrush="Transparent" BorderThickness="0"
-                Click="ViewTodayButton_Click" Margin="0,-2,7,0"></Button>
+        <HyperlinkButton Content="{Binding CurrentDate, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='dd MMMM, yyyy'}"
+                         x:Name="dateDisplayButton" Click="DateButton_Click" FontSize="20" FontWeight="Bold"
+                         Foreground="{ThemeResource PhoneAccentBrush}" Margin="17,3,0,2" MinHeight="0"></HyperlinkButton>
     </Grid>
     
 </UserControl>

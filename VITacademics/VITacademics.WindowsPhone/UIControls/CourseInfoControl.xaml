@@ -36,7 +36,7 @@
                             <StackPanel>
 
                                 <StackPanel Margin="10,0,0,0" Grid.Column="1">
-                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" MaxLines="2" TextWrapping="WrapWholeWords"
+                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" MaxLines="0" TextWrapping="WrapWholeWords"
                                            Margin="0,0,0,10" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="Code:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
@@ -70,7 +70,7 @@
                                             <ColumnDefinition Width="*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Faculty:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                        <TextBlock Grid.Column="1" Margin="10,0,0,0" TextWrapping="WrapWholeWords" MaxLines="2" Text="{Binding Faculty}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                        <TextBlock Grid.Column="1" Margin="10,0,0,0" TextWrapping="WrapWholeWords" MaxLines="0" Text="{Binding Faculty}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
                                     </Grid>
                                 </StackPanel>
 
@@ -276,7 +276,7 @@
                         <Pivot Style="{StaticResource ContentPivotStyle}">
                             <PivotItem Header="details">
                                 <StackPanel Margin="10,0,0,0" Grid.Column="1">
-                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" MaxLines="2" TextWrapping="WrapWholeWords"
+                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" MaxLines="0" TextWrapping="WrapWholeWords"
                                            Margin="0,0,0,10" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="Code:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
@@ -305,12 +305,12 @@
                                                     <RowDefinition></RowDefinition>
                                                     <RowDefinition></RowDefinition>
                                                 </Grid.RowDefinitions>
-                                                <TextBlock Text="Project Title:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                                <TextBlock Grid.Column="1" Margin="10,0,0,0"
-                                                           TextWrapping="WrapWholeWords" MaxLines="3" Text="{Binding ProjectTitle, TargetNullValue='N/A'}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
-                                                <TextBlock Text="Faculty:" Grid.Row="1" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="10,0,0,0"
-                                                           TextWrapping="WrapWholeWords" MaxLines="3" Text="{Binding Faculty, TargetNullValue='N/A'}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                                <TextBlock Text="Project Title:" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                                <TextBlock Grid.Column="1" Margin="10,0,0,7" Style="{StaticResource BodyTextBlockStyle}"
+                                                           TextWrapping="WrapWholeWords" MaxLines="0" Text="{Binding ProjectTitle, TargetNullValue='N/A'}"></TextBlock>
+                                                <TextBlock Text="Faculty:" Grid.Row="1" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="10,0,0,0" Style="{StaticResource BodyTextBlockStyle}"
+                                                           TextWrapping="WrapWholeWords" MaxLines="0" Text="{Binding Faculty, TargetNullValue='N/A'}"></TextBlock>
                                             </Grid>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>

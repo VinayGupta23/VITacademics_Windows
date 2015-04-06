@@ -148,6 +148,12 @@ namespace VITacademics
         public void LoadState(Dictionary<string, object> lastState)
         { }
 
+        private void RegNoBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+                datePicker.Focus(FocusState.Programmatic);
+        }
+
     }
 
 

@@ -39,7 +39,7 @@
                 <StackPanel.Resources>
                     <Style TargetType="TextBlock" x:Key="ContentTextStyle" BasedOn="{StaticResource SingleItemContentStyle}">
                         <Setter Property="TextWrapping" Value="WrapWholeWords"></Setter>
-                        <Setter Property="MaxLines" Value="4"></Setter>
+                        <Setter Property="MaxLines" Value="0"></Setter>
                         <Setter Property="Foreground" Value="{ThemeResource PhoneMidBrush}"></Setter>
                     </Style>
                     <TextBlock x:Name="textBlock" Style="{StaticResource ContentTextStyle}"></TextBlock>

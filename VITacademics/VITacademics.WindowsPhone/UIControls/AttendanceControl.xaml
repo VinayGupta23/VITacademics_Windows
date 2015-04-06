@@ -23,6 +23,7 @@
                         <Setter Property="TextAlignment" Value="Center"></Setter>
                         <Setter Property="HorizontalAlignment" Value="Center"></Setter>
                         <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
+                        <Setter Property="MaxLines" Value="2"></Setter>
                     </Style>
                 </ResourceDictionary>
                 
@@ -84,7 +85,7 @@
                     <Grid Background="WhiteSmoke" Margin="0,20,-5,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="1.2*"></ColumnDefinition>
+                            <ColumnDefinition Width="1.1*"></ColumnDefinition>
                             <ColumnDefinition Width="2.4*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Set target (%)" VerticalAlignment="Center"

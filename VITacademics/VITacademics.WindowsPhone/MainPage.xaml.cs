@@ -307,6 +307,21 @@ namespace VITacademics
             }
         }
 
+        private void ViewTodayButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsMenuOpen == true)
+                MenuButton_Click(null, null);
+
+            if (ControlManager.GetCode(_contentControlManager.CurrentControl) == ControlTypeCodes.EnhancedTimetable)
+                _contentControlManager.RefreshCurrentControl();
+            else
+            {
+                object source = null;
+                _contentControlManager.ClearHistory();
+                ProxiedControl_ActionRequested(source, new RequestEventArgs(typeof(EnhancedTimetableControl), null));
+            }
+        }
+
         private void SetTitleAndContent()
         {
             string titleText = null;
