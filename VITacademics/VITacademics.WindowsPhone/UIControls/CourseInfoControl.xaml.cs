@@ -26,8 +26,9 @@ namespace VITacademics.UIControls
         public CourseInfoControl()
         {
             this.InitializeComponent();
-
+#if !DEBUG
             GoogleAnalytics.EasyTracker.GetTracker().SendView("Course Details");
+#endif
         }
 
         public void GenerateView(string parameter)

@@ -144,7 +144,7 @@
         <Setter Property="HeaderTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}" FontSize="45"></TextBlock>
+                    <TextBlock Text="{Binding}" FontSize="43"></TextBlock>
                 </DataTemplate>
             </Setter.Value>
         </Setter>

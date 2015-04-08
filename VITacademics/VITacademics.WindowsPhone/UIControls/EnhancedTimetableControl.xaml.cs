@@ -24,8 +24,10 @@ namespace VITacademics.UIControls
     public sealed partial class EnhancedTimetableControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
 
+        private const int ARRAY_SIZE = 7;
+
         private Timetable _timetable;
-        private DateTimeOffset[] _dates = new DateTimeOffset[5];
+        private DateTimeOffset[] _dates = new DateTimeOffset[ARRAY_SIZE];
         public event EventHandler<RequestEventArgs> ActionRequested;
         public event PropertyChangedEventHandler PropertyChanged;
         private DateTimeOffset _currentDate;
@@ -68,20 +70,21 @@ namespace VITacademics.UIControls
             EventMessages.Add("LAB Mid-Term");
             EventMessages.Add("Class test");
             EventMessages.Add("Class cancelled");
-
+#if !DEBUG
             GoogleAnalytics.EasyTracker.GetTracker().SendView("Daily Buzz");
+#endif
         }
 
         private void Pivot_PivotItemLoading(Pivot sender, PivotItemEventArgs args)
         {
             int curIndex = sender.SelectedIndex;
-            for (int i = curIndex + 1; i < curIndex + 4; i++)
+            for (int i = curIndex + 1; i < curIndex + (ARRAY_SIZE - 1); i++)
             {
-                _dates[i % 5] = _dates[curIndex].AddDays(i - curIndex);
+                _dates[i % ARRAY_SIZE] = _dates[curIndex].AddDays(i - curIndex);
             }
-            int previousIndex = (curIndex + 4) % 5;
+            int previousIndex = (curIndex + (ARRAY_SIZE - 1)) % ARRAY_SIZE;
             _dates[previousIndex] = _dates[curIndex].AddDays(-1);
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < ARRAY_SIZE; i++)
             {
                 string header;
                 DateTimeOffset date = DateTimeOffset.Now.Date;
@@ -118,8 +121,8 @@ namespace VITacademics.UIControls
                 eventMessageFlyout.Hide();
 
                 _timetable = UserManager.GetCurrentTimetable();
-                List<PivotItem> pivotItems = new List<PivotItem>(5);
-                for (int i = 0; i < 5; i++)
+                List<PivotItem> pivotItems = new List<PivotItem>(ARRAY_SIZE);
+                for (int i = 0; i < ARRAY_SIZE; i++)
                     pivotItems.Add(new PivotItem());
                 _dates[0] = DateTimeOffset.Now;
                 rootPivot.PivotItemLoading += Pivot_PivotItemLoading;
@@ -149,7 +152,7 @@ namespace VITacademics.UIControls
 
         private void JumpToDate(DateTimeOffset requestedDate)
         {
-            int index = (rootPivot.SelectedIndex + 1) % 5;
+            int index = (rootPivot.SelectedIndex + 1) % ARRAY_SIZE;
             _dates[index] = requestedDate;
             rootPivot.SelectedIndex = index;
         }

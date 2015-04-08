@@ -25,8 +25,8 @@ namespace VITacademics
         private MenuControl _menu;
         private ControlManager _contentControlManager;
         private bool _isMenuOpen;
-        private bool _isContentAvailable = false;
         private bool _isIdle;
+        private bool _isContentAvailable;
         private string _titleText = null;
         private bool _isCached = false;
 
@@ -77,10 +77,7 @@ namespace VITacademics
             get { return _isContentAvailable; }
             set
             {
-                if (value == _isContentAvailable)
-                    return;
-
-                _isContentAvailable = true;
+                _isContentAvailable = value;
                 NotifyPropertyChanged();
             }
         }
@@ -103,7 +100,9 @@ namespace VITacademics
         {
             if (e.PropertyName == "IsBusy")
                 this.IsIdle = !UserManager.IsBusy;
-            if (e.PropertyName == "CurrentUser")
+            else if (e.PropertyName == "IsContentReady")
+                this.IsContentAvailable = UserManager.IsContentReady;
+            else if (e.PropertyName == "CurrentUser")
             {
                 // Current user was destroyed, detach handlers to forget history and allow fresh assignment and return.
                 if (UserManager.CurrentUser == null)
@@ -119,7 +118,6 @@ namespace VITacademics
                         _contentControlManager.RefreshCurrentControl();
                         SetTitleAndContent();
                     }
-                    this.IsContentAvailable = true;
                     this._menu.GenerateView(null);
                 }
             }
@@ -179,7 +177,7 @@ namespace VITacademics
                 else
                     _contentControlManager.NavigateToControl(AppSettings.DefaultControlType, null);
                 SetTitleAndContent();
-                
+
                 _menu.GenerateView(null);
                 IsContentAvailable = true;
             }

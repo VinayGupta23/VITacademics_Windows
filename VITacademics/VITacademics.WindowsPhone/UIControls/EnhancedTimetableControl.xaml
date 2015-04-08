@@ -25,7 +25,7 @@
                                 <Setter Property="RequestedTheme" Value="Light"></Setter>
                             </Style>
                         </MenuFlyout.MenuFlyoutPresenterStyle>
-                        <MenuFlyoutItem Text="add event" Click="WriteEventMenuItem_Click"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="add reminder" Click="WriteEventMenuItem_Click"></MenuFlyoutItem>
                     </MenuFlyout>
 
                     <MenuFlyout x:Name="modifyFlyout" Placement="Bottom">
@@ -34,8 +34,8 @@
                                 <Setter Property="RequestedTheme" Value="Light"></Setter>
                             </Style>
                         </MenuFlyout.MenuFlyoutPresenterStyle>
-                        <MenuFlyoutItem Text="delete event" Click="DeleteEventMenuItem_Click"></MenuFlyoutItem>
                         <MenuFlyoutItem Text="edit event" Click="WriteEventMenuItem_Click"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="delete" Click="DeleteEventMenuItem_Click"></MenuFlyoutItem>
                     </MenuFlyout>
                     
                     <ListPickerFlyout x:Name="eventMessageFlyout" Placement="Full"

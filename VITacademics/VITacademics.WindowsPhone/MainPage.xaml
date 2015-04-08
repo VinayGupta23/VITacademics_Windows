@@ -63,11 +63,11 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Viewbox Margin="13,0,-6,4" Width="44" Visibility="{Binding CanGoBack, Mode=OneWay}" VerticalAlignment="Center">
+                <Viewbox Margin="13,0,-6,4" Width="40" Visibility="{Binding CanGoBack, Mode=OneWay}" VerticalAlignment="Center">
                     <AppBarButton Icon="Back" VerticalContentAlignment="Center" IsCompact="True"
                                   Click="ReturnButton_Click"></AppBarButton>
                 </Viewbox>
-                <TextBlock Margin="19,10,0,10"
+                <TextBlock Margin="19,10,0,10" FontSize="29" VerticalAlignment="Center"
                            Text="{Binding TitleText, Mode=OneWay}" Foreground="{ThemeResource PhoneForegroundBrush}" LineStackingStrategy="MaxHeight"
                            Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
             </StackPanel>

@@ -74,8 +74,9 @@ namespace VITacademics.Managers
             appt.Subject = string.Format("{0} - {1}", infoStub.SessionHours.Parent.CourseCode, message);
             await _calendar.SaveAppointmentAsync(appt);
             infoStub.AppointmentInfo = new Tuple<string, string>(appt.LocalId, appt.Subject);
-
+#if !DEBUG
             GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Calendar Access", "Set reminder", null, 0);
+#endif
         }
 
         public static async Task RemoveAppointmentAsync(CalenderAwareInfoStub infoStub)

@@ -28,6 +28,7 @@ namespace VITacademics.Managers
         private static Timetable _timetable;
         private static StorageFolder _folder = ApplicationData.Current.RoamingFolder;
         private static bool _isBusy;
+        private static bool _isContentReady;
         private delegate Task<StatusCode> Function();
 
         #endregion
@@ -80,6 +81,10 @@ namespace VITacademics.Managers
             {
                 _currentUser = value;
                 NotifyPropertyChanged();
+                if (_currentUser.CoursesMetadata != null)
+                    IsContentReady = true;
+                else
+                    IsContentReady = false;
             }
         }
         public static bool IsBusy
@@ -88,6 +93,18 @@ namespace VITacademics.Managers
             set
             {
                 _isBusy = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public static bool IsContentReady
+        {
+            get { return _isContentReady; }
+            set
+            {
+                if (value == _isContentReady)
+                    return;
+
+                _isContentReady = value;
                 NotifyPropertyChanged();
             }
         }
