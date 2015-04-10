@@ -111,7 +111,7 @@
     <Style TargetType="TextBlock" x:Key="SingleItemHeaderStyle" BasedOn="{StaticResource MessageDialogTitleStyle}">
         <Setter Property="MaxLines" Value="1"></Setter>
         <Setter Property="TextWrapping" Value="NoWrap"></Setter>
-        <Setter Property="FontSize" Value="25"></Setter>
+        <Setter Property="FontSize" Value="24"></Setter>
         <Setter Property="FontWeight" Value="Normal"></Setter>
         <Setter Property="TextAlignment" Value="Left"></Setter>
         <Setter Property="HorizontalAlignment" Value="Left"></Setter>

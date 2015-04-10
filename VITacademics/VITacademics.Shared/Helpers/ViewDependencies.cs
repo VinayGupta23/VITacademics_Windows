@@ -52,7 +52,7 @@ namespace VITacademics.Helpers
             if (val == 75)
                 return new SolidColorBrush(Colors.DarkOrange);
             else
-                return new SolidColorBrush(Colors.DarkRed);
+                return new SolidColorBrush(Colors.Red);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

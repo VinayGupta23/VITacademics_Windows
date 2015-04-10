@@ -36,8 +36,9 @@
                             <StackPanel>
 
                                 <StackPanel Margin="10,0,0,0" Grid.Column="1">
-                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" MaxLines="0" TextWrapping="WrapWholeWords"
-                                           Margin="0,0,0,10" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" FontSize="25"
+                                               MaxLines="0" TextWrapping="WrapWholeWords"
+                                               Margin="0,0,0,10" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="Code:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                                         <TextBlock Margin="10,0,0,0" Text="{Binding CourseCode}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
@@ -276,8 +277,9 @@
                         <Pivot Style="{StaticResource ContentPivotStyle}">
                             <PivotItem Header="details">
                                 <StackPanel Margin="10,0,0,0" Grid.Column="1">
-                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" MaxLines="0" TextWrapping="WrapWholeWords"
-                                           Margin="0,0,0,10" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" FontSize="25"
+                                               MaxLines="0" TextWrapping="WrapWholeWords"
+                                               Margin="0,0,0,10" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="Code:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                                         <TextBlock Margin="10,0,0,0" Text="{Binding CourseCode}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>

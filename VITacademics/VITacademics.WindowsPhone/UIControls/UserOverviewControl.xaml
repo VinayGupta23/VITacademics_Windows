@@ -18,6 +18,10 @@
     <ScrollViewer>
         <ScrollViewer.Resources>
             <Style TargetType="Border" x:Key="AnimatedBorderStyle">
+                <Setter Property="Margin" Value="5,0,5,17"></Setter>
+                <Setter Property="BorderBrush" Value="WhiteSmoke"></Setter>
+                <Setter Property="BorderThickness" Value="0,0,0,4"></Setter>
+                <Setter Property="Background" Value="Transparent"></Setter>
                 <Setter Property="Transitions">
                     <Setter.Value>
                         <TransitionCollection>
@@ -26,18 +30,26 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
+            <Style TargetType="TextBlock" x:Key="TitleTextStyle" BasedOn="{StaticResource SubheaderTextBlockStyle}">
+                <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
+                <Setter Property="TextWrapping" Value="NoWrap"></Setter>
+                <Setter Property="LineStackingStrategy" Value="BlockLineHeight"></Setter>
+                <Setter Property="FontSize" Value="23"></Setter>
+            </Style>
+            
         </ScrollViewer.Resources>
         
         <StackPanel Margin="19,20,19,0">
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,23">
                 <TextBlock Text="Total Credits&#160;&#160;" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right"
                            Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                 <TextBlock Text="{Binding TotalCredits, Mode=OneWay}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right"
                            Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
             </StackPanel>
             
-            <ListView Margin="0,20,0,0" IsItemClickEnabled="True" ItemClick="ListView_ItemClick"
+            <ListView IsItemClickEnabled="True" ItemClick="ListView_ItemClick"
                       ItemsSource="{Binding CourseList, Mode=OneWay}">
                 <ListView.Resources>
                     <helpers:AttendanceToForegroundConverter x:Key="AttendanceToForegroundConverter"></helpers:AttendanceToForegroundConverter>
@@ -49,7 +61,7 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="WhiteSmoke" Margin="5,10,5,10" Style="{StaticResource AnimatedBorderStyle}">
+                        <Border Style="{StaticResource AnimatedBorderStyle}">
                             <Grid Margin="10,3,10,5" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
                                     <RowDefinition></RowDefinition>
@@ -61,14 +73,13 @@
                                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 
-                                <TextBlock Text="{Binding Title}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
-                                           Grid.ColumnSpan="2" Style="{StaticResource GroupHeaderTextBlockStyle}"
-                                           Foreground="{ThemeResource PhoneAccentBrush}" MaxLines="1"></TextBlock>
-                                
-                                    <TextBlock Text="Internals" Grid.Row="1" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2"
+                                           Style="{StaticResource TitleTextStyle}"></TextBlock>
+                                <TextBlock Text="Internals" Grid.Row="1" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
                                     
                                 <StackPanel Orientation="Horizontal" Grid.Row="2">
-                                    <TextBlock Text="{Binding InternalMarksScored}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                    <TextBlock Text="{Binding InternalMarksScored}" Foreground="{ThemeResource PhoneAccentBrush}"
+                                               Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
                                     <TextBlock Text="&#160;/&#160;" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                                     <TextBlock Text="{Binding TotalMarksTested}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                                 </StackPanel>
@@ -84,18 +95,16 @@
                                                Foreground="{Binding Attendance.Percentage, Converter={StaticResource AttendanceToForegroundConverter}}"
                                                Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
                                 </StackPanel>
-                                
-                                <ProgressBar Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch"
+                                <ProgressBar Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" Background="LightGray"
                                              Foreground="{Binding Attendance.Percentage, Converter={StaticResource AttendanceToForegroundConverter}}"
-                                             Value="{Binding Attendance.Percentage}" Height="7" VerticalAlignment="Center" VerticalContentAlignment="Center"
-                                             Background="LightGray"></ProgressBar>
+                                             Value="{Binding Attendance.Percentage}" Height="7" VerticalAlignment="Center" VerticalContentAlignment="Center"></ProgressBar>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
-            <ListView Margin="0,10,0,0" IsItemClickEnabled="True" ItemClick="ListView_ItemClick"
+            <ListView IsItemClickEnabled="True" ItemClick="ListView_ItemClick"
                       ItemsSource="{Binding NltpCourseList, Mode=OneWay}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
@@ -104,17 +113,15 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="WhiteSmoke" Margin="5,10,5,10" Style="{StaticResource AnimatedBorderStyle}">
+                        <Border Style="{StaticResource AnimatedBorderStyle}">
                             <Grid Margin="10,3,10,5" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                 <Grid.RowDefinitions>
                                     <RowDefinition></RowDefinition>
                                     <RowDefinition></RowDefinition>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{Binding Title}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
-                                           Style="{StaticResource GroupHeaderTextBlockStyle}"
-                                           Foreground="{ThemeResource PhoneAccentBrush}" MaxLines="1"></TextBlock>
+                                <TextBlock Text="{Binding Title}" Style="{StaticResource TitleTextStyle}"></TextBlock>
                                 <TextBlock Text="{Binding CourseCode}" MaxLines="1" Grid.Row="1"
-                                           Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                           Style="{StaticResource TitleTextBlockStyle}" Foreground="{ThemeResource PhoneDisabledBrush}"></TextBlock>
                             </Grid>
                         </Border>
                     </DataTemplate>
