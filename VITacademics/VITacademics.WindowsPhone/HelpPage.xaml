@@ -1,0 +1,28 @@
+﻿<Page
+    x:Class="VITacademics.HelpPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    RequestedTheme="Dark"
+    Background="#FF364046">
+    <!-- Background="#FF363D3F" -->
+
+    <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+          Margin="0,0,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Ellipse Width="30" Height="30" Fill="Black"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"></Ellipse>
+        <TextBlock Text="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Style="{StaticResource BodyTextBlockStyle}"
+                   FontWeight="Bold" TextLineBounds="Tight"></TextBlock>
+    </Grid>
+
+</Page>

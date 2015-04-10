@@ -73,12 +73,12 @@
                     </Paragraph>
                 </RichTextBlock>
 
-                <TextBlock Text="VITacademics backend server" Margin="0,30,0,7"
+                <TextBlock Text="VITacademics server" Margin="0,30,0,7"
                            Foreground="{ThemeResource PhoneForegroundBrush}" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
 
                 <RichTextBlock Margin="0,0,0,20">
                     <Paragraph Foreground="{Binding Foreground, ElementName=textBlock}" FontSize="{Binding FontSize, ElementName=textBlock}">
-                        The app's supporting backend API server. View its contributors or contribute to its development
+                        The app's supporting API server. View its contributors or contribute to its development
                         <Hyperlink Foreground="{ThemeResource PhoneAccentBrush}" FontSize="{Binding FontSize, ElementName=textBlock}"
                                    NavigateUri="https://github.com/aneesh-neelam/VITacademics">
                             here

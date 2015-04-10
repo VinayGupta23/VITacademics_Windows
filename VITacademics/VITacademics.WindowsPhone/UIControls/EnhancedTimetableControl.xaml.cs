@@ -24,31 +24,48 @@ namespace VITacademics.UIControls
     public sealed partial class EnhancedTimetableControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
 
+        #region Fields and Properties
+
         private const int ARRAY_SIZE = 7;
 
         private Timetable _timetable;
         private DateTimeOffset[] _dates = new DateTimeOffset[ARRAY_SIZE];
-        public event EventHandler<RequestEventArgs> ActionRequested;
-        public event PropertyChangedEventHandler PropertyChanged;
         private DateTimeOffset _currentDate;
         private DatePickerFlyout _datePickerFlyout;
         private CalenderAwareInfoStub _currentStub;
+        private bool _contentReady;
+        private CalenderAwareDayInfo _awareDayInfo;
+
+        public delegate void DataChanged();
+        private DataChanged DataUpdated;
+        private bool ContentReady
+        {
+            get { return _contentReady; }
+            set
+            {
+                _contentReady = value;
+                DataUpdated();
+            }
+        }
 
         public List<string> EventMessages
         {
             get;
             set;
         }
-
         public CalenderAwareDayInfo AwareDayInfo
         {
-            get;
-            set;
+            get { return _awareDayInfo; }
+            set
+            {
+                _awareDayInfo = value;
+                DataUpdated();
+            }
         }
         public DateTimeOffset CurrentDate
         {
             get { return _currentDate; }
-            set
+            private set
             {
                 _currentDate = value;
                 if (PropertyChanged != null)
@@ -56,11 +73,62 @@ namespace VITacademics.UIControls
             }
         }
 
+        #endregion
+
+        #region Interface Implementations
+
+        public event EventHandler<RequestEventArgs> ActionRequested;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public async void GenerateView(string parameter)
+        {
+            try
+            {
+                addFlyout.Hide();
+                modifyFlyout.Hide();
+                if (_datePickerFlyout != null)
+                    _datePickerFlyout.Hide();
+                eventMessageFlyout.Hide();
+
+                _timetable = UserManager.GetCurrentTimetable();
+                List<PivotItem> pivotItems = new List<PivotItem>(ARRAY_SIZE);
+                for (int i = 0; i < ARRAY_SIZE; i++)
+                    pivotItems.Add(new PivotItem());
+                _dates[0] = DateTimeOffset.Now;
+                rootPivot.PivotItemLoading += Pivot_PivotItemLoading;
+                rootPivot.ItemsSource = pivotItems;
+                await CalendarManager.LoadCalendarAsync();
+                ContentReady = true;
+            }
+            catch { }
+        }
+
+        public Dictionary<string, object> SaveState()
+        {
+            var state = new Dictionary<string, object>(1);
+            state.Add("selectedDate", CurrentDate);
+            return state;
+        }
+
+        public void LoadState(Dictionary<string, object> lastState)
+        {
+            try
+            {
+                if (lastState != null)
+                {
+                    JumpToDate((DateTimeOffset)lastState["selectedDate"]);
+                }
+            }
+            catch { }
+        }
+
+        #endregion
+
         public EnhancedTimetableControl()
         {
             this.InitializeComponent();
             this.DataContext = this;
-            
+
             EventMessages = new List<string>();
             EventMessages.Add("Quiz I");
             EventMessages.Add("Quiz II");
@@ -73,6 +141,15 @@ namespace VITacademics.UIControls
 #if !DEBUG
             GoogleAnalytics.EasyTracker.GetTracker().SendView("Daily Buzz");
 #endif
+            DataUpdated += DataUpdatedHandler;
+        }
+
+        #region Methods
+
+        private async void DataUpdatedHandler()
+        {
+            if (AwareDayInfo != null && ContentReady == true)
+                await AwareDayInfo.LoadAppointmentsAsync();
         }
 
         private void Pivot_PivotItemLoading(Pivot sender, PivotItemEventArgs args)
@@ -101,54 +178,8 @@ namespace VITacademics.UIControls
             CurrentDate = _dates[curIndex];
             AwareDayInfo = new CalenderAwareDayInfo(CurrentDate, _timetable.GetExactDayInfo(_dates[curIndex]));
             (sender.Items[curIndex] as PivotItem).DataContext = AwareDayInfo;
-            LoadAppointmentsAsync();
         }
 
-        private async void LoadAppointmentsAsync()
-        {
-            foreach (CalenderAwareInfoStub stub in AwareDayInfo.RegularClassesInfo)
-                await CalendarManager.AssignAppointmentIfAvailableAsync(stub);
-        }
-
-        public void GenerateView(string parameter)
-        {
-            try
-            {
-                addFlyout.Hide();
-                modifyFlyout.Hide();
-                if (_datePickerFlyout != null)
-                    _datePickerFlyout.Hide();
-                eventMessageFlyout.Hide();
-
-                _timetable = UserManager.GetCurrentTimetable();
-                List<PivotItem> pivotItems = new List<PivotItem>(ARRAY_SIZE);
-                for (int i = 0; i < ARRAY_SIZE; i++)
-                    pivotItems.Add(new PivotItem());
-                _dates[0] = DateTimeOffset.Now;
-                rootPivot.PivotItemLoading += Pivot_PivotItemLoading;
-                rootPivot.ItemsSource = pivotItems;
-            }
-            catch { }
-        }
-
-        public Dictionary<string, object> SaveState()
-        {
-            var state = new Dictionary<string, object>(1);
-            state.Add("selectedDate", CurrentDate);
-            return state;
-        }
-
-        public void LoadState(Dictionary<string, object> lastState)
-        {
-            try
-            {
-                if(lastState != null)
-                {
-                    JumpToDate((DateTimeOffset)lastState["selectedDate"]);
-                }
-            }
-            catch { }
-        }
 
         private void JumpToDate(DateTimeOffset requestedDate)
         {
@@ -156,6 +187,10 @@ namespace VITacademics.UIControls
             _dates[index] = requestedDate;
             rootPivot.SelectedIndex = index;
         }
+
+        #endregion
+
+        #region Event handlers
 
         private void DateButton_Click(object sender, RoutedEventArgs e)
         {
@@ -175,7 +210,7 @@ namespace VITacademics.UIControls
         private void ItemRootGrid_Holding(object sender, HoldingRoutedEventArgs e)
         {
             CalenderAwareInfoStub stub = (sender as FrameworkElement).DataContext as CalenderAwareInfoStub;
-            if(stub.AppointmentInfo == null)
+            if (stub.AppointmentInfo == null)
             {
                 addFlyout.ShowAt(sender as FrameworkElement);
             }
@@ -204,7 +239,7 @@ namespace VITacademics.UIControls
 
         private void List_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(ActionRequested != null)
+            if (ActionRequested != null)
                 ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl),
                                         (e.ClickedItem as CalenderAwareInfoStub).SessionHours.Parent.ClassNumber.ToString()));
         }
@@ -213,6 +248,8 @@ namespace VITacademics.UIControls
         {
             JumpToDate(DateTimeOffset.Now);
         }
+
+        #endregion
 
     }
 }

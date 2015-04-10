@@ -81,7 +81,7 @@ namespace VITacademics.Managers
             {
                 _currentUser = value;
                 NotifyPropertyChanged();
-                if (_currentUser.CoursesMetadata != null)
+                if (value != null && _currentUser.CoursesMetadata != null)
                     IsContentReady = true;
                 else
                     IsContentReady = false;
@@ -250,6 +250,9 @@ namespace VITacademics.Managers
                             new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
 
                         CurrentUser = user;
+#if WINDOWS_PHONE_APP
+                        await CalendarManager.CreateNewCalendarAsync(CurrentUser);
+#endif
                     }
                     catch
                     {
@@ -295,9 +298,9 @@ namespace VITacademics.Managers
         {
             return await MonitoredTask(async () =>
             {
-                CurrentUser = null;
                 await CalendarManager.DeleteCalendarAsync();
                 AppSettings.ResetToDefaults();
+                CurrentUser = null;        
                 try
                 {
                     PasswordCredential credential = GetStoredCredential();

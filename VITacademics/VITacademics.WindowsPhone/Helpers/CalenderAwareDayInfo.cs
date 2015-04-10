@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VITacademics.Managers;
 
 namespace VITacademics.Helpers
 {
@@ -33,19 +34,30 @@ namespace VITacademics.Helpers
             }
         }
 
-        public CalenderAwareInfoStub(DateTimeOffset contextDate, KeyValuePair<ClassHours, AttendanceStub> infoPair)
+        private CalenderAwareInfoStub(DateTimeOffset contextDate, KeyValuePair<ClassHours, AttendanceStub> infoPair)
         {
             _contextDate = contextDate;
             _sessionHours = infoPair.Key;
             _attendanceInfo = infoPair.Value;
         }
+    
+        internal static ObservableCollection<CalenderAwareInfoStub> GetStubCollection(DateTimeOffset contextDate, DayInfo dayInfo)
+        {
+            var regularClassesInfo = new ObservableCollection<CalenderAwareInfoStub>();
+            foreach(var infoPair in dayInfo.RegularClassDetails)
+            {
+                regularClassesInfo.Add(new CalenderAwareInfoStub(contextDate, infoPair));
+            }
+            return regularClassesInfo;
+        }
+
     }
 
     public class CalenderAwareDayInfo
     {
         private readonly bool _isEmptyDay;
         private readonly bool _hadExtraClasses;
-        
+
         public ObservableCollection<CalenderAwareInfoStub> RegularClassesInfo
         {
             get;
@@ -68,9 +80,7 @@ namespace VITacademics.Helpers
         public CalenderAwareDayInfo(DateTimeOffset contextDate, DayInfo dayInfo)
         {
             ExtraClassesInfo = dayInfo.ExtraClassDetails;
-            RegularClassesInfo = new ObservableCollection<CalenderAwareInfoStub>();
-            foreach (var infoPair in dayInfo.RegularClassDetails)
-                RegularClassesInfo.Add(new CalenderAwareInfoStub(contextDate, infoPair));
+            RegularClassesInfo = CalenderAwareInfoStub.GetStubCollection(contextDate, dayInfo);
 
             if (RegularClassesInfo.Count == 0)
                 _isEmptyDay = true;
@@ -78,5 +88,10 @@ namespace VITacademics.Helpers
                 _hadExtraClasses = true;
         }
 
+        public async Task LoadAppointmentsAsync()
+        {
+            foreach (CalenderAwareInfoStub stub in this.RegularClassesInfo)
+                await CalendarManager.AssignAppointmentIfAvailableAsync(stub);
+        }
     }
 }

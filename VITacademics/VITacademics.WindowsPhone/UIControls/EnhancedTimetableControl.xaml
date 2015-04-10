@@ -53,6 +53,17 @@
                         <Setter Property="IsItemClickEnabled" Value="True"></Setter>
                     </Style>
 
+                    <Style TargetType="TextBlock" x:Key="AppointmentTextBlockStyle" BasedOn="{StaticResource LabelTextBlockStyle}">
+                        <Setter Property="Foreground" Value="{ThemeResource PhoneAccentBrush}"></Setter>
+                        <Setter Property="Transitions">
+                            <Setter.Value>
+                                <TransitionCollection>
+                                    <EntranceThemeTransition></EntranceThemeTransition>
+                                </TransitionCollection>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
                     <DataTemplate x:Key="classTodayDataTemplate">
                         <Grid Margin="0,0,0,17" Holding="ItemRootGrid_Holding" IsHoldingEnabled="True">
                             <Grid.ColumnDefinitions>
@@ -84,7 +95,8 @@
                                         </TransitionCollection>
                                     </local:GoMissAttendanceInfo.Transitions>
                                 </local:GoMissAttendanceInfo>
-                                <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}" Style="{StaticResource LabelTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
+                                <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}"
+                                           Style="{StaticResource AppointmentTextBlockStyle}"></TextBlock>
                             </StackPanel>
                         </Grid>
                     </DataTemplate>
@@ -116,7 +128,7 @@
                                 <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemSubHeaderStyle}"
                                            Foreground="{ThemeResource PhoneMidBrush}"></TextBlock>
                                 <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}"
-                                           Style="{StaticResource LabelTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
+                                           Style="{StaticResource AppointmentTextBlockStyle}"></TextBlock>
                             </StackPanel>
                         </Grid>
                         

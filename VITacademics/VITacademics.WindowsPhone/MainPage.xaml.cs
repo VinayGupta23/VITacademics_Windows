@@ -137,7 +137,7 @@ namespace VITacademics
 
         public async void LoadState(Dictionary<string, object> lastState)
         {
-            if (_isCached == true)
+            if (_isCached == true || UserManager.IsBusy)
                 return;
 
             StatusCode status = StatusCode.UnknownError;
@@ -167,7 +167,6 @@ namespace VITacademics
                         freshData = true;
                     }
                 }
-                await CalendarManager.LoadCalendarAsync();
             });
 
             if (status == StatusCode.Success)
@@ -268,6 +267,11 @@ namespace VITacademics
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
             PageManager.NavigateTo(typeof(AboutPage), null, NavigationType.Default);
+        }
+
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            PageManager.NavigateTo(typeof(HelpPage), null, NavigationType.Default);
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)

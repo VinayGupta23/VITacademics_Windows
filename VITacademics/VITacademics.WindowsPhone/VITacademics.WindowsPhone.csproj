@@ -85,6 +85,9 @@
     <Compile Include="AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HelpPage.xaml.cs">
+      <DependentUpon>HelpPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Managers\CalendarManager.cs" />
     <Compile Include="Helpers\CalenderAwareDayInfo.cs" />
     <Compile Include="Helpers\ControlManager.cs" />
@@ -139,6 +142,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="AboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HelpPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -24,6 +24,7 @@
                               IsEnabled="{Binding IsContentAvailable, Mode=OneWay}"></AppBarButton>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
+                <AppBarButton Label="help" Click="HelpButton_Click"></AppBarButton>
                 <AppBarButton Label="settings" Click="SettingsButton_Click"></AppBarButton>
                 <AppBarButton Label="about" Click="AboutButton_Click"></AppBarButton>
             </CommandBar.SecondaryCommands>
