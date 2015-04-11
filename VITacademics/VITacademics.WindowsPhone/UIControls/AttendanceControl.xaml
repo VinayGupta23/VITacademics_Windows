@@ -109,7 +109,7 @@
                        Margin="0,20,0,0"></TextBlock>
             
             <ItemsControl ItemsSource="{Binding Details}"
-                          Margin="10,17,10,0">
+                          x:Name="detailsList" Margin="10,17,10,0">
                 <ItemsControl.Transitions>
                     <TransitionCollection>
                         <EntranceThemeTransition FromHorizontalOffset="0" FromVerticalOffset="13"></EntranceThemeTransition>

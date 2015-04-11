@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
+using System.Collections.Generic;
 
 namespace VITacademics.UIControls
 {
@@ -20,6 +20,11 @@ namespace VITacademics.UIControls
         private Attendance _attendance;
         private double _targetAttendance = 75;
 
+        public List<KeyValuePair<DateTimeOffset, AttendanceStub>> Details
+        {
+            get;
+            private set;
+        }
         public double AttendancePercentage
         {
             get { return Math.Ceiling(_attendancePercentage); }
@@ -107,6 +112,12 @@ namespace VITacademics.UIControls
             if (this.DataContext != null)
             {
                 _attendance = this.DataContext as Attendance;
+                Details = new List<KeyValuePair<DateTimeOffset,AttendanceStub>>(_attendance.Details.Count);
+                foreach (var stub in _attendance.Details)
+                    Details.Add(stub);
+                Details.Reverse();
+
+                detailsList.DataContext = this;
                 attendanceGrid.DataContext = this;
                 ResetParamters();
             }
