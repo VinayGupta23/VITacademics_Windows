@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="21894BioCrossX.VITacademics8.1" Publisher="CN=580FDDE8-74DE-42D5-ABBC-3ADB6C33708D" Version="3.0.0.1" />
+  <Identity Name="21894BioCrossX.VITacademics8.1" Publisher="CN=580FDDE8-74DE-42D5-ABBC-3ADB6C33708D" Version="3.0.0.2" />
   <mp:PhoneIdentity PhoneProductId="edf075c9-ad54-422d-b1e3-1f61b198f93c" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>VITacademics 8.1</DisplayName>
-    <PublisherDisplayName>College CODE</PublisherDisplayName>
+    <PublisherDisplayName>VinayGupta</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
