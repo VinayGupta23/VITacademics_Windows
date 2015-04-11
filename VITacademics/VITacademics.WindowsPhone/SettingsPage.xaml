@@ -56,28 +56,5 @@
 
             </StackPanel>
         </PivotItem>
-
-        <PivotItem Header="help">
-            <StackPanel>
-                <StackPanel.Resources>
-                    <Style TargetType="TextBlock" x:Key="HelpContentTextBlockStyle" BasedOn="{StaticResource BodyTextBlockStyle}">
-                        <Setter Property="Foreground" Value="{ThemeResource PhoneMidBrush}"></Setter>
-                    </Style>
-                    <Style TargetType="TextBlock" x:Key="HelpHeaderTextBlockStyle" BasedOn="{StaticResource GroupHeaderTextBlockStyle}">
-                        <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
-                    </Style>
-                </StackPanel.Resources>
-            <TextBlock Text="setting up reminders" Margin="0,17,0,7"
-                   Style="{StaticResource HelpHeaderTextBlockStyle}"></TextBlock>
-            <TextBlock Text="You can now add event reminders via the app that sync to your calendar! In the Daily Buzz page, simply hold on the title of any course to show the event menu."
-                   Style="{StaticResource HelpContentTextBlockStyle}"></TextBlock>
-
-            <TextBlock Text="tracking attendance" Margin="0,17,0,7"
-                   Style="{StaticResource HelpHeaderTextBlockStyle}"></TextBlock>
-            <TextBlock Text="Analysing your attendance was never this easy! Check out the new 'Set Target' feature in the course details page."
-                   Style="{StaticResource HelpContentTextBlockStyle}"></TextBlock>
-            </StackPanel>
-        </PivotItem>
-
     </Pivot>
 </Page>
