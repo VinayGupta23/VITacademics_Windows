@@ -5,24 +5,95 @@
     xmlns:local="using:VITacademics"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helpers="using:VITacademics.Helpers"
     mc:Ignorable="d"
     RequestedTheme="Dark"
-    Background="#FF364046">
-    <!-- Background="#FF363D3F" -->
+    Background="{StaticResource AlternateMediumBrush}">
 
-    <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-          Margin="0,0,0,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+    <Page.Resources>
+        <ResourceDictionary>
+            
+            <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></helpers:BoolToVisibilityConverter>
+
+            <local:HelpItemCollection x:Name="HelpItems">
+                <local:HelpItem Title="Introducing Daily Buzz"
+                                HasIndex="False"
+                                ImagePath="ms-appx:///Assets/HelpContent/DailyBuzz1.png"
+                                ContentText="View your schedule and reminders integrated with attendance"></local:HelpItem>
+                <local:HelpItem Title="See your everyday activity"
+                                HasIndex="True" Index="1"
+                                ImagePath="ms-appx:///Assets/HelpContent/DailyBuzz2.png"
+                                ContentText="Tap here to jump to a date"></local:HelpItem>
+                <local:HelpItem Title="Set reminders"
+                                HasIndex="True" Index="2"
+                                ImagePath="ms-appx:///Assets/HelpContent/DailyBuzz3.png"
+                                ContentText="Press and hold on the title of the course to set a reminder"></local:HelpItem>
+                <local:HelpItem Title="Track your attendance"
+                                HasIndex="True" Index="3"
+                                ImagePath="ms-appx:///Assets/HelpContent/Attendance1.png"
+                                ContentText="Set a target and let the app calculate your required classes"></local:HelpItem>
+            </local:HelpItemCollection>
+            
+            <DataTemplate x:Key="FlipViewItemTemplate">
+                <Grid DataContext="{Binding}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" MinHeight="30"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*" MinHeight="30"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="3.7*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="3" VerticalAlignment="Center"
+                               TextAlignment="Center" Style="{StaticResource SubheaderTextBlockStyle}"
+                               FontSize="25"></TextBlock>
+                    <Viewbox Grid.Row="1" Grid.Column="1">
+                        <Image Source="{Binding ImagePath}"></Image>
+                    </Viewbox>
+                    <Grid Grid.Row="2" Grid.ColumnSpan="3"
+                          HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid RequestedTheme="Dark"
+                              Visibility="{Binding HasIndex, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Ellipse Width="30" Height="30" Fill="{ThemeResource PhoneBackgroundBrush}"></Ellipse>
+                            <TextBlock Style="{StaticResource BodyTextBlockStyle}"
+                               FontWeight="Bold" TextLineBounds="Tight"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Text="{Binding Index}" Foreground="{ThemeResource PhoneForegroundBrush}"></TextBlock>
+                        </Grid>
+                        <TextBlock Margin="10,0,0,0" Text="{Binding ContentText}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   Grid.Column="1" TextAlignment="Left"></TextBlock>
+                    </Grid>
+                    
+                </Grid>
+            </DataTemplate>
+            
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Ellipse Width="30" Height="30" Fill="Black"
-                 HorizontalAlignment="Center" VerticalAlignment="Center"></Ellipse>
-        <TextBlock Text="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Style="{StaticResource BodyTextBlockStyle}"
-                   FontWeight="Bold" TextLineBounds="Tight"></TextBlock>
-    </Grid>
 
+        <TextBlock Text="help" Style="{StaticResource SubheaderTextBlockStyle}"
+                   Margin="20,20,0,0" FontSize="43"></TextBlock>
+        <TextBlock x:Name="pageNoTextBlock" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                   Margin="0,0,20,0" Style="{StaticResource ComboBoxPlaceholderTextBlockStyle}"></TextBlock>
+        
+        <FlipView Margin="19,0,20,0" Grid.Row="1" BorderBrush="{ThemeResource PhoneDisabledBrush}" BorderThickness="0,1,0,0"
+                  x:Name="flipView" SelectionChanged="FlipView_SelectionChanged"
+                  ItemTemplate="{StaticResource FlipViewItemTemplate}"
+                  ItemsSource="{StaticResource HelpItems}">
+        </FlipView>
+    </Grid>
+    
 </Page>

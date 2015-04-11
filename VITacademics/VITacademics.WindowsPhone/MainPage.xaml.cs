@@ -290,6 +290,13 @@ namespace VITacademics
 
         private void ProxiedControl_ActionRequested(object sender, RequestEventArgs e)
         {
+
+            if(e.TargetElement == typeof(HelpPage))
+            {
+                PageManager.NavigateTo(e.TargetElement, null, NavigationType.Default);
+                return;
+            }
+
             if (sender as MenuControl != null)
             {
                 MenuButton_Click(null, null);

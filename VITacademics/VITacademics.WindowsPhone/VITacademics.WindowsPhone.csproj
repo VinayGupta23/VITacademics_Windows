@@ -132,6 +132,10 @@
   <ItemGroup>
     <Content Include="analytics.xml" />
     <Content Include="Assets\AppLogo.png" />
+    <Content Include="Assets\HelpContent\Attendance1.png" />
+    <Content Include="Assets\HelpContent\DailyBuzz1.png" />
+    <Content Include="Assets\HelpContent\DailyBuzz2.png" />
+    <Content Include="Assets\HelpContent\DailyBuzz3.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />
     <Content Include="Assets\Square150x150Logo.scale-240.png" />
     <Content Include="Assets\Square44x44Logo.scale-240.png" />
@@ -224,6 +228,7 @@
       <HintPath>..\..\packages\GoogleAnalyticsSDK.1.2.12\lib\wpa81\GoogleAnalytics.Core.winmd</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>

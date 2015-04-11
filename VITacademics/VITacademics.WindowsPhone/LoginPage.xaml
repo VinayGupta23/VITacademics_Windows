@@ -11,10 +11,10 @@
     <Page.Background>
         <LinearGradientBrush ColorInterpolationMode="ScRgbLinearInterpolation" EndPoint="0,1" StartPoint="-0.2,0.5">
             <GradientStop Color="{Binding Color, Source={StaticResource AlternateDarkBrush}}"/>
-            <GradientStop Color="#FF363D3F" Offset="0.7"/>
+            <GradientStop Offset="0.7" Color="{Binding Color, Source={StaticResource AlternateMediumBrush}}"/>
         </LinearGradientBrush>
     </Page.Background>
-    
+
     <!-- Root Grid -->
     <Grid Margin="19,0,19,0">
         <Grid.RowDefinitions>

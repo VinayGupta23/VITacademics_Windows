@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using VITacademics.Helpers;
+using Windows.UI.Popups;
 
 
 namespace VITacademics.UIControls
@@ -142,9 +143,29 @@ namespace VITacademics.UIControls
             GoogleAnalytics.EasyTracker.GetTracker().SendView("Daily Buzz");
 #endif
             DataUpdated += DataUpdatedHandler;
+
+            if (AppSettings.FirstRun == true)
+                ShowPromptAsync();
         }
 
         #region Methods
+
+        private async void ShowPromptAsync()
+        {
+            MessageDialog dialog = new MessageDialog("Well yes! You can now set reminders for your quizzes, assignments and a lot more.\n\nTap on 'more help' to learn how.", "Like to set reminders?");
+            UICommand cmd1 = new UICommand("more help", DialogCommandHandler);
+            UICommand cmd2 = new UICommand("dismiss", DialogCommandHandler);
+            dialog.Commands.Add(cmd1);
+            dialog.Commands.Add(cmd2);
+            await dialog.ShowAsync();
+        }
+
+        private void DialogCommandHandler(IUICommand command)
+        {
+            if (command.Label == "more help")
+                ActionRequested(this, new RequestEventArgs(typeof(HelpPage), null));
+            AppSettings.FirstRun = false;
+        }
 
         private async void DataUpdatedHandler()
         {
@@ -179,7 +200,6 @@ namespace VITacademics.UIControls
             AwareDayInfo = new CalenderAwareDayInfo(CurrentDate, _timetable.GetExactDayInfo(_dates[curIndex]));
             (sender.Items[curIndex] as PivotItem).DataContext = AwareDayInfo;
         }
-
 
         private void JumpToDate(DateTimeOffset requestedDate)
         {

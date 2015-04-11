@@ -13,6 +13,7 @@ namespace VITacademics.Managers
         private const string APP_SETTINGS_CONTAINER_NAME = "appSettings";
         private const string AUTO_REFRESH_KEY = "autoRefresh";
         private const string DEFAULT_CONTROL_KEY = "defaultControlCode";
+        private const string FIRST_RUN_KEY = "firstRun";
 
         private static readonly ApplicationDataContainer _settingsContainer;
 
@@ -34,6 +35,21 @@ namespace VITacademics.Managers
             set
             {
                 _settingsContainer.Values[AUTO_REFRESH_KEY] = value;
+            }
+        }
+        public static bool FirstRun
+        {
+            get
+            {
+                object val = _settingsContainer.Values[FIRST_RUN_KEY];
+                if (val == null)
+                    return true;
+                else
+                    return (bool)val;
+            }
+            set
+            {
+                _settingsContainer.Values[FIRST_RUN_KEY] = value;
             }
         }
         public static ControlTypeCodes DefaultControlType
