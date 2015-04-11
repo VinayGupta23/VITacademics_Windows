@@ -71,7 +71,7 @@ namespace VITacademics.UIControls
             MenuItems = new List<MenuItem>();
             MenuItems.Add(new MenuItem("overview", "a summary of marks and attendance"));
             MenuItems.Add(new MenuItem("timetable", "your regular schedule of classes"));
-            MenuItems.Add(new MenuItem("daily buzz", "your schedule and reminders integrated with attendance"));
+            MenuItems.Add(new MenuItem("daily buzz", "your schedule, reminders and attendance in one place"));
 
             this.DataContext = this;
         }

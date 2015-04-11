@@ -7,7 +7,7 @@
     <SolidColorBrush x:Key="AlternateDarkBrush"
                      Color="#FF1B1E22"></SolidColorBrush>
     <SolidColorBrush x:Key="AlternateMediumBrush"
-                     Color="#FF313940"></SolidColorBrush>
+                     Color="#FF323A41"></SolidColorBrush>
     
     <helpers:StatusToBrushConverter x:Key="StatusToForegroundConverter"
                                     PresentBrush="Green" AbsentBrush="Red"
