@@ -15,14 +15,19 @@ namespace Academics.ContentService
     {
         #region Private fields and constants
         
+#if DEBUG
+        private const string BASE_URI_STRING = "https://vitacademics-dev.herokuapp.com";
+#else
         private const string BASE_URI_STRING = "https://vitacademics-rel.herokuapp.com";
+#endif
         private const string LOGIN_STRING_FORMAT = "/api/v2/{0}/login?regno={1}&dob={2}";
         private const string REFRESH_STRING_FORMAT = "/api/v2/{0}/refresh?regno={1}&dob={2}";
+#if WINDOWS_PHONE_APP
         private const string WP_USER_AGENT = "Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 520) like iPhone OS 7_0_3 Mac OS X AppleWebKit/537 (KHTML, like Gecko) Mobile Safari/537";
-        // This is the User Agent for Windows on desktop, meant for testing purposes only.
-        // private const string WP_USER_AGENT = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)";
+#else
+        private const string WP_USER_AGENT = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)";
+#endif
         private const int MAX_ATTEMPTS = 2;
-
         private static readonly HttpClient _httpClient;
         
         #endregion

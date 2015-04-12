@@ -8,6 +8,7 @@ namespace Academics.DataModel
     {
         private readonly string _semester;
         private readonly DateTimeOffset _refreshedDate;
+        private readonly ushort _totalCredits;
 
         public string Semester
         {
@@ -19,11 +20,17 @@ namespace Academics.DataModel
             get
             { return _refreshedDate; }
         }
+        public ushort TotalCredits
+        {
+            get
+            { return _totalCredits; }
+        }
 
-        public CoursesMetadata(string semester, DateTimeOffset refreshedDate)
+        public CoursesMetadata(string semester, DateTimeOffset refreshedDate, ushort totalCredits)
         {
             _semester = semester;
             _refreshedDate = refreshedDate;
+            _totalCredits = totalCredits;
         }
 
     }
