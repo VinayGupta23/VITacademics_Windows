@@ -27,6 +27,7 @@ namespace Academics.DataModel
         public string CourseOption { get; internal set; }
         public string SubjectType { get; internal set; }
         public string Faculty { get; internal set; }
+        public ushort Credits { get; internal set; }
     }
 
     public abstract class LtpCourse : Course
@@ -54,7 +55,7 @@ namespace Academics.DataModel
     }
 
     public abstract class NonLtpCourse : Course
-    {
-        public string Credits { get; internal set; }
+    { 
     }
+
 }

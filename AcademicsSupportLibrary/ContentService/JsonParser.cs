@@ -89,6 +89,7 @@ namespace Academics.ContentService
                 string campus = rootObject.GetNamedString("campus");
                 user = new User(regNo, dob, campus);
 
+                ushort totalCredits = 0;
                 JsonArray coursesArray = rootObject.GetNamedArray("courses");
                 foreach (JsonValue courseValue in coursesArray)
                 {
@@ -118,10 +119,12 @@ namespace Academics.ContentService
                     }
                     AssignCourseDetails(course, courseObj);
                     user.AddCourse(course);
+                    totalCredits += course.Credits;
                 }
                 user.CoursesMetadata = new CoursesMetadata(
                             rootObject.GetNamedString("semester"),
-                            DateTimeOffset.Parse(rootObject.GetNamedString("refreshed"), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind));
+                            DateTimeOffset.Parse(rootObject.GetNamedString("refreshed"), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                            totalCredits);
                 return user;
             }
             catch
@@ -247,6 +250,7 @@ namespace Academics.ContentService
             course.SubjectType = courseObject.GetNamedString("subject_type");
             course.Faculty = courseObject.GetNamedString("faculty");
             course.Title = courseObject.GetNamedString("course_title");
+            course.Credits = (ushort)int.Parse(courseObject.GetNamedString("ltpc").Substring(3));
         }
 
         // Depth 1 Assignment (Ltp and NonLtp)
@@ -261,7 +265,6 @@ namespace Academics.ContentService
         }
         private static void AssignBaseTypeDetails(NonLtpCourse nltpCourse, JsonObject courseObject)
         {
-            nltpCourse.Credits = courseObject.GetNamedString("ltpc").Substring(3);
         }
 
         // Depth 2 Assignment (CBL, PBL, ...)
