@@ -47,15 +47,28 @@
                 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Margin="0,13,0,0">
-                            <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                            <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-                        </StackPanel>
+                        <Grid Margin="0,15,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Border Width="60" Height="60" Background="LightGray"
+                                    BorderThickness="0" CornerRadius="3">
+                                <Viewbox Width="50" Height="50">
+                                <AppBarButton Icon="{Binding Icon}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Style="{StaticResource TopBarButtonStyle}" IsEnabled="False"></AppBarButton>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                            </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 
             </ListView>
-
+            <!--
             <ListView ItemsSource="{Binding Courses}"
                       ItemClick="CourseList_ItemClick"
                       Header="all courses" Margin="0,17,0,0">
@@ -82,7 +95,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            
+            -->
         </StackPanel>
     </ScrollViewer>
 </UserControl>

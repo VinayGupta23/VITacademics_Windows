@@ -34,12 +34,19 @@ namespace VITacademics.UIControls
                 get;
                 private set;
             }
+            public SymbolIcon Icon
+            {
+                get;
+                private set;
+            }
 
-            public MenuItem(string header, string subHeader)
+            public MenuItem(string header, string subHeader, Symbol icon)
             {
                 Header = header;
                 SubHeader = subHeader;
+                Icon = new SymbolIcon(icon);
             }
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -69,9 +76,9 @@ namespace VITacademics.UIControls
             this.InitializeComponent();
 
             MenuItems = new List<MenuItem>();
-            MenuItems.Add(new MenuItem("overview", "a summary of marks and attendance"));
-            MenuItems.Add(new MenuItem("timetable", "your regular schedule of classes"));
-            MenuItems.Add(new MenuItem("daily buzz", "your schedule, reminders and attendance in one place"));
+            MenuItems.Add(new MenuItem("overview", "a summary of marks and attendance", Symbol.FourBars));
+            MenuItems.Add(new MenuItem("timetable", "your regular schedule of classes", Symbol.Clock));
+            MenuItems.Add(new MenuItem("daily buzz", "your schedule, reminders and attendance in one place", Symbol.Calendar));
 
             this.DataContext = this;
         }
