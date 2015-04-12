@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
+
 namespace VITacademics.Helpers
 {
 
@@ -109,6 +110,7 @@ namespace VITacademics.Helpers
         }
     }
 
+#if WINDOWS_PHONE_APP
     public class ClassInfoTemplateSelector : DataTemplateSelector
     {
         public DataTemplate ClassTodayTemplate { get; set; }
@@ -125,6 +127,38 @@ namespace VITacademics.Helpers
             else
                 return ClassGeneralTemplate;
         }
+    }
+#endif
+
+    public class CourseTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate CBLTemplate { get; set; }
+        public DataTemplate LBCTemplate { get; set; }
+        public DataTemplate PBLTemplate { get; set; }
+        public DataTemplate RBLTemplate { get; set; }
+        public DataTemplate PBCTemplate { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        {
+            Course course = item as Course;
+            try
+            {
+                switch (course.CourseMode)
+                {
+                    case "CBL": return CBLTemplate;
+                    case "LBC": return LBCTemplate;
+                    case "PBL": return PBLTemplate;
+                    case "RBL": return RBLTemplate;
+                    case "PBC": return PBCTemplate;
+                    default: return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
     }
 
 }

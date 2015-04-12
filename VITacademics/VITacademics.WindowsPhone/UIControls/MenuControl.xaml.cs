@@ -34,7 +34,7 @@ namespace VITacademics.UIControls
                 get;
                 private set;
             }
-            public SymbolIcon Icon
+            public IconElement Icon
             {
                 get;
                 private set;
@@ -46,25 +46,18 @@ namespace VITacademics.UIControls
                 SubHeader = subHeader;
                 Icon = new SymbolIcon(icon);
             }
-
+            public MenuItem(string header, string subHeader, string iconUri)
+            {
+                Header = header;
+                SubHeader = subHeader;
+                BitmapIcon icon = new BitmapIcon();
+                icon.UriSource = new Uri(iconUri);
+                Icon = icon;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private IEnumerable<Course> _courses;
-
-        public IEnumerable<Course> Courses
-        {
-            get
-            {
-                return _courses;
-            }
-            private set
-            {
-                _courses = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("Courses"));
-            }
-        }
+        
         public List<MenuItem> MenuItems
         {
             get;
@@ -76,10 +69,13 @@ namespace VITacademics.UIControls
             this.InitializeComponent();
 
             MenuItems = new List<MenuItem>();
-            MenuItems.Add(new MenuItem("overview", "a summary of marks and attendance", Symbol.FourBars));
-            MenuItems.Add(new MenuItem("timetable", "your regular schedule of classes", Symbol.Clock));
-            MenuItems.Add(new MenuItem("daily buzz", "your schedule, reminders and attendance in one place", Symbol.Calendar));
-
+            MenuItems.Add(new MenuItem("overview", "a summary of all your courses", Symbol.Globe));
+            MenuItems.Add(new MenuItem("timetable", "your regular schedule of classes", "ms-appx:///Assets/Icons/TimetableButton.scale-240.png"));
+            MenuItems.Add(new MenuItem("daily buzz", "watch your activity and set reminders", Symbol.Calendar));
+            
+            // Coming soon.
+            // MenuItems.Add(new MenuItem("grades", "view grades and use the cgpa calculator", "ms-appx:///Assets/Icons/GraphButton.scale-240.png"));
+            
             this.DataContext = this;
         }
 
@@ -87,13 +83,6 @@ namespace VITacademics.UIControls
 
         public void GenerateView(string parameter)
         {
-            Courses = UserManager.CurrentUser.Courses;
-        }
-
-        private void CourseList_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            if (ActionRequested != null)
-                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), (e.ClickedItem as Course).ClassNumber.ToString()));
         }
 
         private void MenuList_ItemClick(object sender, ItemClickEventArgs e)
@@ -107,8 +96,10 @@ namespace VITacademics.UIControls
                         ActionRequested(this, new RequestEventArgs(typeof(UserOverviewControl), null));
                     else if (item == MenuItems[1])
                         ActionRequested(this, new RequestEventArgs(typeof(BasicTimetableControl), null));
-                    else
+                    else if (item == MenuItems[2])
                         ActionRequested(this, new RequestEventArgs(typeof(EnhancedTimetableControl), null));
+                    else
+                        return;
                 }
             }
         }

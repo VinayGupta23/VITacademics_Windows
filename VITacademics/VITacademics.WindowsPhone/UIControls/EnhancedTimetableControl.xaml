@@ -77,13 +77,13 @@
                                     Background="WhiteSmoke" BorderThickness="0,0,0,3"
                                     BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding SessionHours.Parent.Venue}"
-                                               Style="{StaticResource SingleItemContentStyle}" HorizontalAlignment="Center"></TextBlock>
                                     <TextBlock Text="{Binding SessionHours.StartHours, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='HH:mm'}"
                                                Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
                                     <TextBlock Text="{Binding SessionHours.EndHours, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='HH:mm'}"
                                                Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding SessionHours.Parent.Venue}" Foreground="{ThemeResource PhoneMidBrush}"
+                                               Style="{StaticResource SingleItemContentStyle}" HorizontalAlignment="Center"></TextBlock>
+                                </StackPanel>
                             </Border>
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
@@ -119,7 +119,7 @@
                                     <TextBlock Text="{Binding CourseCode}" Style="{StaticResource LabelTextBlockStyle}"
                                                HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
                                     <TextBlock Text="{Binding Venue}" Style="{StaticResource SingleItemContentStyle}"
-                                               HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
+                                               HorizontalAlignment="Center" TextAlignment="Center" Foreground="{ThemeResource PhoneMidBrush}"></TextBlock>
                                 </StackPanel>
                             </Border>
                             <StackPanel Grid.Column="1">

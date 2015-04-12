@@ -136,6 +136,8 @@
     <Content Include="Assets\HelpContent\DailyBuzz1.png" />
     <Content Include="Assets\HelpContent\DailyBuzz2.png" />
     <Content Include="Assets\HelpContent\DailyBuzz3.png" />
+    <Content Include="Assets\Icons\GraphButton.scale-240.png" />
+    <Content Include="Assets\Icons\TimetableButton.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />
     <Content Include="Assets\Square150x150Logo.scale-240.png" />
     <Content Include="Assets\Square44x44Logo.scale-240.png" />

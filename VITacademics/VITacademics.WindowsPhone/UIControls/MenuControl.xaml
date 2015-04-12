@@ -15,13 +15,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
                 <ResourceDictionary>
-
                     <Style TargetType="ListView">
                         <Setter Property="HeaderTemplate">
                             <Setter.Value>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding}" Style="{StaticResource GroupHeaderTextBlockStyle}"
-                                               Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
+                                    <TextBlock Text="{Binding}" Foreground="{ThemeResource PhoneAccentBrush}"
+                                               Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>
@@ -38,64 +37,36 @@
         </TransitionCollection>
     </UserControl.Transitions>
 
-    <ScrollViewer Background="WhiteSmoke">
-        <StackPanel Margin="19,17,19,10">
-
-            <ListView Header="menu"
+    <ScrollViewer Background="{ThemeResource PhoneBackgroundBrush}">
+        <ListView Header="menu" Margin="19,17,19,10"
                       ItemsSource="{Binding MenuItems, Mode=OneTime}"
-                      ItemClick="MenuList_ItemClick">    
-                
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="0,15,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Border Width="60" Height="60" Background="LightGray"
-                                    BorderThickness="0" CornerRadius="3">
-                                <Viewbox Width="50" Height="50">
-                                <AppBarButton Icon="{Binding Icon}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                              Style="{StaticResource TopBarButtonStyle}" IsEnabled="False"></AppBarButton>
-                                </Viewbox>
-                            </Border>
-                            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                                <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                
-            </ListView>
-            <!--
-            <ListView ItemsSource="{Binding Courses}"
-                      ItemClick="CourseList_ItemClick"
-                      Header="all courses" Margin="0,17,0,0">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment"
-                                                Value="Stretch"></Setter>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="0,13,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding Title}" FontSize="23"
-                                       Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                            <TextBlock Text="{Binding CourseCode}" Grid.Row="1"
-                                       Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-                            <TextBlock Text="{Binding Slot, FallbackValue=''}" Grid.Row="1" HorizontalAlignment="Right"
-                                       Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            -->
-        </StackPanel>
+                      ItemClick="MenuList_ItemClick">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,20,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="55"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="60"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Viewbox Child="{Binding Icon}" Width="50" Height="50" Opacity="0.65"
+                                 HorizontalAlignment="Left" VerticalAlignment="Center"></Viewbox>
+                        
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource ListViewItemTextBlockStyle}"
+                                        FontSize="27"></TextBlock>
+                            <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource SingleItemContentStyle}"
+                                       LineStackingStrategy="BlockLineHeight"></TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
+        </ListView>
     </ScrollViewer>
+    
 </UserControl>

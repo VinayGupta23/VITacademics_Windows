@@ -1,6 +1,7 @@
 ﻿using Academics.DataModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -24,12 +25,8 @@ namespace VITacademics.UIControls
     public sealed partial class UserOverviewControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
 
-        public event EventHandler<RequestEventArgs> ActionRequested;
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private int _totalCredits;
-        private List<LtpCourse> _courseList;
-        private List<NonLtpCourse> _nltpCourseList;
+        private ReadOnlyCollection<Course> _courseList;
 
         public int TotalCredits
         {
@@ -40,21 +37,12 @@ namespace VITacademics.UIControls
                 NotifyPropertyChanged();
             }
         }
-        public List<LtpCourse> CourseList
+        public ReadOnlyCollection<Course> CourseList
         {
             get { return _courseList; }
             private set
             {
                 _courseList = value;
-                NotifyPropertyChanged();
-            }
-        }
-        public List<NonLtpCourse> NltpCourseList
-        {
-            get { return _nltpCourseList; }
-            private set
-            {
-                _nltpCourseList = value;
                 NotifyPropertyChanged();
             }
         }
@@ -68,28 +56,14 @@ namespace VITacademics.UIControls
 #endif
         }
 
+        #region IProxiedControl interface implementation
+
+        public event EventHandler<RequestEventArgs> ActionRequested;
+
         public void GenerateView(string parameter)
         {
-            TotalCredits = 0;
-            var courseList = new List<LtpCourse>();
-            var nltpCourseList = new List<NonLtpCourse>();
-            foreach (Course course in UserManager.CurrentUser.Courses)
-            {
-                LtpCourse c = course as LtpCourse;
-                if(c != null)
-                {
-                    TotalCredits += int.Parse(c.Ltpc.Substring(3));
-                    courseList.Add(c);
-                }
-                else
-                {
-                    NonLtpCourse nc = course as NonLtpCourse;
-                    nltpCourseList.Add(nc);
-                    TotalCredits += int.Parse(nc.Credits);
-                }
-            }
-            CourseList = courseList;
-            NltpCourseList = nltpCourseList;
+            CourseList = UserManager.CurrentUser.Courses;
+            TotalCredits = UserManager.CurrentUser.CoursesMetadata.TotalCredits;
         }
 
         public Dictionary<string, object> SaveState()
@@ -101,11 +75,11 @@ namespace VITacademics.UIControls
         {
         }
 
-        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            if (ActionRequested != null)
-                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), (e.ClickedItem as Course).ClassNumber.ToString()));
-        }
+        #endregion
+
+        #region Property Notification Interface implementation
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName]string propertyName = null)
         {
@@ -113,5 +87,12 @@ namespace VITacademics.UIControls
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        #endregion
+
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if (ActionRequested != null)
+                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), (e.ClickedItem as Course).ClassNumber.ToString()));
+        }
     }
 }

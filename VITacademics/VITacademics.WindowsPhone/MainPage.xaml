@@ -16,8 +16,10 @@
     
     <!-- Bottom App Bar -->
     <Page.BottomAppBar>
-        <CommandBar ClosedDisplayMode="Minimal" Background="{StaticResource AlternateDarkBrush}">
+        <CommandBar ClosedDisplayMode="Compact" Background="{StaticResource AlternateDarkBrush}">
             <CommandBar.PrimaryCommands>
+                <AppBarButton Icon="Refresh" Label="refresh" Click="RefreshButton_Click"
+                              IsEnabled="{Binding IsIdle, Mode=OneWay}"></AppBarButton>
                 <AppBarButton Icon="AllApps" Label="menu" Click="MenuButton_Click"
                               IsEnabled="{Binding IsContentAvailable, Mode=OneWay}"></AppBarButton>
                 <AppBarButton Icon="Calendar" Label="today" Click="ViewTodayButton_Click"
@@ -59,8 +61,10 @@
         <Grid Margin="0,-1,0,0" RequestedTheme="Dark" Background="{StaticResource AlternateDarkBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
+                <!--
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
+                -->
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal">
@@ -72,7 +76,8 @@
                            Text="{Binding TitleText, Mode=OneWay}" Foreground="{ThemeResource PhoneForegroundBrush}" LineStackingStrategy="MaxHeight"
                            Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
             </StackPanel>
-                <AppBarButton Grid.Column="1" Margin="0,0,15,0" Click="RefreshButton_Click"
+            <!--
+            <AppBarButton Grid.Column="1" Margin="0,0,15,0" Click="RefreshButton_Click"
                           HorizontalAlignment="Center" VerticalAlignment="Center"            
                           Icon="Refresh" Style="{StaticResource TopBarButtonStyle}"
                           IsEnabled="{Binding IsIdle, Mode=OneWay}"></AppBarButton>
@@ -80,6 +85,7 @@
                           HorizontalAlignment="Center" VerticalAlignment="Center"
                           IsEnabled="{Binding IsContentAvailable, Mode=OneWay}"
                           Icon="AllApps" Style="{StaticResource TopBarButtonStyle}"></AppBarButton>
+            -->
         </Grid>
         
     </Grid>
