@@ -1,5 +1,6 @@
 ﻿using Academics.ContentService;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -291,7 +292,8 @@ namespace VITacademics
         private void ProxiedControl_ActionRequested(object sender, RequestEventArgs e)
         {
 
-            if(e.TargetElement == typeof(HelpPage))
+            TypeInfo typeInfo = e.TargetElement.GetTypeInfo();
+            if(typeInfo.IsSubclassOf(typeof(Page)))
             {
                 PageManager.NavigateTo(e.TargetElement, null, NavigationType.Default);
                 return;
@@ -303,8 +305,11 @@ namespace VITacademics
                 _contentControlManager.ClearHistory();
             }
 
-            _contentControlManager.NavigateToControl(e.TargetElement, e.Parameter);
-            SetTitleAndContent();
+            if (typeInfo.IsSubclassOf(typeof(UserControl)))
+            {
+                _contentControlManager.NavigateToControl(e.TargetElement, e.Parameter);
+                SetTitleAndContent();
+            }
         }
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
@@ -321,20 +326,19 @@ namespace VITacademics
             if (IsMenuOpen == true)
                 MenuButton_Click(null, null);
 
-            if (ControlManager.GetCode(_contentControlManager.CurrentControl) == ControlTypeCodes.EnhancedTimetable)
+            if (_contentControlManager.CurrentControlCode == ControlTypeCodes.EnhancedTimetable)
                 _contentControlManager.RefreshCurrentControl();
             else
             {
-                object source = null;
                 _contentControlManager.ClearHistory();
-                ProxiedControl_ActionRequested(source, new RequestEventArgs(typeof(EnhancedTimetableControl), null));
+                ProxiedControl_ActionRequested(null, new RequestEventArgs(typeof(EnhancedTimetableControl), null));
             }
         }
 
         private void SetTitleAndContent()
         {
             string titleText = null;
-            ControlTypeCodes contentTypeCode = ControlManager.GetCode(_contentControlManager.CurrentControl);
+            ControlTypeCodes contentTypeCode = _contentControlManager.CurrentControlCode;
 
             switch (contentTypeCode)
             {
@@ -372,11 +376,11 @@ namespace VITacademics
                 return false;
             }
             else if (_contentControlManager.CurrentControl != null
-                && ControlManager.GetCode(_contentControlManager.CurrentControl) != AppSettings.DefaultControlType)
+                     && _contentControlManager.CurrentControlCode != AppSettings.DefaultControlType)
             {
                 _contentControlManager.ClearHistory();
-                ProxiedControl_ActionRequested(this,
-                           new RequestEventArgs(ControlManager.GetTypeFromCode(AppSettings.DefaultControlType), null));
+                _contentControlManager.NavigateToControl(AppSettings.DefaultControlType, null);
+                SetTitleAndContent();
                 return false;
             }
             else

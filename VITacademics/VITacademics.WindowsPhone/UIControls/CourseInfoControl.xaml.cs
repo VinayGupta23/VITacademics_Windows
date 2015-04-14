@@ -38,17 +38,17 @@ namespace VITacademics.UIControls
             {
                 Course course =
                     UserManager.CurrentUser.Courses.Single<Course>((Course c) => string.Equals(c.ClassNumber.ToString(), parameter));
-                
-                Type contentType = course.GetType();
-                if (contentType == typeof(CBLCourse))
+
+                string courseType = course.CourseMode;
+                if (courseType == "CBL")
                     contentPresenter.ContentTemplate = this.Resources["CBLPivotTemplate"] as DataTemplate;
-                else if (contentType == typeof(PBLCourse))
+                else if (courseType == "PBL")
                     contentPresenter.ContentTemplate = this.Resources["PBLPivotTemplate"] as DataTemplate;
-                else if (contentType == typeof(LBCCourse))
+                else if (courseType == "LBC")
                     contentPresenter.ContentTemplate = this.Resources["LBCPivotTemplate"] as DataTemplate;
-                else if (contentType == typeof(PBCCourse))
+                else if (courseType == "PBC")
                     contentPresenter.ContentTemplate = this.Resources["PBCPivotTemplate"] as DataTemplate;
-                else if (contentType == typeof(RBLCourse))
+                else if (courseType == "RBL")
                     contentPresenter.ContentTemplate = this.Resources["RBLPivotTemplate"] as DataTemplate;
                 else
                     contentPresenter.ContentTemplate = null;

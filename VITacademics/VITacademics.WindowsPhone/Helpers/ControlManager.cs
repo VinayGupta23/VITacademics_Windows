@@ -21,33 +21,17 @@ namespace VITacademics.Helpers
 
         #region Static Properties and Contructor
 
-        private static readonly Dictionary<Type, ControlTypeCodes> _controlTypeDictionary;
+        private static readonly Dictionary<Type, ControlTypeCodes> _typeCodeDictionary;
+
+        private static Dictionary<Type, ControlTypeCodes> TypeCodeDictionary { get { return _typeCodeDictionary; } }
 
         static ControlManager()
         {
-            _controlTypeDictionary = new Dictionary<Type, ControlTypeCodes>();
-            _controlTypeDictionary.Add(typeof(UserOverviewControl), ControlTypeCodes.Overview);
-            _controlTypeDictionary.Add(typeof(CourseInfoControl), ControlTypeCodes.CourseInfo);
-            _controlTypeDictionary.Add(typeof(BasicTimetableControl), ControlTypeCodes.BasicTimetable);
-            _controlTypeDictionary.Add(typeof(EnhancedTimetableControl), ControlTypeCodes.EnhancedTimetable);
-        }
-
-        public static ControlTypeCodes GetCode(IProxiedControl control)
-        {
-            return _controlTypeDictionary[control.GetType()];
-        }
-
-        public static ControlTypeCodes GetCode(Type proxiedControlType)
-        {
-            return _controlTypeDictionary[proxiedControlType];
-        }
-
-        public static Type GetTypeFromCode(ControlTypeCodes code)
-        {
-            foreach (var pair in _controlTypeDictionary)
-                if (pair.Value == code)
-                    return pair.Key;
-            return null;
+            _typeCodeDictionary = new Dictionary<Type, ControlTypeCodes>();
+            _typeCodeDictionary.Add(typeof(UserOverviewControl), ControlTypeCodes.Overview);
+            _typeCodeDictionary.Add(typeof(CourseInfoControl), ControlTypeCodes.CourseInfo);
+            _typeCodeDictionary.Add(typeof(BasicTimetableControl), ControlTypeCodes.BasicTimetable);
+            _typeCodeDictionary.Add(typeof(EnhancedTimetableControl), ControlTypeCodes.EnhancedTimetable);
         }
 
         #endregion
@@ -57,17 +41,31 @@ namespace VITacademics.Helpers
         private List<int> _controlHistory;
         private List<Dictionary<string, object>> _stateHistory;
         private List<string> _paramterHistory;
-        private IProxiedControl _currentControl;
-        private string _currentParameter;
+
         private EventHandler<RequestEventArgs> _handler;
 
+        private IProxiedControl _currentControl;
+        private ControlTypeCodes _currentControlCode;
+        private string _currentParameter;
+
+        private string CurrentParameter
+        {
+            get { return _currentParameter; }
+        }
         public IProxiedControl CurrentControl
+        {
+            get { return _currentControl; }
+        }
+        public ControlTypeCodes CurrentControlCode
         {
             get
             {
-                return _currentControl;
+                if (_currentControl == null)
+                    throw new InvalidOperationException();
+                return _currentControlCode;
             }
         }
+
         public bool CanGoBack
         {
             get { return (_controlHistory.Count > 0); }
@@ -94,28 +92,29 @@ namespace VITacademics.Helpers
 
         private void SaveCurrentControl()
         {
-            _controlHistory.Add((int)GetCode(_currentControl));
-            _paramterHistory.Add(_currentParameter);
-            _stateHistory.Add(_currentControl.SaveState());
+            _controlHistory.Add((int)CurrentControlCode);
+            _paramterHistory.Add(CurrentParameter);
+            _stateHistory.Add(CurrentControl.SaveState());
         }
 
-        private void LoadControl(int controlTypeCode, string parameter)
+        private void LoadControl(ControlTypeCodes controlTypeCode, string parameter)
         {
             switch (controlTypeCode)
             {
-                case (int)ControlTypeCodes.Overview:
+                case ControlTypeCodes.Overview:
                     _currentControl = new UserOverviewControl();
                     break;
-                case (int)ControlTypeCodes.CourseInfo:
+                case ControlTypeCodes.CourseInfo:
                     _currentControl = new CourseInfoControl();
                     break;
-                case (int)ControlTypeCodes.BasicTimetable:
+                case ControlTypeCodes.BasicTimetable:
                     _currentControl = new BasicTimetableControl();
                     break;
-                case (int)ControlTypeCodes.EnhancedTimetable:
+                case ControlTypeCodes.EnhancedTimetable:
                     _currentControl = new EnhancedTimetableControl();
                     break;
             }
+            _currentControlCode = controlTypeCode;
             _currentControl.ActionRequested += ActionRequestedListener;
             _currentControl.GenerateView(parameter);
             _currentParameter = parameter;
@@ -133,6 +132,7 @@ namespace VITacademics.Helpers
 
         #region Public Methods
 
+        // Complete
         public void ClearHistory()
         {
             _controlHistory = new List<int>();
@@ -143,23 +143,15 @@ namespace VITacademics.Helpers
 
         public void NavigateToControl(Type controlType, string parameter)
         {
-            if (_currentControl != null)
-            {
-                SaveCurrentControl();
-            }
-
-            int controlCode = (int)GetCode(controlType);
-            LoadControl(controlCode, parameter);
+            NavigateToControl(TypeCodeDictionary[controlType], parameter);
         }
 
         public void NavigateToControl(ControlTypeCodes typeCode, string parameter)
         {
             if (_currentControl != null)
-            {
                 SaveCurrentControl();
-            }
 
-            LoadControl((int)typeCode, parameter);
+            LoadControl(typeCode, parameter);
         }
 
         public void ReturnToLastControl()
@@ -169,14 +161,14 @@ namespace VITacademics.Helpers
                 return;
             else
             {
-                int controlTypeCode = _controlHistory[count - 1];
+                ControlTypeCodes controlTypeCode = (ControlTypeCodes)_controlHistory[count - 1];
                 string parameter = _paramterHistory[count - 1];
                 var lastState = _stateHistory[count - 1];
 
                 RemoveLastControl();
 
                 LoadControl(controlTypeCode, parameter);
-                _currentControl.LoadState(lastState);
+                CurrentControl.LoadState(lastState);
             }
         }
 
@@ -196,9 +188,9 @@ namespace VITacademics.Helpers
 
             if (_currentControl != null)
             {
-                controls.Add((int)GetCode(_currentControl));
-                paramters.Add(_currentParameter);
-                states.Add(_currentControl.SaveState());
+                controls.Add((int)CurrentControlCode);
+                paramters.Add(CurrentParameter);
+                states.Add(CurrentControl.SaveState());
             }
 
             Dictionary<string, object> state = new Dictionary<string, object>();
