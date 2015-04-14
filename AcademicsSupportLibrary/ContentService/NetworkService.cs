@@ -22,6 +22,7 @@ namespace Academics.ContentService
 #endif
         private const string LOGIN_STRING_FORMAT = "/api/v2/{0}/login?regno={1}&dob={2}";
         private const string REFRESH_STRING_FORMAT = "/api/v2/{0}/refresh?regno={1}&dob={2}";
+        private const string GRADES_STRING_FORMAT = "/api/v2/{0}/grades?regno={1}&dob={2}";
 #if WINDOWS_PHONE_APP
         private const string WP_USER_AGENT = "Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 520) like iPhone OS 7_0_3 Mac OS X AppleWebKit/537 (KHTML, like Gecko) Mobile Safari/537";
 #else
@@ -159,6 +160,18 @@ namespace Academics.ContentService
                     response = new Response<string>(loginStatus, null);
             }
 
+            return response;
+        }
+
+        public static async Task<Response<string>> TryGetGradesAsync(User user)
+        {
+            Response<string> response = await GetResponse(GRADES_STRING_FORMAT, user);
+            if(response.Code == StatusCode.SessionTimeout)
+            {
+                StatusCode logicStatus = await TryLoginAsync(user);
+                if (logicStatus == StatusCode.Success)
+                    response = await GetResponse(GRADES_STRING_FORMAT, user);
+            }
             return response;
         }
 

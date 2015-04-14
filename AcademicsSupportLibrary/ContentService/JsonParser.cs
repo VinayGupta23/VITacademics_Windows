@@ -1,6 +1,10 @@
 ﻿using Academics.DataModel;
 using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Windows.Data.Json;
 
@@ -122,9 +126,7 @@ namespace Academics.ContentService
                     totalCredits += course.Credits;
                 }
                 user.CoursesMetadata = new CoursesMetadata(
-                            rootObject.GetNamedString("semester"),
-                            DateTimeOffset.Parse(rootObject.GetNamedString("refreshed"), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                            totalCredits);
+                            rootObject.GetNamedString("semester"), GetRefreshUTC(rootObject.GetNamedString("refreshed")), totalCredits);
                 return user;
             }
             catch
@@ -133,6 +135,45 @@ namespace Academics.ContentService
             }
         }
 
+        public static AcademicHistory TryParseGrades(string jsonString)
+        {
+            try
+            {
+                AcademicHistory gradeHistory = new AcademicHistory();
+
+                JsonObject rootObject = JsonObject.Parse(jsonString);
+
+                // Adding complete list of raw grades
+                JsonArray gradesArray = rootObject.GetNamedArray("grades");
+                foreach (JsonValue gradeValue in gradesArray)
+                    gradeHistory._grades.Add(GetGradeInfo(gradeValue));
+
+                // Adding semester-wise grades and gpa
+                var groupedGrades = gradeHistory.Grades.GroupBy<GradeInfo, string>((GradeInfo gradeInfo) => { return gradeInfo.Id; });
+                JsonObject semesterWiseObject = rootObject.GetNamedObject("semester_wise");
+                foreach (IGrouping<string, GradeInfo> group in groupedGrades)
+                {
+                    JsonObject semesterInfoObject = semesterWiseObject.GetNamedObject(group.Key);
+                    SemesterInfo semesterInfo = new SemesterInfo(group.ToList<GradeInfo>());
+                    semesterInfo.CreditsEarned = (ushort)semesterInfoObject.GetNamedNumber("credits");
+                    semesterInfo.Gpa = double.Parse(semesterInfoObject.GetNamedString("gpa"));
+                    semesterInfo.CompletionMonth = semesterInfo[0].ExamHeldOn;
+                    gradeHistory._semesterGroupedGrades.Add(semesterInfo);
+                }
+
+                // Adding overall data
+                gradeHistory.Cgpa = rootObject.GetNamedNumber("cgpa");
+                gradeHistory.CreditsRegistered = (ushort)rootObject.GetNamedNumber("credits_registered");
+                gradeHistory.CreditsEarned = (ushort)rootObject.GetNamedNumber("credits_earned");
+                gradeHistory.LastRefreshed = GetRefreshUTC(rootObject.GetNamedString("grades_refreshed"));
+
+                return gradeHistory;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         #region Helper Methods
 
@@ -166,8 +207,8 @@ namespace Academics.ContentService
             foreach (JsonValue classHoursValue in timingsArray)
             {
                 JsonObject classHoursObject = classHoursValue.GetObject();
-                DateTimeOffset start = GetTime(classHoursObject.GetNamedString("start_time"));
-                DateTimeOffset end = GetTime(classHoursObject.GetNamedString("end_time"));
+                DateTimeOffset start = GetIST(classHoursObject.GetNamedString("start_time"));
+                DateTimeOffset end = GetIST(classHoursObject.GetNamedString("end_time"));
                 DayOfWeek day = (DayOfWeek)((int)classHoursObject.GetNamedNumber("day") + 1);
                 course.AddClassHoursInstance(new ClassHours(course, start, end, day));
             }
@@ -216,11 +257,29 @@ namespace Academics.ContentService
                 customMarks.Add(markInfo);
             }
         }
-        private static DateTimeOffset GetTime(string timeString)
+        private static GradeInfo GetGradeInfo(JsonValue gradeValue)
+        {
+            JsonObject gradeObject = gradeValue.GetObject();
+            GradeInfo info = new GradeInfo();
+            info.CourseCode = gradeObject.GetNamedString("course_code");
+            info.CourseTitle = gradeObject.GetNamedString("course_title");
+            info.CourseType = gradeObject.GetNamedString("course_type");
+            info.CourseOption = gradeObject.GetNamedString("option");
+            info.Credits = (ushort)gradeObject.GetNamedNumber("credits");
+            info.Grade = gradeObject.GetNamedString("grade")[0];
+            info.AssignExamDate(gradeObject.GetNamedString("exam_held"));
+            return info;
+        }
+
+        private static DateTimeOffset GetIST(string timeString)
         {
             return new DateTimeOffset(
                 (DateTime.Parse(timeString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal)),
                 new TimeSpan(5, 30, 0));
+        }
+        private static DateTimeOffset GetRefreshUTC(string refreshDateString)
+        {
+            return DateTimeOffset.Parse(refreshDateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
         }
         private static string RomanNumeral(int x)
         {

@@ -49,6 +49,7 @@
     <Compile Include="DataModel\DataComponents.cs" />
     <Compile Include="ContentService\JsonParser.cs" />
     <Compile Include="ContentService\NetworkService.cs" />
+    <Compile Include="DataModel\Grade.cs" />
     <Compile Include="DataModel\Timetable.cs" />
     <Compile Include="DataModel\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
