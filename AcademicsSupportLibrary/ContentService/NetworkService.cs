@@ -90,6 +90,22 @@ namespace Academics.ContentService
             return new Response<string>(statusCode, content);
         }
 
+        private static async Task<Response<string>> GetContentAsync(string relUriFormat, User user)
+        {
+            Response<string> response = await GetResponse(relUriFormat, user);
+
+            if (response.Code == StatusCode.SessionTimeout)
+            {
+                StatusCode loginStatus = await TryLoginAsync(user);
+                if (loginStatus == StatusCode.Success)
+                    response = await GetResponse(relUriFormat, user);
+                else
+                    response = new Response<string>(loginStatus, null);
+            }
+
+            return response;
+        }
+
         static NetworkService()
         {
             // Prevent caching of data locally to avoid errors and ensure fresh data on every request.
@@ -148,31 +164,24 @@ namespace Academics.ContentService
         /// </returns>
         public static async Task<Response<string>> TryGetDataAsync(User user)
         {
-
-            Response<string> response = await GetResponse(REFRESH_STRING_FORMAT, user);
-
-            if (response.Code == StatusCode.SessionTimeout)
-            {
-                StatusCode loginStatus = await TryLoginAsync(user);
-                if (loginStatus == StatusCode.Success)
-                    response = await GetResponse(REFRESH_STRING_FORMAT, user);
-                else
-                    response = new Response<string>(loginStatus, null);
-            }
-
-            return response;
+            return await GetContentAsync(REFRESH_STRING_FORMAT, user);
         }
 
+        ///<summary>
+        /// Get the academic history as a Json string along with status code for the specified user by sending a Http request.
+        /// </summary>
+        /// <param name="user">
+        /// The user whose data to request.
+        /// </param>
+        /// <remarks>
+        /// Note: This method attempts a login and a single retry upon receiving a SessionTimedOut error.
+        /// </remarks>
+        /// <returns>
+        /// A response containing status code and content. Returns the Json string as the content on success, otherwise the content is null.
+        /// </returns>
         public static async Task<Response<string>> TryGetGradesAsync(User user)
         {
-            Response<string> response = await GetResponse(GRADES_STRING_FORMAT, user);
-            if(response.Code == StatusCode.SessionTimeout)
-            {
-                StatusCode logicStatus = await TryLoginAsync(user);
-                if (logicStatus == StatusCode.Success)
-                    response = await GetResponse(GRADES_STRING_FORMAT, user);
-            }
-            return response;
+            return await GetContentAsync(GRADES_STRING_FORMAT, user);
         }
 
         #endregion

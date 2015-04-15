@@ -135,39 +135,51 @@ namespace Academics.ContentService
             }
         }
 
+        /// <summary>
+        /// Parses the Json string and returns the complete academic history of the user. On failure, the method returns null.
+        /// </summary>
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
         public static AcademicHistory TryParseGrades(string jsonString)
         {
             try
             {
-                AcademicHistory gradeHistory = new AcademicHistory();
-
+                AcademicHistory academicHistory = new AcademicHistory();
                 JsonObject rootObject = JsonObject.Parse(jsonString);
 
                 // Adding complete list of raw grades
                 JsonArray gradesArray = rootObject.GetNamedArray("grades");
                 foreach (JsonValue gradeValue in gradesArray)
-                    gradeHistory._grades.Add(GetGradeInfo(gradeValue));
+                    academicHistory._grades.Add(GetGradeInfo(gradeValue));
 
                 // Adding semester-wise grades and gpa
-                var groupedGrades = gradeHistory.Grades.GroupBy<GradeInfo, string>((GradeInfo gradeInfo) => { return gradeInfo.Id; });
-                JsonObject semesterWiseObject = rootObject.GetNamedObject("semester_wise");
-                foreach (IGrouping<string, GradeInfo> group in groupedGrades)
-                {
-                    JsonObject semesterInfoObject = semesterWiseObject.GetNamedObject(group.Key);
-                    SemesterInfo semesterInfo = new SemesterInfo(group.ToList<GradeInfo>());
-                    semesterInfo.CreditsEarned = (ushort)semesterInfoObject.GetNamedNumber("credits");
-                    semesterInfo.Gpa = double.Parse(semesterInfoObject.GetNamedString("gpa"));
-                    semesterInfo.CompletionMonth = semesterInfo[0].ExamHeldOn;
-                    gradeHistory._semesterGroupedGrades.Add(semesterInfo);
-                }
+                var groupedGrades = academicHistory.Grades.GroupBy<GradeInfo, string>((GradeInfo gradeInfo) => { return gradeInfo.Id; });                                                       
+                JsonArray semesterWiseArray = rootObject.GetNamedArray("semester_wise");
+                var semInfoList = groupedGrades.Join<IGrouping<string, GradeInfo>, IJsonValue, string, SemesterInfo>(
+                                            semesterWiseArray,
+                                            (group) => { return group.Key; },
+                                            (semValue) => { return semValue.GetObject().GetNamedString("exam_held"); },
+                                            (IGrouping<string, GradeInfo> group, IJsonValue value) =>
+                                            {
+                                                JsonObject semesterInfoObject = value.GetObject();
+                                                SemesterInfo semesterInfo = new SemesterInfo(group.ToList<GradeInfo>());
+                                                semesterInfo.CreditsEarned = (ushort)semesterInfoObject.GetNamedNumber("credits");
+                                                semesterInfo.Gpa = semesterInfoObject.GetNamedNumber("gpa");
+                                                semesterInfo.CompletionMonth = semesterInfo[0].ExamHeldOn;
+                                                semesterInfo.Id = semesterInfo[0].Id;
+                                                return semesterInfo;
+                                            });
+                foreach(var semInfo in semInfoList)
+                    academicHistory._semesterGroupedGrades.Add(semInfo);
+                academicHistory._semesterGroupedGrades.Sort();
 
-                // Adding overall data
-                gradeHistory.Cgpa = rootObject.GetNamedNumber("cgpa");
-                gradeHistory.CreditsRegistered = (ushort)rootObject.GetNamedNumber("credits_registered");
-                gradeHistory.CreditsEarned = (ushort)rootObject.GetNamedNumber("credits_earned");
-                gradeHistory.LastRefreshed = GetRefreshUTC(rootObject.GetNamedString("grades_refreshed"));
+                // Adding summary data
+                academicHistory.Cgpa = rootObject.GetNamedNumber("cgpa");
+                academicHistory.CreditsRegistered = (ushort)rootObject.GetNamedNumber("credits_registered");
+                academicHistory.CreditsEarned = (ushort)rootObject.GetNamedNumber("credits_earned");
+                academicHistory.LastRefreshed = GetRefreshUTC(rootObject.GetNamedString("grades_refreshed"));
 
-                return gradeHistory;
+                return academicHistory;
             }
             catch
             {

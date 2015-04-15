@@ -80,11 +80,14 @@ namespace VITacademics.Managers
             private set
             {
                 _currentUser = value;
-                NotifyPropertyChanged();
                 if (value != null && _currentUser.CoursesMetadata != null)
+                {
+                    _timetable = Timetable.GetTimetable(value.Courses);
                     IsContentReady = true;
+                }
                 else
                     IsContentReady = false;
+                NotifyPropertyChanged();
             }
         }
         public static bool IsBusy
@@ -349,14 +352,18 @@ namespace VITacademics.Managers
                 {
                     Response<string> response = await NetworkService.TryGetDataAsync(CurrentUser);
                     if (response.Code != StatusCode.Success)
-                        return response.Code;
+                    {
+                        if (response.Code == StatusCode.InvalidCredentials)
+                            return StatusCode.UnknownError;
+                        else
+                            return response.Code;
+                    }
 
                     User temp = JsonParser.TryParseData(response.Content);
                     if (temp == null)
                         return StatusCode.UnknownError;
 
                     CurrentUser = temp;
-                    _timetable = Timetable.GetTimetable(temp.Courses);
                     await TryCacheDataAsync(response.Content);
                     return StatusCode.Success;
                 }
@@ -392,7 +399,6 @@ namespace VITacademics.Managers
                         return StatusCode.UnknownError;
 
                     CurrentUser = temp;
-                    _timetable = Timetable.GetTimetable(temp.Courses);
                     return StatusCode.Success;
                 }
                 catch
@@ -404,14 +410,8 @@ namespace VITacademics.Managers
 
         public static Timetable GetCurrentTimetable()
         {
-            if (_timetable != null)
+            if (IsContentReady == true)
                 return _timetable;
-
-            if (CurrentUser != null)
-            {
-                _timetable = Timetable.GetTimetable(CurrentUser.Courses);
-                return _timetable;
-            }
             else
                 return null;
         }

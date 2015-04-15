@@ -27,15 +27,22 @@ namespace Academics.DataModel
         }
     }
 
-    public sealed class SemesterInfo : ReadOnlyCollection<GradeInfo>
+    public sealed class SemesterInfo : ReadOnlyCollection<GradeInfo>, IComparable<SemesterInfo>
     {
         public string CompletionMonth { get; internal set; }
         public ushort CreditsEarned { get; internal set; }
         public double Gpa { get; internal set; }
 
+        internal string Id { get; set; }
+
         public SemesterInfo(IList<GradeInfo> grades)
             : base(grades)
         {
+        }
+
+        public int CompareTo(SemesterInfo other)
+        {
+            return string.Compare(this.Id, other.Id);
         }
     }
 
