@@ -4,15 +4,46 @@
     xmlns:helpers="using:VITacademics.Helpers"
     xmlns:local="using:VITacademics.Resources">
 
-    <SolidColorBrush x:Key="AlternateDarkBrush"
-                     Color="#FF1B1E22"></SolidColorBrush>
-    <SolidColorBrush x:Key="AlternateMediumBrush"
-                     Color="#FF323A41"></SolidColorBrush>
-    
-    <helpers:StatusToBrushConverter x:Key="StatusToForegroundConverter"
-                                    PresentBrush="Green" AbsentBrush="Red"
-                                    OnDutyBrush="DeepSkyBlue" FallbackBrush="Gray"></helpers:StatusToBrushConverter>
+    <Style TargetType="TextBlock" x:Key="SingleItemHeaderStyle" BasedOn="{StaticResource MessageDialogTitleStyle}">
+        <Setter Property="MaxLines" Value="1"></Setter>
+        <Setter Property="TextWrapping" Value="NoWrap"></Setter>
+        <Setter Property="FontSize" Value="24"></Setter>
+        <Setter Property="FontWeight" Value="Normal"></Setter>
+        <Setter Property="TextAlignment" Value="Left"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+        <Setter Property="TextLineBounds" Value="TrimToBaseline"></Setter>
+        <Setter Property="LineStackingStrategy" Value="MaxHeight"></Setter>
+    </Style>
 
-    <helpers:DateTimeToStringConverter x:Key="DateTimeToStringConverter"></helpers:DateTimeToStringConverter>
+    <Style TargetType="TextBlock" x:Key="SingleItemSubHeaderStyle" BasedOn="{StaticResource MessageDialogContentStyle}">
+        <Setter Property="Foreground" Value="{ThemeResource PhoneAccentBrush}"></Setter>
+        <Setter Property="FontWeight" Value="Normal"></Setter>
+        <Setter Property="MaxLines" Value="1"></Setter>
+        <Setter Property="TextAlignment" Value="Left"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="SingleItemContentStyle" BasedOn="{StaticResource ListViewItemContentTextBlockStyle}">
+        <Setter Property="MaxLines" Value="1"></Setter>
+        <Setter Property="TextWrapping" Value="WrapWholeWords"></Setter>
+        <Setter Property="TextAlignment" Value="Left"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+        <Setter Property="Foreground" Value="{ThemeResource PhoneDisabledBrush}"></Setter>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="LabelTextBlockStyle" BasedOn="{StaticResource BodyTextBlockStyle}">
+        <Setter Property="Foreground" Value="{ThemeResource PhoneDisabledBrush}"></Setter>
+        <Setter Property="FontWeight" Value="SemiBold"></Setter>
+    </Style>
+
+    <Style TargetType="Pivot" x:Key="ContentPivotStyle">
+        <Setter Property="HeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" FontSize="43"></TextBlock>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

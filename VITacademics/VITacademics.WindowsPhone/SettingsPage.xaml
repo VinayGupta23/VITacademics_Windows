@@ -9,10 +9,6 @@
     RequestedTheme="Dark"
     Background="{ThemeResource AlternateDarkBrush}">
 
-    <Page.Resources>
-        <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
-    </Page.Resources>
-    
     <Pivot Title="VITACADEMICS" Style="{StaticResource ContentPivotStyle}">
         <Pivot.TitleTemplate>
             <DataTemplate>

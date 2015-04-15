@@ -12,7 +12,7 @@
     RequestedTheme="Light">
     
     <UserControl.Resources>
-        <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ms-appx:///Resources/AttendanceResources.xaml"></ResourceDictionary>
     </UserControl.Resources>
 
     <Pivot Style="{StaticResource ContentPivotStyle}">
@@ -21,8 +21,6 @@
             <ScrollViewer>
                 <StackPanel>
                     <StackPanel.Resources>
-
-                        <helpers:AttendanceToForegroundConverter x:Key="AttendanceToForegroundConverter"></helpers:AttendanceToForegroundConverter>
 
                         <Style TargetType="Border" x:Key="AnimatedBorderStyle">
                             <Setter Property="Margin" Value="0,0,0,20"></Setter>

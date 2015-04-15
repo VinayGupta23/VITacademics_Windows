@@ -10,9 +10,53 @@
     RequestedTheme="Dark"
     Background="{ThemeResource AlternateDarkBrush}">
     
+    <!-- Old design:
     <Page.Resources>
-        <ResourceDictionary Source="Resources/PhoneResources.xaml"></ResourceDictionary>
+        <ResourceDictionary>
+            <Style TargetType="AppBarButton" x:Key="TopBarButtonStyle">
+                <Setter Property="IsCompact" Value="True"></Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="AppBarButton">
+                            <Grid Width="40" Height="40">
+
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <ColorAnimation Duration="0" Storyboard.TargetName="ForegroundBrush"
+                                                        Storyboard.TargetProperty="Color"
+                                                        To="{Binding Path=Color, Source={StaticResource PhoneAccentBrush}}"></ColorAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="Disabled">
+                                            <Storyboard>
+                                                <ColorAnimation Duration="0" Storyboard.TargetName="ForegroundBrush"
+                                                        Storyboard.TargetProperty="Color"
+                                                        To="Gray"></ColorAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="Normal">
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <Viewbox Height="32" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <ContentPresenter Content="{TemplateBinding Icon}">
+                                        <ContentPresenter.Foreground>
+                                            <SolidColorBrush Color="{ThemeResource PhoneControlForegroundColor}" x:Name="ForegroundBrush"></SolidColorBrush>
+                                        </ContentPresenter.Foreground>
+                                    </ContentPresenter>
+                                </Viewbox>
+
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </Page.Resources>
+    -->
     
     <!-- Bottom App Bar -->
     <Page.BottomAppBar>

@@ -21,10 +21,6 @@
         </TransitionCollection>
     </UserControl.Transitions>
     
-    <UserControl.Resources> 
-        <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>        
-    </UserControl.Resources>
-    
     <Pivot x:Name="rootPivot" Style="{StaticResource ContentPivotStyle}">
     
         <Pivot.Resources>

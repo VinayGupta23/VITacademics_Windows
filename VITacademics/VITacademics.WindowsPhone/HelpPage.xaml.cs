@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VITacademics.Managers;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -12,15 +13,24 @@ namespace VITacademics
 
     public sealed partial class HelpPage : Page, IManageable
     {
+        private StatusBar _statusBar;
 
         public HelpPage()
         {
             this.InitializeComponent();
+            _statusBar = StatusBar.GetForCurrentView();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             PageManager.RegisterPage(this);
+            await _statusBar.ProgressIndicator.HideAsync();
+        }
+
+        protected async override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            await _statusBar.ProgressIndicator.ShowAsync();
+            _statusBar = null;
         }
 
         private void FlipView_SelectionChanged(object sender, SelectionChangedEventArgs e)

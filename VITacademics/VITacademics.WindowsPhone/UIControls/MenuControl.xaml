@@ -12,22 +12,17 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
-                <ResourceDictionary>
-                    <Style TargetType="ListView">
-                        <Setter Property="HeaderTemplate">
-                            <Setter.Value>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" Foreground="{ThemeResource PhoneAccentBrush}"
-                                               Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
-                                </DataTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="IsItemClickEnabled" Value="True"></Setter>
-                    </Style>
-                </ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="ListView">
+                <Setter Property="HeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Foreground="{ThemeResource PhoneAccentBrush}"
+                                       Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="IsItemClickEnabled" Value="True"></Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -50,7 +45,7 @@
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="60"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
 
                         <Viewbox Child="{Binding Icon}" Width="50" Height="50" Opacity="0.65"

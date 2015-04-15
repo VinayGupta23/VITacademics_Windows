@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="ms-appx:///Resources/AttendanceResources.xaml"></ResourceDictionary>
                 <ResourceDictionary>
 
                     <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></helpers:BoolToVisibilityConverter>

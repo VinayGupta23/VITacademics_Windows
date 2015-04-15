@@ -15,10 +15,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                
-                <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
-                
+                <ResourceDictionary Source="ms-appx:///Resources/AttendanceResources.xaml"></ResourceDictionary>
                 <ResourceDictionary>
+                
                     <Style TargetType="TextBlock" BasedOn="{StaticResource SingleItemContentStyle}">
                         <Setter Property="TextAlignment" Value="Center"></Setter>
                         <Setter Property="HorizontalAlignment" Value="Center"></Setter>

@@ -15,12 +15,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="ms-appx:///Resources/AttendanceResources.xaml"></ResourceDictionary>
                 <ResourceDictionary>
-                    
-                    <helpers:StatusToBrushConverter x:Key="StatusToBackgroundConverter"
-                                                    PresentBrush="#8CDC84" AbsentBrush="LightSalmon" OnDutyBrush="LightSkyBlue" FallbackBrush="LightGray">
-                    </helpers:StatusToBrushConverter>
                     
                     <DataTemplate x:Key="CourseNotFoundTemplate">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">

@@ -22,4 +22,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Managers\StorageHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\UserManager.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Resources\AttendanceResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
 </Project>

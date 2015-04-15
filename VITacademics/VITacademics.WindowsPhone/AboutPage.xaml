@@ -9,10 +9,6 @@
     RequestedTheme="Dark"
     Background="{ThemeResource AlternateDarkBrush}">
 
-    <Page.Resources>
-        <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
-    </Page.Resources>
-    
     <ScrollViewer Margin="0,0,0,0">
         <Grid Margin="0,55,0,0">
             <Grid.ColumnDefinitions>

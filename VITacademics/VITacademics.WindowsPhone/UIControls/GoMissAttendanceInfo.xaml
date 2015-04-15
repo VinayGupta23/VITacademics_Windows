@@ -10,7 +10,7 @@
     d:DesignWidth="130">
     
     <UserControl.Resources>
-        <ResourceDictionary Source="ms-appx:///Resources/PhoneResources.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="ms-appx:///Resources/AttendanceResources.xaml"></ResourceDictionary>
     </UserControl.Resources>
 
     <Grid x:Name="infoGrid">
