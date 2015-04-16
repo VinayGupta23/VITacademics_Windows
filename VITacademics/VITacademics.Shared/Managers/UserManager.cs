@@ -20,13 +20,15 @@ namespace VITacademics.Managers
         #region Constants and Fields
 
         private const string RESOURCE_NAME = "VITacademics";
-        private const string JSON_FILE_NAME = "UserData.txt";
+        private const string DATA_JSON_FILE_NAME = "UserData.txt";
+        private const string GRADES_JSON_FILE_NAME = "Grades.txt";
         private const string CACHE_DATA_OWNER_KEY = "cachedData_owner";
         private const string CACHE_DATA_TIME_KEY = "cachedData_time";
 
         private static User _currentUser;
         private static Timetable _timetable;
-        private static StorageFolder _folder = ApplicationData.Current.RoamingFolder;
+        private static StorageFolder _roamingFolder = ApplicationData.Current.RoamingFolder;
+        private static StorageFolder _localFolder = ApplicationData.Current.LocalFolder;
         private static bool _isBusy;
         private static bool _isContentReady;
         private delegate Task<StatusCode> Function();
@@ -142,11 +144,12 @@ namespace VITacademics.Managers
             try
             {
                 CachedDataOwner = null;
-                StorageFile dataFile = await _folder.CreateFileAsync(JSON_FILE_NAME, CreationCollisionOption.ReplaceExisting);
+                StorageFile dataFile = await _roamingFolder.CreateFileAsync(DATA_JSON_FILE_NAME, CreationCollisionOption.ReplaceExisting);
                 res = await StorageHelper.TryWriteAsync(dataFile, jsonString);
                 if (res == true)
                     CachedDataOwner = CurrentUser.RegNo;
             }
+            catch { }
             finally
             {
                 CachedDataLastChanged = DateTimeOffset.UtcNow;
@@ -292,7 +295,6 @@ namespace VITacademics.Managers
             });
         }
 
-       
 #if WINDOWS_PHONE_APP
         /// <summary>
         /// Clears any saved credentials in the Locker and sets the current user to null. This call also deletes the app calendar.
@@ -392,7 +394,7 @@ namespace VITacademics.Managers
                     if (string.Equals(CachedDataOwner, CurrentUser.RegNo, StringComparison.OrdinalIgnoreCase) == false)
                         return StatusCode.NoData;
 
-                    StorageFile file = await _folder.GetFileAsync(JSON_FILE_NAME);
+                    StorageFile file = await _roamingFolder.GetFileAsync(DATA_JSON_FILE_NAME);
                     string jsonString = await StorageHelper.TryReadAsync(file);
                     User temp = JsonParser.TryParseData(jsonString);
                     if (temp == null)
@@ -408,12 +410,99 @@ namespace VITacademics.Managers
             });
         }
 
+        /// <summary>
+        /// Gets the timetable of relevant courses associated with the current user. This method returns null if the current user is null or if data is unavailable.
+        /// </summary>
+        /// <returns></returns>
         public static Timetable GetCurrentTimetable()
         {
             if (IsContentReady == true)
                 return _timetable;
             else
                 return null;
+        }
+
+        // Test this code.
+        /// <summary>
+        /// Gets the academic history for the current user by reading from the cache.
+        /// </summary>
+        /// <returns>
+        /// A response containing status code and content. The content is the academic history on success, otherwise null.
+        /// </returns>
+        public static async Task<Response<AcademicHistory>> GetGradesFromCacheAsync()
+        {
+            AcademicHistory academicHistory = null;
+
+            StatusCode statusCode = await MonitoredTask(async () =>
+            {
+                if (CurrentUser == null)
+                    return StatusCode.InvalidRequest;
+
+                StatusCode status = StatusCode.NoData;
+                try
+                {
+                    StorageFile gradesFile = await _localFolder.GetFileAsync(GRADES_JSON_FILE_NAME);
+                    string jsonString = await StorageHelper.TryReadAsync(gradesFile);
+                    if (JsonParser.GetJsonStringOwner(jsonString).RegNo == CurrentUser.RegNo)
+                    {
+                        academicHistory = JsonParser.TryParseGrades(jsonString);
+                        if (academicHistory != null)
+                            status = StatusCode.Success;
+                        else
+                            status = StatusCode.UnknownError;
+                    }
+                }
+                catch
+                { }
+                return status;
+            });
+
+            return new Response<AcademicHistory>(statusCode, academicHistory);
+        }
+
+        // Test this code.
+        /// <summary>
+        /// Attempts to get the academic history for the current user by sending a network request. On success, this method also tries to cache the grades locally before returning.
+        /// </summary>
+        /// <returns>
+        /// A response containing status code and content. The content is the academic history on success, otherwise null.
+        /// </returns>
+        public static async Task<Response<AcademicHistory>> RequestGradesFromServerAsync()
+        {
+            AcademicHistory academicHistory = null;
+
+            StatusCode status = await MonitoredTask(async () =>
+                {
+                    try
+                    {
+                        if (CurrentUser == null)
+                            return StatusCode.InvalidRequest;
+
+                        Response<string> response = await NetworkService.TryGetGradesAsync(CurrentUser);
+                        if (response.Code != StatusCode.Success)
+                            return response.Code;
+                        academicHistory = JsonParser.TryParseGrades(response.Content);
+
+                        if (academicHistory != null)
+                        {
+                            try
+                            {
+                                StorageFile gradesFile = await _localFolder.CreateFileAsync(GRADES_JSON_FILE_NAME, CreationCollisionOption.ReplaceExisting);
+                                await StorageHelper.TryWriteAsync(gradesFile, response.Content);
+                            }
+                            catch { }
+                            return StatusCode.Success;
+                        }
+                        else
+                            return StatusCode.UnknownError;
+                    }
+                    catch
+                    {
+                        return StatusCode.UnknownError;
+                    }
+                });
+
+            return new Response<AcademicHistory>(status, academicHistory);
         }
 
         #endregion

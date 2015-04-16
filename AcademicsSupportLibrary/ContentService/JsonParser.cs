@@ -77,6 +77,27 @@ namespace Academics.ContentService
         }
 
         /// <summary>
+        /// Returns a bare instance of the user whose content the json string contains. If the json string is invalid, returns null.
+        /// </summary>
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
+        public static User GetJsonStringOwner(string jsonString)
+        {
+            try
+            {
+                JsonObject rootObject = JsonObject.Parse(jsonString);
+                string regNo = rootObject.GetNamedString("reg_no");
+                DateTimeOffset dob = DateTimeOffset.ParseExact(rootObject.GetNamedString("dob"), "ddMMyyyy", CultureInfo.InvariantCulture);
+                string campus = rootObject.GetNamedString("campus");
+                return new User(regNo, dob, campus);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Parses the Json string and returns a new User instance populated with all details. On failure, the method returns null.
         /// </summary>
         /// <param name="jsonString"></param>
@@ -85,14 +106,9 @@ namespace Academics.ContentService
         {
             try
             {
-                User user;
+                User user = GetJsonStringOwner(jsonString);
                 JsonObject rootObject = JsonObject.Parse(jsonString);
-
-                string regNo = rootObject.GetNamedString("reg_no");
-                DateTimeOffset dob = DateTimeOffset.ParseExact(rootObject.GetNamedString("dob"), "ddMMyyyy", CultureInfo.InvariantCulture);
-                string campus = rootObject.GetNamedString("campus");
-                user = new User(regNo, dob, campus);
-
+                
                 ushort totalCredits = 0;
                 JsonArray coursesArray = rootObject.GetNamedArray("courses");
                 foreach (JsonValue courseValue in coursesArray)
