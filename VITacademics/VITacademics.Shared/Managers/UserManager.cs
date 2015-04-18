@@ -414,6 +414,9 @@ namespace VITacademics.Managers
         /// Gets the timetable of relevant courses associated with the current user. This method returns null if the current user is null or if data is unavailable.
         /// </summary>
         /// <returns></returns>
+        /// <remarks>
+        /// This method does not choke the UserManager since its execution is quick and does not alter CurrentUser.
+        /// </remarks>
         public static Timetable GetCurrentTimetable()
         {
             if (IsContentReady == true)
@@ -422,23 +425,24 @@ namespace VITacademics.Managers
                 return null;
         }
 
-        // Test this code.
         /// <summary>
         /// Gets the academic history for the current user by reading from the cache.
         /// </summary>
         /// <returns>
         /// A response containing status code and content. The content is the academic history on success, otherwise null.
         /// </returns>
+        /// <remarks>
+        /// This method does not choke the UserManager as it is usually quick and does not alter CurrentUser.
+        /// However to avoid potential stream failures, do not call this method parallely with <see cref="RequestGradesFromServerAsync"/>.
+        /// </remarks>
         public static async Task<Response<AcademicHistory>> GetGradesFromCacheAsync()
         {
             AcademicHistory academicHistory = null;
+            StatusCode statusCode = StatusCode.NoData;
 
-            StatusCode statusCode = await MonitoredTask(async () =>
-            {
-                if (CurrentUser == null)
-                    return StatusCode.InvalidRequest;
-
-                StatusCode status = StatusCode.NoData;
+            if (CurrentUser == null)
+                statusCode = StatusCode.InvalidRequest;
+            else
                 try
                 {
                     StorageFile gradesFile = await _localFolder.GetFileAsync(GRADES_JSON_FILE_NAME);
@@ -447,20 +451,17 @@ namespace VITacademics.Managers
                     {
                         academicHistory = JsonParser.TryParseGrades(jsonString);
                         if (academicHistory != null)
-                            status = StatusCode.Success;
+                            statusCode = StatusCode.Success;
                         else
-                            status = StatusCode.UnknownError;
+                            statusCode = StatusCode.UnknownError;
                     }
                 }
                 catch
                 { }
-                return status;
-            });
 
             return new Response<AcademicHistory>(statusCode, academicHistory);
         }
 
-        // Test this code.
         /// <summary>
         /// Attempts to get the academic history for the current user by sending a network request. On success, this method also tries to cache the grades locally before returning.
         /// </summary>
