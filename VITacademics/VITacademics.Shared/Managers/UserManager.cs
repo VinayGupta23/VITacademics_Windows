@@ -195,10 +195,12 @@ namespace VITacademics.Managers
                 try
                 {
                     credential = new PasswordVault().Retrieve(RESOURCE_NAME, credential.UserName);
-                    // Parse "password" to retrieve DOB and campus
-                    DateTimeOffset dob = DateTimeOffset.ParseExact(credential.Password.Substring(0, 8), "ddMMyyyy", CultureInfo.InvariantCulture);
-                    string campus = credential.Password.Substring(8);
-                    CurrentUser = new User(credential.UserName, dob, campus);
+                    // Parse "password" to retrieve DOB, campus and phoneNo
+                    string[] values = credential.Password.Split('_');
+                    DateTimeOffset dob = DateTimeOffset.ParseExact(values[0], "ddMMyyyy", CultureInfo.InvariantCulture);
+                    string campus = values[1];
+                    string phoneNo = values[2];
+                    CurrentUser = new User(credential.UserName, dob, campus, phoneNo);
                 }
                 catch
                 {
@@ -227,11 +229,11 @@ namespace VITacademics.Managers
         /// <returns>
         ///  Returns a specific status code as per the login attempt result.
         /// </returns>
-        public static async Task<StatusCode> CreateNewUserAsync(string regNo, DateTimeOffset dateOfBirth, string campus)
+        public static async Task<StatusCode> CreateNewUserAsync(string regNo, DateTimeOffset dateOfBirth, string campus, string phoneNo)
         {
             return await MonitoredTask(async () =>
             {
-                User user = new User(regNo, dateOfBirth, campus);
+                User user = new User(regNo, dateOfBirth, campus, phoneNo);
                 StatusCode status = await NetworkService.TryLoginAsync(user);
 
                 if (status == StatusCode.Success)
@@ -251,9 +253,10 @@ namespace VITacademics.Managers
                         if (credential != null)
                             new PasswordVault().Remove(credential);
 
-                        // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}{Campus}"
+                        // Store Credentials in the following format: "VITacademics" - "{regNo}" : "{ddMMyyyy}_{campus}_{phoneNo}"
                         new PasswordVault().Add(
-                            new PasswordCredential(RESOURCE_NAME, regNo, dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + campus));
+                            new PasswordCredential(RESOURCE_NAME, regNo,
+                                    string.Format("{0}_{1}_{2}", dateOfBirth.ToString("ddMMyyyy", CultureInfo.InvariantCulture), campus, phoneNo)));
 
                         CurrentUser = user;
 #if WINDOWS_PHONE_APP

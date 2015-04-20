@@ -20,9 +20,9 @@ namespace Academics.ContentService
 #else
         private const string BASE_URI_STRING = "https://vitacademics-rel.herokuapp.com";
 #endif
-        private const string LOGIN_STRING_FORMAT = "/api/v2/{0}/login?regno={1}&dob={2}";
-        private const string REFRESH_STRING_FORMAT = "/api/v2/{0}/refresh?regno={1}&dob={2}";
-        private const string GRADES_STRING_FORMAT = "/api/v2/{0}/grades?regno={1}&dob={2}";
+        private const string LOGIN_STRING_FORMAT = "/api/v2/{0}/login/";
+        private const string REFRESH_STRING_FORMAT = "/api/v2/{0}/refresh/";
+        private const string GRADES_STRING_FORMAT = "/api/v2/{0}/grades/";
 #if WINDOWS_PHONE_APP
         private const string WP_USER_AGENT = "Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 520) like iPhone OS 7_0_3 Mac OS X AppleWebKit/537 (KHTML, like Gecko) Mobile Safari/537";
 #else
@@ -51,12 +51,13 @@ namespace Academics.ContentService
             {
                 string dob = user.DateOfBirth.ToString("ddMMyyyy", System.Globalization.CultureInfo.InvariantCulture);
                 var postContent = new HttpFormUrlEncodedContent(
-                                    new KeyValuePair<string, string>[2] {
+                                    new KeyValuePair<string, string>[3] {
                                         new KeyValuePair<string, string>("regno", user.RegNo),
-                                        new KeyValuePair<string, string>("dob", dob) 
+                                        new KeyValuePair<string, string>("dob", dob),
+                                        new KeyValuePair<string, string>("mobile", user.PhoneNo)
                                     });
 
-                string uriString = BASE_URI_STRING + String.Format(relativeUriFormat, user.Campus, user.RegNo, dob);
+                string uriString = BASE_URI_STRING + String.Format(relativeUriFormat, user.Campus);
                 HttpResponseMessage httpResponse = await _httpClient.PostAsync(new Uri(uriString), postContent);
 
                 switch (httpResponse.StatusCode)

@@ -18,6 +18,7 @@ namespace VITacademics
     public sealed partial class LoginPage : Page, IManageable
     {
         private string _regNo;
+        private string _phoneNo;
 
         public string Campus
         {
@@ -39,6 +40,17 @@ namespace VITacademics
         {
             get;
             set;
+        }
+        public string PhoneNo
+        {
+            get
+            { return _phoneNo; }
+            set
+            {
+                if (value != null)
+                    _phoneNo = value;
+                UpdateLoginButtonState();
+            }
         }
 
         public LoginPage()
@@ -97,9 +109,11 @@ namespace VITacademics
         private void SetState(bool isIdle)
         {
             regNoBox.IsEnabled = isIdle;
+            phoneNoBox.IsEnabled = isIdle;
             datePicker.IsEnabled = isIdle;
             radioButton1.IsEnabled = isIdle;
             radioButton2.IsEnabled = isIdle;
+
 
             if (isIdle)
             {
@@ -119,15 +133,23 @@ namespace VITacademics
         {
             // To prevent on-screen keyboard from automatically displaying after the method executes.
             regNoBox.IsTabStop = false;
+            phoneNoBox.IsTabStop = false;
             SetState(false);
 
             if (IsRegNoValid() == false)
             {
                 new MessageDialog("Please enter your register number in the correct format and try again.", "Invalid Credentials").ShowAsync();
             }
+            else if (PhoneNo == null && Campus == "vellore")
+                new MessageDialog("Parent's mobile number is compulsory for Vellore students.", "Missing Credentials").ShowAsync();
             else
             {
-                StatusCode statusCode = await UserManager.CreateNewUserAsync(RegNo, DOB, Campus);
+                string phone;
+                if (Campus == "chennai")
+                    phone = "NA";
+                else
+                    phone = PhoneNo;
+                StatusCode statusCode = await UserManager.CreateNewUserAsync(RegNo, DOB, Campus, phone);
 
                 if (statusCode == StatusCode.Success)
                     PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);
@@ -138,7 +160,7 @@ namespace VITacademics
             SetState(true);
             // Re-enable TextBox.
             regNoBox.IsTabStop = true;
-
+            phoneNoBox.IsTabStop = true;
         }
 
         public Dictionary<string, object> SaveState()

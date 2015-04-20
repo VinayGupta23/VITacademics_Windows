@@ -26,9 +26,15 @@ namespace Academics.DataModel
             get;
             private set;
         }
+        public string PhoneNo
+        {
+            get;
+            private set;
+        }
         public ReadOnlyCollection<Course> Courses
         {
-            get; private set;
+            get;
+            private set;
         }
         public CoursesMetadata CoursesMetadata
         {
@@ -36,11 +42,12 @@ namespace Academics.DataModel
             internal set;
         }
 
-        public User(string regNo, DateTimeOffset dateOfBirth, string campus)
+        public User(string regNo, DateTimeOffset dateOfBirth, string campus, string phoneNo)
         {
             RegNo = regNo;
             DateOfBirth = dateOfBirth;
             Campus = campus;
+            PhoneNo = phoneNo;
 
             _courses = new List<Course>();
             Courses = new ReadOnlyCollection<Course>(_courses);

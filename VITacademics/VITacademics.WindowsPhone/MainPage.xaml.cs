@@ -14,6 +14,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Popups;
 
 
 namespace VITacademics
@@ -193,6 +194,9 @@ namespace VITacademics
             if (freshData == false && AppSettings.AutoRefresh == true)
                 RefreshButton_Click(null, null);
 
+            if (AppSettings.FirstRun == true && UserManager.CurrentUser != null && UserManager.CurrentUser.Campus == "chennai")
+                new MessageDialog("Hello, we're sorry to tell you that some issues are pending regarding attendance in particular subjects for Chennai campus.\n\nWe're working hard at this right now and will soon be fixing it. Thank you for your feedback and patience :)",
+                                    "Note from the developer").ShowAsync();
         }
 
         #endregion

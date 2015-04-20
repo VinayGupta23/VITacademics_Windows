@@ -89,7 +89,12 @@ namespace Academics.ContentService
                 string regNo = rootObject.GetNamedString("reg_no");
                 DateTimeOffset dob = DateTimeOffset.ParseExact(rootObject.GetNamedString("dob"), "ddMMyyyy", CultureInfo.InvariantCulture);
                 string campus = rootObject.GetNamedString("campus");
-                return new User(regNo, dob, campus);
+                string phoneNo = null;
+                if (campus == "chennai")
+                    phoneNo = "NA";
+                else
+                    phoneNo = rootObject.GetNamedString("mobile");
+                return new User(regNo, dob, campus, phoneNo);
             }
             catch
             {
