@@ -165,11 +165,12 @@ namespace Academics.ContentService
         {
             try
             {
-                AcademicHistory academicHistory = new AcademicHistory();
+                AcademicHistory academicHistory = null;
                 JsonObject rootObject = JsonObject.Parse(jsonString);
 
                 // Adding complete list of raw grades
                 JsonArray gradesArray = rootObject.GetNamedArray("grades");
+                academicHistory = new AcademicHistory(gradesArray.Count);
                 foreach (JsonValue gradeValue in gradesArray)
                     academicHistory._grades.Add(GetGradeInfo(gradeValue));
 
@@ -301,6 +302,10 @@ namespace Academics.ContentService
             info.Credits = (ushort)gradeObject.GetNamedNumber("credits");
             info.Grade = gradeObject.GetNamedString("grade")[0];
             info.AssignExamDate(gradeObject.GetNamedString("exam_held"));
+
+            if (info.CourseOption == "NIL")
+                info.CourseOption = "";
+
             return info;
         }
 

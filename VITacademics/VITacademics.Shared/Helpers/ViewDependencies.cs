@@ -128,7 +128,33 @@ namespace VITacademics.Helpers
                 return ClassGeneralTemplate;
         }
     }
+
+    
 #endif
+
+    public class GradeToBrushConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            char grade = (char)value;
+            if (grade == 'F')
+                return new SolidColorBrush(Colors.LightSalmon);
+            else if (grade == 'N')
+                return new SolidColorBrush(Colors.PeachPuff);
+            else if (grade == 'W')
+                return new SolidColorBrush(Colors.LightGray);
+            else if (grade == 'S')
+                return new SolidColorBrush(Colors.LightSkyBlue);
+            else
+                return new SolidColorBrush(Colors.Gainsboro);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class CourseTemplateSelector : DataTemplateSelector
     {

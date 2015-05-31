@@ -1,0 +1,118 @@
+﻿<UserControl
+    x:Class="VITacademics.UIControls.GradesControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics.UIControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helpers="using:VITacademics.Helpers"
+    mc:Ignorable="d"
+    d:DesignHeight="720"
+    d:DesignWidth="420">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+        <helpers:DateTimeToStringConverter x:Key="DateStringConverter"></helpers:DateTimeToStringConverter>
+
+            <helpers:GradeToBrushConverter x:Key="GradeBrushConverter"></helpers:GradeToBrushConverter>
+            
+            <CollectionViewSource x:Name="gradeGroups" IsSourceGrouped="True"></CollectionViewSource>
+        
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Pivot Style="{StaticResource ContentPivotStyle}">
+        <PivotItem Header="academic history">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid x:Name="infoGrid">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <TextBlock Text="Last updated:&#160;" Style="{StaticResource BodyTextBlockStyle}"
+                               VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding GradeHistory.LastRefreshedLocal, Converter={StaticResource DateStringConverter}, ConverterParameter='d MMM, H:mm', FallbackValue='-'}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                        <HyperlinkButton Content="refresh" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                         Margin="0" Foreground="{ThemeResource PhoneAccentBrush}" Click="RefreshButton_Click"
+                                         x:Name="refreshButton" FontSize="20" Padding="0"></HyperlinkButton>
+                </Grid>
+
+                <SemanticZoom Grid.Row="1" Margin="0,7,0,0">
+                    <SemanticZoom.ZoomedInView>
+                        <ListView IsItemClickEnabled="False" Grid.Row="1" ItemsSource="{Binding Source={StaticResource gradeGroups}}">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter> 
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,7,0,7">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <Border Width="60" Height="60" Margin="0,0,10,0" Grid.RowSpan="2"
+                                                CornerRadius="3" Background="{Binding Grade, Converter={StaticResource GradeBrushConverter}}">
+                                            <TextBlock Style="{StaticResource LabelTextBlockStyle}"
+                                                       Text="{Binding Grade}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                                   Text="{Binding CourseTitle}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource SingleItemContentStyle}">
+                                            Credits: <Run Text="{Binding Credits}"></Run>
+                                        </TextBlock>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource SingleItemContentStyle}"
+                                                   HorizontalAlignment="Right" Text="{Binding CourseOption}"></TextBlock>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.GroupStyle>
+                                <GroupStyle HidesIfEmpty="True">
+                                    <GroupStyle.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Margin="0,10,0,10" Text="{Binding CompletionMonth}"
+                                                       Style="{StaticResource GroupHeaderTextBlockStyle}"
+                                                       Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
+                                        </DataTemplate>
+                                    </GroupStyle.HeaderTemplate>
+                                </GroupStyle>
+                            </ListView.GroupStyle>
+                        </ListView>
+                    </SemanticZoom.ZoomedInView>
+                    <SemanticZoom.ZoomedOutView>
+                        <ListView ItemsSource="{Binding Source={StaticResource gradeGroups}, Path=CollectionGroups}"
+                                  Header="PICK A SEMESTER"
+                                  Background="{StaticResource AlternateDarkBrush}">
+                            <ListView.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" Style="{StaticResource TitleTextBlockStyle}"
+                                               Margin="19,20,0,0" Foreground="White"></TextBlock>
+                                </DataTemplate>
+                            </ListView.HeaderTemplate>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="19,23,0,0" Text="{Binding Group.CompletionMonth}" 
+                                               Foreground="White" Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </SemanticZoom.ZoomedOutView>
+                </SemanticZoom>
+
+            </Grid>
+        </PivotItem>
+        <PivotItem Header="cgpa calculator">
+        </PivotItem>
+    </Pivot>
+
+</UserControl>

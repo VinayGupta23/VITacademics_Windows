@@ -16,7 +16,7 @@
                 <Setter Property="HeaderTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" Foreground="{ThemeResource PhoneAccentBrush}"
+                            <TextBlock Text="{Binding}" Foreground="Gray"
                                        Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
                         </DataTemplate>
                     </Setter.Value>
@@ -55,7 +55,7 @@
                             <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource ListViewItemTextBlockStyle}"
                                         FontSize="27"></TextBlock>
                             <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource SingleItemContentStyle}"
-                                       LineStackingStrategy="BlockLineHeight"></TextBlock>
+                                       LineStackingStrategy="BlockLineHeight" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

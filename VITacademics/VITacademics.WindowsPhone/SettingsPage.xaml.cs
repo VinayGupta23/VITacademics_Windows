@@ -56,6 +56,7 @@ namespace VITacademics
             HomePageOptions.Add(new KeyValuePair<string, ControlTypeCodes>("Overview", ControlTypeCodes.Overview));
             HomePageOptions.Add(new KeyValuePair<string, ControlTypeCodes>("Timetable", ControlTypeCodes.BasicTimetable));
             HomePageOptions.Add(new KeyValuePair<string, ControlTypeCodes>("Daily Buzz", ControlTypeCodes.EnhancedTimetable));
+            HomePageOptions.Add(new KeyValuePair<string, ControlTypeCodes>("Grades", ControlTypeCodes.Grades));
 
             ControlTypeCodes code = AppSettings.DefaultControlType;
             foreach(var pair in HomePageOptions)

@@ -58,10 +58,11 @@ namespace Academics.DataModel
         public ushort CreditsEarned { get; internal set; }
         public double Cgpa { get; internal set; }
         public DateTimeOffset LastRefreshed { get; internal set; }
+        public DateTimeOffset LastRefreshedLocal { get { return LastRefreshed.ToLocalTime(); } }
 
-        public AcademicHistory()
+        public AcademicHistory(int size)
         {
-            _grades = new List<GradeInfo>();
+            _grades = new List<GradeInfo>(size);
             _semesterGroupedGrades = new List<SemesterInfo>();
 
             Grades = new ReadOnlyCollection<GradeInfo>(_grades);
