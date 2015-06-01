@@ -141,9 +141,9 @@ namespace VITacademics.Helpers
             if (grade == 'F')
                 return new SolidColorBrush(Colors.LightSalmon);
             else if (grade == 'N')
-                return new SolidColorBrush(Colors.PeachPuff);
+                return new SolidColorBrush(Colors.Gray);
             else if (grade == 'W')
-                return new SolidColorBrush(Colors.LightGray);
+                return new SolidColorBrush(Colors.LightSlateGray);
             else if (grade == 'S')
                 return new SolidColorBrush(Colors.LightSkyBlue);
             else

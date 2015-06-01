@@ -8,7 +8,8 @@
     xmlns:helpers="using:VITacademics.Helpers"
     mc:Ignorable="d"
     d:DesignHeight="720"
-    d:DesignWidth="420">
+    d:DesignWidth="420"
+    RequestedTheme="Light">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -17,7 +18,31 @@
             <helpers:GradeToBrushConverter x:Key="GradeBrushConverter"></helpers:GradeToBrushConverter>
             
             <CollectionViewSource x:Name="gradeGroups" IsSourceGrouped="True"></CollectionViewSource>
-        
+
+            <Flyout Placement="Top" x:Name="GradeCardFlyout">
+                <Flyout.FlyoutPresenterStyle>
+                    <Style TargetType="FlyoutPresenter">
+                        <Setter Property="Background" Value="{StaticResource AlternateDarkBrush}"></Setter>
+                    </Style>
+                </Flyout.FlyoutPresenterStyle>
+                <Flyout.Content>
+                    <Grid Height="100">
+                    </Grid>
+                </Flyout.Content>
+            </Flyout>
+
+            <ComboBox x:Name="gradesComboBox" ItemsSource="{Binding Grades}"></ComboBox>
+            
+            <Style TargetType="ListView">
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                    </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -28,7 +53,7 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Grid x:Name="infoGrid">
+                <Grid>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
                         <TextBlock Text="Last updated:&#160;" Style="{StaticResource BodyTextBlockStyle}"
                                VerticalAlignment="Center"></TextBlock>
@@ -43,12 +68,10 @@
 
                 <SemanticZoom Grid.Row="1" Margin="0,7,0,0">
                     <SemanticZoom.ZoomedInView>
-                        <ListView IsItemClickEnabled="False" Grid.Row="1" ItemsSource="{Binding Source={StaticResource gradeGroups}}">
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter> 
-                                </Style>
-                            </ListView.ItemContainerStyle>
+                        <ListView IsItemClickEnabled="True" Grid.Row="1" ItemClick="GradeList_ItemClick" 
+                                  ItemsSource="{Binding Source={StaticResource gradeGroups}}"
+                                  FlyoutBase.AttachedFlyout="{StaticResource GradeCardFlyout}">
+                            
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="0,7,0,7">
@@ -80,7 +103,7 @@
                                 <GroupStyle HidesIfEmpty="True">
                                     <GroupStyle.HeaderTemplate>
                                         <DataTemplate>
-                                            <TextBlock Margin="0,10,0,10" Text="{Binding CompletionMonth}"
+                                            <TextBlock Margin="0,10,0,10" Text="{Binding Title}"
                                                        Style="{StaticResource GroupHeaderTextBlockStyle}"
                                                        Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
                                         </DataTemplate>
@@ -89,20 +112,45 @@
                             </ListView.GroupStyle>
                         </ListView>
                     </SemanticZoom.ZoomedInView>
+                    
                     <SemanticZoom.ZoomedOutView>
                         <ListView ItemsSource="{Binding Source={StaticResource gradeGroups}, Path=CollectionGroups}"
-                                  Header="PICK A SEMESTER"
+                                  Header="PICK A SEMESTER" RequestedTheme="Dark"
+                                  ScrollViewer.VerticalScrollMode="Auto"
                                   Background="{StaticResource AlternateDarkBrush}">
                             <ListView.HeaderTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding}" Style="{StaticResource TitleTextBlockStyle}"
-                                               Margin="19,20,0,0" Foreground="White"></TextBlock>
+                                        <TextBlock Text="{Binding}" Style="{StaticResource TitleTextBlockStyle}"
+                                                   Margin="19,20,0,20"></TextBlock>
                                 </DataTemplate>
                             </ListView.HeaderTemplate>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Margin="19,23,0,0" Text="{Binding Group.CompletionMonth}" 
-                                               Foreground="White" Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
+                                    <Grid Margin="19,13,19,23">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="{Binding Group.Title}" MaxLines="1" TextLineBounds="TrimToCapHeight"
+                                                   Grid.Row="0" Grid.Column="0" VerticalAlignment="Top"
+                                                   Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
+                                        <TextBlock Style="{StaticResource SingleItemSubHeaderStyle}"
+                                                   TextLineBounds="Tight" Margin="0,3,0,0"
+                                                   Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom">
+                                        Credits Earned: <Run Text="{Binding Group.CreditsEarned}"></Run>
+                                        </TextBlock>
+                                        <TextBlock Style="{StaticResource LabelTextBlockStyle}"
+                                                   Grid.Column="1" Grid.Row="0" TextLineBounds="Tight"
+                                                   Text="GPA" HorizontalAlignment="Right"></TextBlock>
+                                        <TextBlock TextLineBounds="Tight" FontWeight="SemiBold"
+                                                   Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Bottom"
+                                                   Style="{StaticResource SubheaderTextBlockStyle}" Foreground="LightGray"
+                                                   Text="{Binding Group.Gpa}" HorizontalAlignment="Right"></TextBlock>
+                                    </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -112,6 +160,56 @@
             </Grid>
         </PivotItem>
         <PivotItem Header="cgpa calculator">
+            <ScrollViewer>
+                <StackPanel>
+                    <Border CornerRadius="3" Background="WhiteSmoke" Padding="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Status" Style="{StaticResource GroupHeaderTextBlockStyle}"
+                                   Margin="0,0,0,10"></TextBlock>
+                            <TextBlock Text="CGPA" Style="{StaticResource GroupHeaderTextBlockStyle}"
+                                   Grid.Column="1" Margin="0,0,0,10" HorizontalAlignment="Right"></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding GradeHistory.Cgpa}" FontStretch="Condensed"
+                                   Style="{StaticResource HeaderTextBlockStyle}"
+                                   TextLineBounds="Tight" FontWeight="SemiBold"></TextBlock>
+                            <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                                <TextBlock Grid.Column="0" Style="{StaticResource SingleItemSubHeaderStyle}" 
+                                       FontWeight="SemiBold">
+                                       Credits Completed: <Run Text="{Binding GradeHistory.CreditsEarned}"></Run>
+                                </TextBlock>
+                                <TextBlock Grid.Column="0" Style="{StaticResource SingleItemContentStyle}"
+                                       Foreground="{ThemeResource PhoneForegroundBrush}">
+                                       Credits Attempted: <Run Text="{Binding GradeHistory.CreditsRegistered}"></Run>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <ItemsControl ItemsSource="{Binding Courses}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="19,7,19,10">
+                                    <!--<Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Title}" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
+                                    <ComboBox Grid.Column="1" ItemsSource="{Binding Path=ItemsSource, ElementName=gradesComboBox}"
+                                              PlaceholderText="" MinWidth="0" Width="40" Padding="0" Margin="0" BorderThickness="1" HorizontalAlignment="Right">
+                                    </ComboBox>-->
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
         </PivotItem>
     </Pivot>
 

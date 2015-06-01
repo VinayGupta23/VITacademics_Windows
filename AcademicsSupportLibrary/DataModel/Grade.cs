@@ -22,22 +22,68 @@ namespace Academics.DataModel
         public void AssignExamDate(string yearMonthString)
         {
             Id = yearMonthString;
-            DateTime date = DateTime.ParseExact(yearMonthString, "yyyy-MM", System.Globalization.CultureInfo.InvariantCulture);
+            DateTime date = GradeInfo.GetCompletionDate(yearMonthString);
             this.ExamHeldOn = date.ToString("MMMM, yyyy");
         }
+
+        internal static DateTime GetCompletionDate(string yearMonthString)
+        {
+            return DateTime.ParseExact(yearMonthString, "yyyy-MM", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
     }
 
     public sealed class SemesterInfo : ReadOnlyCollection<GradeInfo>, IComparable<SemesterInfo>
     {
+        public string Title { get; internal set; }
         public string CompletionMonth { get; internal set; }
         public ushort CreditsEarned { get; internal set; }
         public double Gpa { get; internal set; }
-
         internal string Id { get; set; }
 
         public SemesterInfo(IList<GradeInfo> grades)
             : base(grades)
         {
+            if (this.Count != 0)
+            {
+                this.AssignTitle();
+            }
+        }
+
+        private void AssignTitle()
+        {
+            DateTime dateId = GradeInfo.GetCompletionDate(this[0].Id);
+            string sem;
+            int year1, year2;
+
+            switch (dateId.Month)
+            {
+                case 11:
+                    sem = "Fall";
+                    break;
+                case 5:
+                    sem = "Winter";
+                    break;
+                case 7:
+                    sem = "Summer";
+                    break;
+                default:
+                    sem = "Semester";
+                    break;
+            }
+
+            if (dateId.Month > 7)
+            {
+                year1 = dateId.Year;
+                year2 = year1 + 1;
+            }
+            else
+            {
+                year2 = dateId.Year;
+                year1 = year2 - 1;
+            }
+
+            this.Title = String.Format("{0} {1}-{2}", sem, year1.ToString(), (year2 % 100).ToString());
         }
 
         public int CompareTo(SemesterInfo other)

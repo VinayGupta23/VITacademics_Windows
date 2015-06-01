@@ -24,7 +24,9 @@ namespace VITacademics.UIControls
 {
     public sealed partial class GradesControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
+        private List<char> _grades = new List<char>(8) { 'A', 'B', 'C', 'D', 'E', 'F', 'N', 'W' };
         private AcademicHistory _academicHistory;
+
         public AcademicHistory GradeHistory
         {
             private set
@@ -42,11 +44,20 @@ namespace VITacademics.UIControls
             }
             get { return _academicHistory; }
         }
+        public IEnumerable<Course> Courses
+        {
+            get { return UserManager.CurrentUser.Courses; }
+        }
+        public List<char> Grades
+        {
+            get { return _grades; }
+        }
 
         public GradesControl()
         {
             this.InitializeComponent();
             this.DataContext = this;
+            gradesComboBox.ItemsSource = Grades;
         }
 
         public event EventHandler<RequestEventArgs> ActionRequested;
@@ -59,6 +70,7 @@ namespace VITacademics.UIControls
             {
                 GradeHistory = response.Content;
             }
+            PropertyChanged(this, new PropertyChangedEventArgs("Courses"));
         }
 
         public Dictionary<string, object> SaveState()
@@ -93,6 +105,11 @@ namespace VITacademics.UIControls
 
             refreshButton.IsEnabled = true;
             refreshButton.Content = "refresh";
+        }
+
+        private void GradeList_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
         }
 
     }
