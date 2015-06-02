@@ -24,8 +24,46 @@ namespace VITacademics.UIControls
 {
     public sealed partial class GradesControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
-        private List<char> _grades = new List<char>(8) { 'A', 'B', 'C', 'D', 'E', 'F', 'N', 'W' };
+
+        public class CourseGradePair : INotifyPropertyChanged
+        {
+            private readonly string _courseTitle;
+            private readonly ushort _credits;
+            private char _grade;
+
+            public char Grade
+            {
+                get { return _grade; }
+                set
+                {
+                    _grade = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("Grade"));
+                }
+            }
+            public string CourseTitle
+            {
+                get { return _courseTitle; }
+            }
+            public ushort Credits
+            {
+                get { return _credits; }
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            public CourseGradePair(string courseTitle, ushort credits)
+            {
+                _courseTitle = courseTitle;
+                _credits = credits;
+                Grade = '-';
+            }
+        }
+
+        private List<char> _grades = new List<char>(8) {'S', 'A', 'B', 'C', 'D', 'E', 'F', 'N' };
         private AcademicHistory _academicHistory;
+        private List<CourseGradePair> _courses;
+        private CourseGradePair tempSelection;
 
         public AcademicHistory GradeHistory
         {
@@ -44,9 +82,15 @@ namespace VITacademics.UIControls
             }
             get { return _academicHistory; }
         }
-        public IEnumerable<Course> Courses
+        public List<CourseGradePair> CourseGradePairs
         {
-            get { return UserManager.CurrentUser.Courses; }
+            set
+            {
+                _courses = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("CourseGradePairs"));
+            }
+            get { return _courses; }
         }
         public List<char> Grades
         {
@@ -57,7 +101,6 @@ namespace VITacademics.UIControls
         {
             this.InitializeComponent();
             this.DataContext = this;
-            gradesComboBox.ItemsSource = Grades;
         }
 
         public event EventHandler<RequestEventArgs> ActionRequested;
@@ -65,19 +108,35 @@ namespace VITacademics.UIControls
 
         public async void GenerateView(string parameter)
         {
-            var response = await UserManager.GetGradesFromCacheAsync();
-            if (response.Code == Academics.ContentService.StatusCode.Success)
+            if (GradeHistory == null)
             {
-                GradeHistory = response.Content;
+                var response = await UserManager.GetGradesFromCacheAsync();
+                if (response.Code == Academics.ContentService.StatusCode.Success)
+                {
+                    GradeHistory = response.Content;
+                }
             }
-            PropertyChanged(this, new PropertyChangedEventArgs("Courses"));
+
+            CourseGradePairs = new List<CourseGradePair>();
+            var uniqueCourseGroups = UserManager.CurrentUser.Courses.GroupBy<Course, string>((Course c) => c.CourseCode);
+            foreach (var courseGroup in uniqueCourseGroups)
+            {
+                ushort credits = 0;
+                Course course = null;
+                foreach (Course c in courseGroup)
+                {
+                    if (course == null)
+                        course = c;
+                    credits += c.Credits;
+                }
+                CourseGradePairs.Add(new CourseGradePair(course.Title, credits));
+            }
         }
 
         public Dictionary<string, object> SaveState()
         {
             return null;
         }
-
         public void LoadState(Dictionary<string, object> lastState)
         {
         }
@@ -107,9 +166,20 @@ namespace VITacademics.UIControls
             refreshButton.Content = "refresh";
         }
 
-        private void GradeList_ItemClick(object sender, ItemClickEventArgs e)
+        private void SelectGradeButton_Click(object sender, RoutedEventArgs e)
         {
-            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+            gradeListPicker.ShowAt((FrameworkElement)sender);
+            tempSelection = (sender as FrameworkElement).DataContext as CourseGradePair;
+        }
+
+        private void GradePicker_ItemsPicked(ListPickerFlyout sender, ItemsPickedEventArgs args)
+        {
+            if (tempSelection != null)
+            {
+                tempSelection.Grade = (char)gradeListPicker.SelectedItem;
+            }
+            tempSelection = null;
+            gradeListPicker.SelectedIndex = -1;
         }
 
     }

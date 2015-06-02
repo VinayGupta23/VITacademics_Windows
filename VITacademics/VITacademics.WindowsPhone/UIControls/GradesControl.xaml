@@ -13,12 +13,14 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-        <helpers:DateTimeToStringConverter x:Key="DateStringConverter"></helpers:DateTimeToStringConverter>
+            
+            <helpers:DateTimeToStringConverter x:Key="DateStringConverter"></helpers:DateTimeToStringConverter>
 
             <helpers:GradeToBrushConverter x:Key="GradeBrushConverter"></helpers:GradeToBrushConverter>
             
             <CollectionViewSource x:Name="gradeGroups" IsSourceGrouped="True"></CollectionViewSource>
 
+            <!-- Scrutinize --><!--
             <Flyout Placement="Top" x:Name="GradeCardFlyout">
                 <Flyout.FlyoutPresenterStyle>
                     <Style TargetType="FlyoutPresenter">
@@ -29,9 +31,10 @@
                     <Grid Height="100">
                     </Grid>
                 </Flyout.Content>
-            </Flyout>
+            </Flyout>-->
 
-            <ComboBox x:Name="gradesComboBox" ItemsSource="{Binding Grades}"></ComboBox>
+            <ListPickerFlyout ItemsSource="{Binding Grades}" ItemsPicked="GradePicker_ItemsPicked"
+                              x:Name="gradeListPicker"></ListPickerFlyout>
             
             <Style TargetType="ListView">
                 <Setter Property="ItemContainerStyle">
@@ -68,9 +71,8 @@
 
                 <SemanticZoom Grid.Row="1" Margin="0,7,0,0">
                     <SemanticZoom.ZoomedInView>
-                        <ListView IsItemClickEnabled="True" Grid.Row="1" ItemClick="GradeList_ItemClick" 
-                                  ItemsSource="{Binding Source={StaticResource gradeGroups}}"
-                                  FlyoutBase.AttachedFlyout="{StaticResource GradeCardFlyout}">
+                        <ListView IsItemClickEnabled="True" Grid.Row="1" 
+                                  ItemsSource="{Binding Source={StaticResource gradeGroups}}">
                             
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -192,22 +194,47 @@
                             </StackPanel>
                         </Grid>
                     </Border>
-                    <ItemsControl ItemsSource="{Binding Courses}">
+                    
+                    <TextBlock Text="Predict your GPA" Style="{StaticResource GroupHeaderTextBlockStyle}"
+                               Margin="10,20,10,13"></TextBlock>
+
+                    <ItemsControl ItemsSource="{Binding CourseGradePairs}" x:Name="courseGradeItemsControl">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="19,7,19,10">
-                                    <!--<Grid.ColumnDefinitions>
+                                <Grid Margin="17,7,19,10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"></ColumnDefinition>
                                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Title}" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
-                                    <ComboBox Grid.Column="1" ItemsSource="{Binding Path=ItemsSource, ElementName=gradesComboBox}"
-                                              PlaceholderText="" MinWidth="0" Width="40" Padding="0" Margin="0" BorderThickness="1" HorizontalAlignment="Right">
-                                    </ComboBox>-->
+                                    <TextBlock Text="{Binding CourseTitle}" Style="{StaticResource BodyTextBlockStyle}"
+                                               MaxLines="1"></TextBlock>
+                                    <TextBlock Grid.Row="1" Style="{StaticResource SingleItemContentStyle}">
+                                        Credits: <Run Text="{Binding Credits}"></Run>
+                                    </TextBlock>
+
+                                    <HyperlinkButton MinWidth="0" MinHeight="0" BorderBrush="Transparent" BorderThickness="0"
+                                                     Grid.RowSpan="2" Grid.Column="1"
+                                                     Click="SelectGradeButton_Click">
+                                        <HyperlinkButton.Content>
+                                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <Ellipse Width="45" Height="45"
+                                                         Fill="{Binding Grade, Converter={StaticResource GradeBrushConverter}}"></Ellipse>
+                                                <TextBlock Style="{StaticResource LabelTextBlockStyle}"
+                                                           Text="{Binding Grade}" Margin="0" Padding="0" TextLineBounds="Tight"
+                                                           VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                                            </Grid>
+                                        </HyperlinkButton.Content>
+                                    </HyperlinkButton>
+                                    
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    
                 </StackPanel>
             </ScrollViewer>
         </PivotItem>
