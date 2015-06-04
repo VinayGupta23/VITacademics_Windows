@@ -187,8 +187,6 @@ namespace Academics.ContentService
                                                 SemesterInfo semesterInfo = new SemesterInfo(group.ToList<GradeInfo>());
                                                 semesterInfo.CreditsEarned = (ushort)semesterInfoObject.GetNamedNumber("credits");
                                                 semesterInfo.Gpa = semesterInfoObject.GetNamedNumber("gpa");
-                                                semesterInfo.CompletionMonth = semesterInfo[0].ExamHeldOn;
-                                                semesterInfo.Id = semesterInfo[0].Id;
                                                 return semesterInfo;
                                             });
                 foreach(var semInfo in semInfoList)
@@ -298,7 +296,7 @@ namespace Academics.ContentService
             info.CourseCode = gradeObject.GetNamedString("course_code");
             info.CourseTitle = gradeObject.GetNamedString("course_title");
             info.CourseType = gradeObject.GetNamedString("course_type");
-            info.CourseOption = gradeObject.GetNamedString("option");
+            info.CourseOption = gradeObject.GetNamedString("option").ToUpper();
             info.Credits = (ushort)gradeObject.GetNamedNumber("credits");
             info.Grade = gradeObject.GetNamedString("grade")[0];
             info.AssignExamDate(gradeObject.GetNamedString("exam_held"));

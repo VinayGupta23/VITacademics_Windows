@@ -132,6 +132,7 @@ namespace VITacademics.Helpers
     
 #endif
 
+    // Incomplete - Decide suitable colour code and make public properties if needed.
     public class GradeToBrushConverter : IValueConverter
     {
 

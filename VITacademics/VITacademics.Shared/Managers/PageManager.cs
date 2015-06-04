@@ -153,12 +153,13 @@ namespace VITacademics.Managers
 #if WINDOWS_PHONE_APP
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 #endif
-            _standardKnownTypes = new Type[5];
+            _standardKnownTypes = new Type[6];
             _standardKnownTypes[0] = typeof(List<bool>);
             _standardKnownTypes[1] = typeof(List<int>);
             _standardKnownTypes[2] = typeof(List<string>);
             _standardKnownTypes[3] = typeof(List<double>);
-            _standardKnownTypes[4] = typeof(DateTimeOffset);
+            _standardKnownTypes[4] = typeof(List<char>);
+            _standardKnownTypes[5] = typeof(DateTimeOffset);
         }
 
 #if WINDOWS_PHONE_APP

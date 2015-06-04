@@ -15,20 +15,14 @@ namespace Academics.DataModel
         public string CourseOption { get; internal set; }
         public ushort Credits { get; internal set; }
         public char Grade { get; internal set; }
-        public string ExamHeldOn { get; internal set; }
+        public DateTime ExamMonth { get; internal set; }
 
         internal string Id { get; set; }
 
         public void AssignExamDate(string yearMonthString)
         {
             Id = yearMonthString;
-            DateTime date = GradeInfo.GetCompletionDate(yearMonthString);
-            this.ExamHeldOn = date.ToString("MMMM, yyyy");
-        }
-
-        internal static DateTime GetCompletionDate(string yearMonthString)
-        {
-            return DateTime.ParseExact(yearMonthString, "yyyy-MM", System.Globalization.CultureInfo.InvariantCulture);
+            ExamMonth = DateTime.ParseExact(yearMonthString, "yyyy-MM", System.Globalization.CultureInfo.InvariantCulture);
         }
 
     }
@@ -36,7 +30,7 @@ namespace Academics.DataModel
     public sealed class SemesterInfo : ReadOnlyCollection<GradeInfo>, IComparable<SemesterInfo>
     {
         public string Title { get; internal set; }
-        public string CompletionMonth { get; internal set; }
+        public DateTime CompletionMonth { get; internal set; }
         public ushort CreditsEarned { get; internal set; }
         public double Gpa { get; internal set; }
         internal string Id { get; set; }
@@ -47,12 +41,14 @@ namespace Academics.DataModel
             if (this.Count != 0)
             {
                 this.AssignTitle();
+                this.CompletionMonth = this[0].ExamMonth;
+                this.Id = this[0].Id;
             }
         }
 
         private void AssignTitle()
         {
-            DateTime dateId = GradeInfo.GetCompletionDate(this[0].Id);
+            DateTime dateId = this[0].ExamMonth;
             string sem;
             int year1, year2;
 

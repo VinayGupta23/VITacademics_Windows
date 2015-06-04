@@ -13,42 +13,29 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            
+
             <helpers:DateTimeToStringConverter x:Key="DateStringConverter"></helpers:DateTimeToStringConverter>
 
             <helpers:GradeToBrushConverter x:Key="GradeBrushConverter"></helpers:GradeToBrushConverter>
-            
-            <CollectionViewSource x:Name="gradeGroups" IsSourceGrouped="True"></CollectionViewSource>
 
-            <!-- Scrutinize --><!--
-            <Flyout Placement="Top" x:Name="GradeCardFlyout">
-                <Flyout.FlyoutPresenterStyle>
-                    <Style TargetType="FlyoutPresenter">
-                        <Setter Property="Background" Value="{StaticResource AlternateDarkBrush}"></Setter>
-                    </Style>
-                </Flyout.FlyoutPresenterStyle>
-                <Flyout.Content>
-                    <Grid Height="100">
-                    </Grid>
-                </Flyout.Content>
-            </Flyout>-->
+            <CollectionViewSource x:Name="gradeGroups" IsSourceGrouped="True"></CollectionViewSource>
 
             <ListPickerFlyout ItemsSource="{Binding Grades}" ItemsPicked="GradePicker_ItemsPicked"
                               x:Name="gradeListPicker"></ListPickerFlyout>
-            
+
             <Style TargetType="ListView">
                 <Setter Property="ItemContainerStyle">
                     <Setter.Value>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                    </Style>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        </Style>
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Pivot Style="{StaticResource ContentPivotStyle}">
         <PivotItem Header="academic history">
             <Grid>
@@ -64,40 +51,50 @@
                                    Style="{StaticResource BodyTextBlockStyle}"
                                    VerticalAlignment="Center"></TextBlock>
                     </StackPanel>
-                        <HyperlinkButton Content="refresh" VerticalAlignment="Center" HorizontalAlignment="Right"
+                    <HyperlinkButton Content="refresh" VerticalAlignment="Center" HorizontalAlignment="Right"
                                          Margin="0" Foreground="{ThemeResource PhoneAccentBrush}" Click="RefreshButton_Click"
                                          x:Name="refreshButton" FontSize="20" Padding="0"></HyperlinkButton>
                 </Grid>
 
                 <SemanticZoom Grid.Row="1" Margin="0,7,0,0">
                     <SemanticZoom.ZoomedInView>
-                        <ListView IsItemClickEnabled="True" Grid.Row="1" 
+                        <ListView IsItemClickEnabled="False"
                                   ItemsSource="{Binding Source={StaticResource gradeGroups}}">
-                            
+
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="0,7,0,7">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                                             <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
                                         </Grid.RowDefinitions>
 
-                                        <Border Width="60" Height="60" Margin="0,0,10,0" Grid.RowSpan="2"
-                                                CornerRadius="3" Background="{Binding Grade, Converter={StaticResource GradeBrushConverter}}">
+                                        <Border Width="60" Height="60" Margin="10,0,2,0"
+                                                Grid.RowSpan="2" Grid.Column="1"
+                                                CornerRadius="3" VerticalAlignment="Center"
+                                                Background="{Binding Grade, Converter={StaticResource GradeBrushConverter}}">
                                             <TextBlock Style="{StaticResource LabelTextBlockStyle}"
-                                                       Text="{Binding Grade}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                                                       Text="{Binding Grade}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                                         </Border>
-                                        <TextBlock Grid.Column="1" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                                                   Text="{Binding CourseTitle}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                                        <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource SingleItemContentStyle}">
-                                            Credits: <Run Text="{Binding Credits}"></Run>
+                                        
+                                        <TextBlock Grid.Column="0" VerticalAlignment="Center" 
+                                                   TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                                                   Text="{Binding CourseTitle}" 
+                                                   Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+
+                                        <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="SemiBold"
+                                                   MaxLines="2" Style="{StaticResource SingleItemContentStyle}">
+                                            <Run Text="{Binding CourseCode}"></Run>, <Run Text="{Binding CourseType}"></Run>
+                                            <LineBreak></LineBreak><Run Text="{Binding Credits}" FontWeight="Normal"></Run> <Run FontWeight="Normal" Text="credits"></Run> 
                                         </TextBlock>
-                                        <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource SingleItemContentStyle}"
-                                                   HorizontalAlignment="Right" Text="{Binding CourseOption}"></TextBlock>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource SingleItemContentStyle}"
+                                                   Text="{Binding CourseOption}" HorizontalAlignment="Right"
+                                                   Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -114,7 +111,7 @@
                             </ListView.GroupStyle>
                         </ListView>
                     </SemanticZoom.ZoomedInView>
-                    
+
                     <SemanticZoom.ZoomedOutView>
                         <ListView ItemsSource="{Binding Source={StaticResource gradeGroups}, Path=CollectionGroups}"
                                   Header="PICK A SEMESTER" RequestedTheme="Dark"
@@ -122,7 +119,7 @@
                                   Background="{StaticResource AlternateDarkBrush}">
                             <ListView.HeaderTemplate>
                                 <DataTemplate>
-                                        <TextBlock Text="{Binding}" Style="{StaticResource TitleTextBlockStyle}"
+                                    <TextBlock Text="{Binding}" Style="{StaticResource TitleTextBlockStyle}"
                                                    Margin="19,20,0,20"></TextBlock>
                                 </DataTemplate>
                             </ListView.HeaderTemplate>
@@ -162,7 +159,7 @@
             </Grid>
         </PivotItem>
         <PivotItem Header="cgpa calculator">
-            <ScrollViewer>
+            <ScrollViewer Margin="0" Padding="2">
                 <StackPanel>
                     <Border CornerRadius="3" Background="WhiteSmoke" Padding="10">
                         <Grid>
@@ -194,11 +191,11 @@
                             </StackPanel>
                         </Grid>
                     </Border>
-                    
+
                     <TextBlock Text="Predict your GPA" Style="{StaticResource GroupHeaderTextBlockStyle}"
                                Margin="10,20,10,13"></TextBlock>
 
-                    <ItemsControl ItemsSource="{Binding CourseGradePairs}" x:Name="courseGradeItemsControl">
+                    <ItemsControl ItemsSource="{Binding CourseGradePairs}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="17,7,19,10">
@@ -211,13 +208,13 @@
                                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="{Binding CourseTitle}" Style="{StaticResource BodyTextBlockStyle}"
-                                               MaxLines="1"></TextBlock>
+                                               MaxLines="1" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"></TextBlock>
                                     <TextBlock Grid.Row="1" Style="{StaticResource SingleItemContentStyle}">
                                         Credits: <Run Text="{Binding Credits}"></Run>
                                     </TextBlock>
 
                                     <HyperlinkButton MinWidth="0" MinHeight="0" BorderBrush="Transparent" BorderThickness="0"
-                                                     Grid.RowSpan="2" Grid.Column="1"
+                                                     Grid.RowSpan="2" Grid.Column="1" Margin="7,0,0,0"
                                                      Click="SelectGradeButton_Click">
                                         <HyperlinkButton.Content>
                                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -229,12 +226,58 @@
                                             </Grid>
                                         </HyperlinkButton.Content>
                                     </HyperlinkButton>
-                                    
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    
+
+
+                    <Grid  Margin="7,15,0,0">
+                        <Button Content="Calculate" Background="{ThemeResource PhoneChromeBrush}"
+                                BorderThickness="0" BorderBrush="Transparent"
+                                Click="CalculateButton_Click"
+                                HorizontalAlignment="Left"></Button>
+                        <HyperlinkButton Content="reset all" Foreground="{ThemeResource PhoneAccentBrush}"
+                                         FontSize="20" VerticalAlignment="Center"
+                                         Click="ResetButton_Click"
+                                         HorizontalAlignment="Right" Margin="0,0,2,0"></HyperlinkButton>
+                    </Grid>
+                    <Border Margin="10,17,10,10" Background="WhiteSmoke" CornerRadius="3" Padding="13">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="GPA" Style="{StaticResource TitleTextBlockStyle}"
+                                       Grid.Row="0" Grid.Column="0"></TextBlock>
+                            <TextBlock Text="CGPA" Style="{StaticResource TitleTextBlockStyle}"
+                                       Grid.Row="0" Grid.Column="1"
+                                       HorizontalAlignment="Right"></TextBlock>
+                            <TextBlock Text="{Binding PredictedGpa}" Style="{StaticResource SubheaderTextBlockStyle}"
+                                       Foreground="{ThemeResource PhoneAccentBrush}"
+                                       Grid.Row="1" Grid.Column="0" FontWeight="Bold"></TextBlock>
+                            <TextBlock Text="{Binding PredictedCgpa}" Style="{StaticResource SubheaderTextBlockStyle}"
+                                       Foreground="{ThemeResource PhoneAccentBrush}"
+                                       Grid.Row="1" Grid.Column="1" FontWeight="Bold"
+                                       HorizontalAlignment="Right"></TextBlock>
+
+                            <TextBlock Style="{StaticResource SingleItemContentStyle}"
+                                       Grid.Row="2" Grid.Column="0">
+                                Credits: <Run Text="{Binding PredictedCredits[0]}"></Run>/<Run Text="{Binding PredictedCredits[1]}"></Run>
+                            </TextBlock>
+                            <TextBlock Style="{StaticResource SingleItemContentStyle}"
+                                       Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right">
+                                Credits: <Run Text="{Binding PredictedCredits[2]}"></Run>/<Run Text="{Binding PredictedCredits[3]}"></Run>
+                            </TextBlock>
+                            
+                        </Grid>
+                    </Border>
                 </StackPanel>
             </ScrollViewer>
         </PivotItem>

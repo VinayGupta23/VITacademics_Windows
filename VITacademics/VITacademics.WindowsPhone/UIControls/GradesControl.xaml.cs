@@ -1,29 +1,21 @@
-﻿using System;
+﻿using Academics.DataModel;
+using System;
 using System.Collections.Generic;
-using System.IO;
+using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Runtime.CompilerServices;
+using VITacademics.Helpers;
 using VITacademics.Managers;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using System.Threading.Tasks;
-using Academics.DataModel;
-using System.ComponentModel;
-using VITacademics.Helpers;
-using Windows.UI.Popups;
 
 
 namespace VITacademics.UIControls
 {
     public sealed partial class GradesControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
+        #region Dependency Nested Class
 
         public class CourseGradePair : INotifyPropertyChanged
         {
@@ -60,25 +52,36 @@ namespace VITacademics.UIControls
             }
         }
 
-        private List<char> _grades = new List<char>(8) {'S', 'A', 'B', 'C', 'D', 'E', 'F', 'N' };
-        private AcademicHistory _academicHistory;
-        private List<CourseGradePair> _courses;
-        private CourseGradePair tempSelection;
+        #endregion
 
+        #region Fields and Properties
+
+        // Constants
+        private readonly List<char> _grades = new List<char>(8) {'S', 'A', 'B', 'C', 'D', 'E', 'F', 'N' };
+        public List<char> Grades
+        {
+            get { return _grades; }
+        }
+
+        // Fields
+        private AcademicHistory _academicHistory;
+        private List<CourseGradePair> _courseGradePairs;
+
+        private CourseGradePair tempSelection;
+        private ushort[] _predictedCredits;
+        private string _predictedGpa = "-";
+        private string _predictedCgpa = "-";
+
+        // Properties
         public AcademicHistory GradeHistory
         {
             private set
             {
                 _academicHistory = value;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("GradeHistory"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("RefreshDate"));
-                }
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("RefreshDate");
                 if (value != null)
-                {
                     gradeGroups.Source = value.SemesterGroups;
-                }
             }
             get { return _academicHistory; }
         }
@@ -86,16 +89,45 @@ namespace VITacademics.UIControls
         {
             set
             {
-                _courses = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("CourseGradePairs"));
+                _courseGradePairs = value;
+                NotifyPropertyChanged();
             }
-            get { return _courses; }
+            get { return _courseGradePairs; }
         }
-        public List<char> Grades
+        public ushort[] PredictedCredits
         {
-            get { return _grades; }
+            get { return _predictedCredits; }
+            private set
+            {
+                _predictedCredits = value;
+                NotifyPropertyChanged();
+            }
         }
+        public string PredictedGpa
+        {
+            get { return _predictedGpa; }
+            set
+            {
+                if (_predictedGpa == value)
+                    return;
+                _predictedGpa = value;
+                NotifyPropertyChanged();
+
+            }
+        }
+        public string PredictedCgpa
+        {
+            get { return _predictedCgpa; }
+            set
+            {
+                if (_predictedCgpa == value)
+                    return;
+                _predictedCgpa = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        #endregion
 
         public GradesControl()
         {
@@ -103,8 +135,18 @@ namespace VITacademics.UIControls
             this.DataContext = this;
         }
 
+        #region Event Definitions and Related Handlers
+
         public event EventHandler<RequestEventArgs> ActionRequested;
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
 
         public async void GenerateView(string parameter)
         {
@@ -121,6 +163,9 @@ namespace VITacademics.UIControls
             var uniqueCourseGroups = UserManager.CurrentUser.Courses.GroupBy<Course, string>((Course c) => c.CourseCode);
             foreach (var courseGroup in uniqueCourseGroups)
             {
+                if (string.Compare(courseGroup.ElementAt<Course>(0).CourseOption, "Audit", StringComparison.OrdinalIgnoreCase) == 0)
+                    continue;
+
                 ushort credits = 0;
                 Course course = null;
                 foreach (Course c in courseGroup)
@@ -135,11 +180,24 @@ namespace VITacademics.UIControls
 
         public Dictionary<string, object> SaveState()
         {
+            //var grades = new List<char>();
+            //foreach (CourseGradePair cgPair in CourseGradePairs)
+            //    grades.Add(cgPair.Grade);
+            //return new Dictionary<string, object>(1) { { "predictionGrades", grades } };
             return null;
         }
         public void LoadState(Dictionary<string, object> lastState)
         {
+            //try
+            //{
+            //    var grades = lastState["predictionGrades"] as List<char>;
+            //    for (int i = 0; i < grades.Count; i++)
+            //        CourseGradePairs[i].Grade = grades[i];
+            //}
+            //catch { return; }
         }
+
+        #region Private Helper Methods and Event Handlers
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
@@ -181,6 +239,69 @@ namespace VITacademics.UIControls
             tempSelection = null;
             gradeListPicker.SelectedIndex = -1;
         }
+
+        private async void CalculateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (GradeHistory == null)
+            {
+                await new MessageDialog("Please refresh grades from the 'academic history' tab first to predict your GPA.", "No Data").ShowAsync();
+                return;
+            }
+
+            double weighedPoints = 0;
+            ushort creditsEarnedNow = 0;
+            ushort creditsEarned = GradeHistory.CreditsEarned;
+            ushort creditsRegisteredNow = UserManager.CurrentUser.CoursesMetadata.TotalCredits;
+            ushort creditsRegistered = GradeHistory.CreditsRegistered;
+
+            foreach (CourseGradePair cgPair in CourseGradePairs)
+            {
+                if (!char.IsLetter(cgPair.Grade))
+                {
+                    await new MessageDialog("Please enter grade predictions for all courses to calculate the GPA.", "Missing Inputs").ShowAsync();
+                    return;
+                }
+
+                weighedPoints += cgPair.Credits * GetGradePoint(cgPair.Grade);
+                if (cgPair.Grade != 'N' && cgPair.Grade != 'F')
+                    creditsEarnedNow += cgPair.Credits;
+            }
+
+            double gpa = weighedPoints / creditsEarnedNow;
+            double cgpa = (weighedPoints + GradeHistory.Cgpa * creditsEarned) / (creditsRegistered + creditsRegisteredNow);
+
+            PredictedGpa = gpa.ToString("F2");
+            PredictedCgpa = cgpa.ToString("F2");
+            PredictedCredits = new ushort[4] { creditsEarnedNow, 
+                                               creditsRegisteredNow, 
+                                               (ushort)(creditsEarned + creditsEarnedNow), 
+                                               (ushort)(creditsRegistered + creditsRegisteredNow) };
+        }
+
+        private int GetGradePoint(char grade)
+        {
+            switch(grade)
+            {
+                case 'S': return 10;
+                case 'A': return 9;
+                case 'B': return 8;
+                case 'C': return 7;
+                case 'D': return 6;
+                case 'E': return 5;
+                default: return 0;
+            }
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            PredictedCgpa = "-";
+            PredictedGpa = "-";
+            PredictedCredits = null;
+            foreach (var cgPair in CourseGradePairs)
+                cgPair.Grade = '-';
+        }
+
+        #endregion
 
     }
 }
