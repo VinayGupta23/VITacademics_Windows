@@ -16,7 +16,12 @@
 
             <helpers:DateTimeToStringConverter x:Key="DateStringConverter"></helpers:DateTimeToStringConverter>
 
-            <helpers:GradeToBrushConverter x:Key="GradeBrushConverter"></helpers:GradeToBrushConverter>
+            <helpers:GradeToBrushConverter x:Key="GradeBrushConverter"
+                                           SGradeBrush="LightSkyBlue"
+                                           WGradeBrush="PaleGoldenrod"
+                                           NGradeBrush="LightSlateGray"
+                                           FGradeBrush="LightSalmon"
+                                           DefaultBrush="Gainsboro"></helpers:GradeToBrushConverter>
 
             <CollectionViewSource x:Name="gradeGroups" IsSourceGrouped="True"></CollectionViewSource>
 
@@ -269,11 +274,11 @@
 
                             <TextBlock Style="{StaticResource SingleItemContentStyle}"
                                        Grid.Row="2" Grid.Column="0">
-                                Credits: <Run Text="{Binding PredictedCredits[0]}"></Run>/<Run Text="{Binding PredictedCredits[1]}"></Run>
+                                Credits: <Run Text="{Binding PredictedCredits[0]}"></Run> / <Run Text="{Binding PredictedCredits[1]}"></Run>
                             </TextBlock>
                             <TextBlock Style="{StaticResource SingleItemContentStyle}"
                                        Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right">
-                                Credits: <Run Text="{Binding PredictedCredits[2]}"></Run>/<Run Text="{Binding PredictedCredits[3]}"></Run>
+                                Credits: <Run Text="{Binding PredictedCredits[2]}"></Run> / <Run Text="{Binding PredictedCredits[3]}"></Run>
                             </TextBlock>
                             
                         </Grid>

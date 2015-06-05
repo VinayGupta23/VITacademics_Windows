@@ -248,11 +248,15 @@ namespace VITacademics.UIControls
                 return;
             }
 
-            double weighedPoints = 0;
+            if(CourseGradePairs.Count == 0)
+            {
+                await new MessageDialog("You have no courses this semester to predict the GPA.", "Oops...").ShowAsync();
+                return;
+            }
+
+            double weighedSum = 0;
+            ushort normalisingCredits = 0;
             ushort creditsEarnedNow = 0;
-            ushort creditsEarned = GradeHistory.CreditsEarned;
-            ushort creditsRegisteredNow = UserManager.CurrentUser.CoursesMetadata.TotalCredits;
-            ushort creditsRegistered = GradeHistory.CreditsRegistered;
 
             foreach (CourseGradePair cgPair in CourseGradePairs)
             {
@@ -262,23 +266,30 @@ namespace VITacademics.UIControls
                     return;
                 }
 
-                weighedPoints += cgPair.Credits * GetGradePoint(cgPair.Grade);
-                if (cgPair.Grade != 'N' && cgPair.Grade != 'F')
-                    creditsEarnedNow += cgPair.Credits;
+                if (cgPair.Grade == 'N')
+                    continue;
+                normalisingCredits += cgPair.Credits;
+                if (cgPair.Grade == 'F')
+                    continue;
+                weighedSum += cgPair.Credits * GetGradePoint(cgPair.Grade);
+                creditsEarnedNow += cgPair.Credits;
             }
 
-            double gpa = weighedPoints / creditsEarnedNow;
-            double cgpa = (weighedPoints + GradeHistory.Cgpa * creditsEarned) / (creditsRegistered + creditsRegisteredNow);
+            ushort creditsRegisteredNow = UserManager.CurrentUser.CoursesMetadata.TotalCredits;
+            ushort creditsEarned = GradeHistory.CreditsEarned;
+            ushort creditsRegistered = GradeHistory.CreditsRegistered;
+            double gpa = weighedSum / normalisingCredits;
+            double cgpa = (weighedSum + GradeHistory.Cgpa * creditsRegistered) / (creditsRegistered + creditsRegisteredNow);
 
             PredictedGpa = gpa.ToString("F2");
             PredictedCgpa = cgpa.ToString("F2");
-            PredictedCredits = new ushort[4] { creditsEarnedNow, 
-                                               creditsRegisteredNow, 
-                                               (ushort)(creditsEarned + creditsEarnedNow), 
+            PredictedCredits = new ushort[4] { creditsEarnedNow,
+                                               creditsRegisteredNow,
+                                               (ushort)(creditsEarned + creditsEarnedNow),
                                                (ushort)(creditsRegistered + creditsRegisteredNow) };
         }
 
-        private int GetGradePoint(char grade)
+        private ushort GetGradePoint(char grade)
         {
             switch(grade)
             {

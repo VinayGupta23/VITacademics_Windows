@@ -132,23 +132,24 @@ namespace VITacademics.Helpers
     
 #endif
 
-    // Incomplete - Decide suitable colour code and make public properties if needed.
     public class GradeToBrushConverter : IValueConverter
     {
+        public SolidColorBrush FGradeBrush { get; set; }
+        public SolidColorBrush NGradeBrush { get; set; }
+        public SolidColorBrush WGradeBrush { get; set; }
+        public SolidColorBrush SGradeBrush { get; set; }
+        public SolidColorBrush DefaultBrush { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            char grade = (char)value;
-            if (grade == 'F')
-                return new SolidColorBrush(Colors.LightSalmon);
-            else if (grade == 'N')
-                return new SolidColorBrush(Colors.Gray);
-            else if (grade == 'W')
-                return new SolidColorBrush(Colors.LightSlateGray);
-            else if (grade == 'S')
-                return new SolidColorBrush(Colors.LightSkyBlue);
-            else
-                return new SolidColorBrush(Colors.Gainsboro);
+            switch((char)value)
+            {
+                case 'S': return SGradeBrush;
+                case 'W': return WGradeBrush;
+                case 'N': return NGradeBrush;
+                case 'F': return FGradeBrush;
+                default: return DefaultBrush;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
