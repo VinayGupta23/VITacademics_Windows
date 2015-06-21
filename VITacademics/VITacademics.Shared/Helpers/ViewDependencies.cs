@@ -165,12 +165,13 @@ namespace VITacademics.Helpers
         public DataTemplate PBLTemplate { get; set; }
         public DataTemplate RBLTemplate { get; set; }
         public DataTemplate PBCTemplate { get; set; }
+        public DataTemplate FallbackTemplate { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
-            Course course = item as Course;
             try
             {
+                Course course = item as Course;
                 switch (course.CourseMode)
                 {
                     case "CBL": return CBLTemplate;
@@ -178,12 +179,12 @@ namespace VITacademics.Helpers
                     case "PBL": return PBLTemplate;
                     case "RBL": return RBLTemplate;
                     case "PBC": return PBCTemplate;
-                    default: return null;
+                    default: throw new Exception();
                 }
             }
             catch
             {
-                return null;
+                return FallbackTemplate;
             }
         }
 

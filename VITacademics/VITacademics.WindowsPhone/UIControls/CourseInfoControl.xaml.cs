@@ -19,13 +19,27 @@ using Windows.UI.Xaml.Navigation;
 
 namespace VITacademics.UIControls
 {
-    public sealed partial class CourseInfoControl : UserControl, IProxiedControl
+    public sealed partial class CourseInfoControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
         public event EventHandler<RequestEventArgs> ActionRequested;
+
+        private Course _course;
+
+        public Course SelectedCourse
+        {
+            get { return _course; }
+            set
+            {
+                _course = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("SelectedCourse"));
+            }
+        }
 
         public CourseInfoControl()
         {
             this.InitializeComponent();
+            this.DataContext = this;
 #if !DEBUG
             GoogleAnalytics.EasyTracker.GetTracker().SendView("Course Details");
 #endif
@@ -33,31 +47,13 @@ namespace VITacademics.UIControls
 
         public void GenerateView(string parameter)
         {
-            ContentPresenter contentPresenter = new ContentPresenter();
             try
             {
-                Course course =
-                    UserManager.CurrentUser.Courses.Single<Course>((Course c) => string.Equals(c.ClassNumber.ToString(), parameter));
-
-                string courseType = course.CourseMode;
-                if (courseType == "CBL")
-                    contentPresenter.ContentTemplate = this.Resources["CBLPivotTemplate"] as DataTemplate;
-                else if (courseType == "PBL")
-                    contentPresenter.ContentTemplate = this.Resources["PBLPivotTemplate"] as DataTemplate;
-                else if (courseType == "LBC")
-                    contentPresenter.ContentTemplate = this.Resources["LBCPivotTemplate"] as DataTemplate;
-                else if (courseType == "PBC")
-                    contentPresenter.ContentTemplate = this.Resources["PBCPivotTemplate"] as DataTemplate;
-                else if (courseType == "RBL")
-                    contentPresenter.ContentTemplate = this.Resources["RBLPivotTemplate"] as DataTemplate;
-                else
-                    contentPresenter.ContentTemplate = null;
-                contentPresenter.Content = course;
-                this.Content = contentPresenter;
+                SelectedCourse = UserManager.CurrentUser.Courses.Single<Course>((Course c) => string.Equals(c.ClassNumber.ToString(), parameter));
             }
             catch
             {
-                contentPresenter.ContentTemplate = this.Resources["CourseNotFoundTemplate"] as DataTemplate;
+                SelectedCourse = null;
             }
         }
 
@@ -70,6 +66,8 @@ namespace VITacademics.UIControls
         {
 
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
 }

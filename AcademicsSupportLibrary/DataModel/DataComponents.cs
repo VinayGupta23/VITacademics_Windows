@@ -73,50 +73,19 @@ namespace Academics.DataModel
         }
     }
 
-    public class MarksInfo : LtpCourseComponent
+    public class MarkInfo : LtpCourseComponent
     {
-        private readonly double? _marks;
-        private readonly string _status;
         private readonly string _title;
-
-        public double? Marks
-        {
-            get
-            { return _marks; }
-        }
-        public string Status
-        {
-            get
-            { return _status; }
-        }
-        public string Title
-        {
-            get
-            { return _title; }
-        }
-
-        public MarksInfo(LtpCourse parent, string title, double? marks, string status)
-            : base(parent)
-        {
-            _title = title;
-            _marks = marks;
-            _status = status;
-        }
-    }
-
-    public class CustomMarkInfo : LtpCourseComponent
-    {
-        private readonly string _marksTitle;
         private readonly int _maxMarks;
         private readonly int _weightage;
         private readonly DateTimeOffset? _conductedDate;
         private readonly double? _marks;
         private readonly string _status;
 
-        public string MarksTitle
+        public string Title
         {
             get
-            { return _marksTitle; }
+            { return _title; }
         }
         public int MaxMarks
         {
@@ -144,10 +113,10 @@ namespace Academics.DataModel
             { return _status; }
         }
 
-        public CustomMarkInfo(LtpCourse parent, string marksTitle, int maxMarks, int weightage, DateTimeOffset? conductedDate, double? marks, string status)
+        public MarkInfo(LtpCourse parent, string marksTitle, int maxMarks, int weightage, DateTimeOffset? conductedDate, double? marks, string status)
             : base(parent)
         {
-            _marksTitle = marksTitle;
+            _title = marksTitle;
             _maxMarks = maxMarks;
             _weightage = weightage;
             _conductedDate = conductedDate;

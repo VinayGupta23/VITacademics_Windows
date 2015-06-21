@@ -33,24 +33,34 @@ namespace Academics.DataModel
     public abstract class LtpCourse : Course
     {
         private List<ClassHours> _timings;
+        internal List<MarkInfo> _marksInfo;
 
         public string Slot { get; internal set; }
         public string Venue { get; internal set; }
         public string Ltpc { get; internal set; }
-        public double InternalMarksScored { get; internal set; }
-        public double TotalMarksTested { get; internal set; }
         public ReadOnlyCollection<ClassHours> Timings { get; private set; }
         public Attendance Attendance { get; internal set; }
+        public double InternalMarksScored { get; internal set; }
+        public double TotalMarksTested { get; internal set; }
+        public ReadOnlyCollection<MarkInfo> MarksInfo { get; private set; }
 
         public LtpCourse()
         {
             _timings = new List<ClassHours>();
             Timings = new ReadOnlyCollection<ClassHours>(_timings);
+
+            _marksInfo = new List<MarkInfo>();
+            MarksInfo = new ReadOnlyCollection<MarkInfo>(_marksInfo);
         }
 
         internal void AddClassHoursInstance(ClassHours classHours)
         {
             _timings.Add(classHours);
+        }
+
+        internal void AddMarkInfo(MarkInfo markInfo)
+        {
+            _marksInfo.Add(markInfo);
         }
     }
 

@@ -245,50 +245,36 @@ namespace Academics.ContentService
                 course.AddClassHoursInstance(new ClassHours(course, start, end, day));
             }
         }
-        private static MarksInfo GetMarksInfo(LtpCourse course, string markTitle, string marksType, JsonObject marksObject)
+        private static void AssignMarks(LtpCourse course, JsonObject marksObject)
         {
-            if (marksObject.GetNamedValue(marksType).ValueType == JsonValueType.Null)
-            {
-                return new MarksInfo(course, markTitle, null, "");
-            }
-            else
-            {
-                return new MarksInfo(course, markTitle,
-                                     marksObject.GetNamedNumber(marksType),
-                                     marksObject.GetNamedString(marksType + "_status"));
-            }
-        }
-        private static void AssignCustomMarks(LtpCourse course, List<CustomMarkInfo> customMarks, JsonArray marksArray)
-        {
+            JsonArray marksArray = marksObject.GetNamedArray("assessments");
             foreach (JsonValue marksValue in marksArray)
             {
-                JsonObject marksObject = marksValue.GetObject();
+                JsonObject markStubObject = marksValue.GetObject();
+                string title = markStubObject.GetNamedString("title");
+                int maxMarks = (int)markStubObject.GetNamedNumber("max_marks");
+                int weightage = (int)markStubObject.GetNamedNumber("weightage");
 
-                string title = marksObject.GetNamedString("title");
-                int maxMarks = (int)marksObject.GetNamedNumber("max_marks");
-                int weightage = (int)marksObject.GetNamedNumber("weightage");
-
-                CustomMarkInfo markInfo;
-                if (marksObject.GetNamedValue("conducted_on").ValueType == JsonValueType.Null)
-                {
-                    markInfo = new CustomMarkInfo(course, title, maxMarks, weightage, null, null, "");
-                }
+                MarkInfo markInfo;
+                if (markStubObject.GetNamedValue("scored_marks").ValueType == JsonValueType.Null)
+                    markInfo = new MarkInfo(course, title, maxMarks, weightage, null, null, "");
                 else
                 {
-                    markInfo = new CustomMarkInfo(course, title, maxMarks, weightage,
-                                                         new DateTimeOffset(DateTime.ParseExact(marksObject.GetNamedString("conducted_on"), "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                                                                            new TimeSpan(5, 30, 0)),
-                                                         marksObject.GetNamedNumber("scored_mark"),
-                                                         marksObject.GetNamedString("status"));
-                    if (markInfo.Marks != null)
-                    {
-                        course.InternalMarksScored += Math.Round((double)markInfo.Marks * weightage / markInfo.MaxMarks, 2);
-                        course.TotalMarksTested += markInfo.Weightage;
-                    }
+                    markInfo = new MarkInfo(course, title, maxMarks, weightage,
+                                    // temporary
+                                    null,
+                                    //new DateTimeOffset(DateTime.ParseExact(markStubObject.GetNamedString("conducted_on"), "yyyy-MM-dd", CultureInfo.InvariantCulture), new TimeSpan(5, 30, 0)),
+                                    markStubObject.GetNamedNumber("scored_marks"),
+                                    markStubObject.GetNamedString("status"));
+                    course.TotalMarksTested += markInfo.Weightage;
                 }
-                customMarks.Add(markInfo);
+                course.AddMarkInfo(markInfo);
             }
+
+            JsonValue internalsValue = marksObject.GetNamedValue("scored_percentage");
+            course.InternalMarksScored = (internalsValue.ValueType == JsonValueType.Null) ? 0 : Math.Round(internalsValue.GetNumber(), 2);
         }
+
         private static GradeInfo GetGradeInfo(JsonValue gradeValue)
         {
             JsonObject gradeObject = gradeValue.GetObject();
@@ -317,19 +303,6 @@ namespace Academics.ContentService
         {
             return DateTimeOffset.Parse(refreshDateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
         }
-        private static string RomanNumeral(int x)
-        {
-            if (x == 1)
-                return "I";
-            if (x == 2)
-                return "II";
-            if (x == 3)
-                return "III";
-            if (x == 4)
-                return "IV";
-            else
-                throw new NotImplementedException();
-        }
 
         #endregion
 
@@ -357,6 +330,10 @@ namespace Academics.ContentService
 
             AssignTimings(ltpCourse, courseObject.GetNamedArray("timings"));
             AssignAttendance(ltpCourse, courseObject.GetNamedObject("attendance"));
+
+            JsonObject marksObject = courseObject.GetNamedObject("marks");
+            AssignMarks(ltpCourse, marksObject);
+
         }
         private static void AssignBaseTypeDetails(NonLtpCourse nltpCourse, JsonObject courseObject)
         {
@@ -365,64 +342,16 @@ namespace Academics.ContentService
         // Depth 2 Assignment (CBL, PBL, ...)
         private static void AssignSpecificDetails(CBLCourse course, JsonObject courseObject)
         {
-            JsonObject marksObject = courseObject.GetNamedObject("marks");
-            double scored = 0, total = 0;
-            double? temp;
-
-            // Quiz Marks
-            for (int i = 0; i < 3; i++)
-            {
-                course._quizMarks[i] = GetMarksInfo(course, "Quiz " + RomanNumeral(i + 1), "quiz" + (i + 1), marksObject);
-                temp = course._quizMarks[i].Marks;
-                if (temp != null)
-                {
-                    scored += (double)temp;
-                    total += 5;
-                }
-            }
-            // CAT Marks
-            for (int i = 0; i < 2; i++)
-            {
-                course._catMarks[i] = GetMarksInfo(course, "CAT " + RomanNumeral(i + 1), "cat" + (i + 1), marksObject);
-                temp = course._catMarks[i].Marks;
-                if (temp != null)
-                {
-                    scored += ((double)temp * 15 / 50);
-                    total += 15;
-                }
-            }
-            // Assignment Marks
-            course.AssignmentMarks = GetMarksInfo(course, "Assignment", "assignment", marksObject);
-            temp = course.AssignmentMarks.Marks;
-            if (temp != null)
-            {
-                scored += (double)temp;
-                total += 5;
-            }
-
-            course.InternalMarksScored = Math.Round(scored, 2);
-            course.TotalMarksTested = total;
         }
         private static void AssignSpecificDetails(LBCCourse course, JsonObject courseObject)
         {
             course.Title += " Lab";
-            course.LabCamMarks = GetMarksInfo(course,"Lab CAM", "lab_cam", courseObject.GetNamedObject("marks"));
-            double? temp = course.LabCamMarks.Marks;
-            if (temp != null)
-            {
-                course.InternalMarksScored = Math.Round((double)temp, 2);
-                course.TotalMarksTested = 50;
-            }
         }
         private static void AssignSpecificDetails(PBLCourse course, JsonObject courseObject)
         {
-            JsonArray marksArray = courseObject.GetNamedObject("marks").GetNamedArray("details");
-            AssignCustomMarks(course, course._pblMarks, marksArray);
         }
         private static void AssignSpecificDetails(RBLCourse course, JsonObject courseObject)
         {
-            JsonArray marksArray = courseObject.GetNamedObject("marks").GetNamedArray("details");
-            AssignCustomMarks(course, course._rblMarks, marksArray);
         }
         private static void AssignSpecificDetails(PBCCourse course, JsonObject courseObject)
         {

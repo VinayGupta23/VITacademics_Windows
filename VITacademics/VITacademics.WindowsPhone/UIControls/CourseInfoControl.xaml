@@ -194,8 +194,14 @@
 
                                             <Border Width="60" Height="60" CornerRadius="3"
                                                     Background="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}">
+                                                <StackPanel>
                                                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
                                                            Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                                    <Rectangle Height="2" Width="40" Fill="{ThemeResource PhoneDisabledBrush}"></Rectangle>
+
+                                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Text="{Binding MaxMarks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                                </StackPanel>
                                             </Border>
                                             <StackPanel Margin="13,0,0,0" Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Title}"
@@ -323,6 +329,14 @@
                         </Pivot>
                     </DataTemplate>
                     
+                    <helpers:CourseTemplateSelector CBLTemplate="{StaticResource CBLPivotTemplate}"
+                                                    LBCTemplate="{StaticResource LBCPivotTemplate}"
+                                                    PBLTemplate="{StaticResource PBLPivotTemplate}"
+                                                    RBLTemplate="{StaticResource RBLPivotTemplate}"
+                                                    PBCTemplate="{StaticResource PBCPivotTemplate}"
+                                                    FallbackTemplate="{StaticResource CourseNotFoundTemplate}"
+                                                    x:Key="TemplateSelector"></helpers:CourseTemplateSelector>
+                    
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -331,5 +345,8 @@
     <!-- For testing purposes only, uncomment the following and modify suitably:
     <ContentPresenter ContentTemplate="{StaticResource LtpCourseTemplate}"></ContentPresenter>
     End of testing code -->
+
+    <ContentControl Content="{Binding SelectedCourse, Mode=OneWay}"
+                    ContentTemplateSelector="{StaticResource TemplateSelector}"></ContentControl>
     
 </UserControl>
