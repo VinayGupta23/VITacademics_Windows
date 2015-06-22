@@ -112,11 +112,11 @@ namespace VITacademics.UIControls
             if (this.DataContext != null)
             {
                 _attendance = this.DataContext as Attendance;
-                Details = new List<KeyValuePair<DateTimeOffset,AttendanceStub>>(_attendance.Details.Count);
-                foreach (var stub in _attendance.Details)
-                    Details.Add(stub);
+                Details = new List<KeyValuePair<DateTimeOffset, AttendanceStub>>(_attendance.Details.Count);
+                foreach (AttendanceGroup group in _attendance.Details)
+                    foreach (AttendanceStub stub in group.Details)
+                        Details.Add(new KeyValuePair<DateTimeOffset, AttendanceStub>(group.ContextDate, stub));
                 Details.Reverse();
-
                 detailsList.DataContext = this;
                 attendanceGrid.DataContext = this;
                 ResetParamters();

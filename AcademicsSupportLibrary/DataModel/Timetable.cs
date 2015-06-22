@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 
 namespace Academics.DataModel
@@ -12,7 +13,7 @@ namespace Academics.DataModel
     public class Timetable
     {
 
-        #region Private Fields and Helper Methods
+        #region Private Fields and Helper Plug-ins
 
         private readonly List<ClassHours>[] _weekRegularClasses = new List<ClassHours>[7];
         private readonly List<LtpCourse>[] _weekNeglectedCourses = new List<LtpCourse>[7];
@@ -20,6 +21,14 @@ namespace Academics.DataModel
         private static int ClassHoursComparision(ClassHours x, ClassHours y)
         {
             return DateTimeOffset.Compare(x.StartHours, y.StartHours);
+        }
+
+        private static AttendanceGroup GetAttendanceGroup(AttendanceDetails details, DateTimeOffset date)
+        {
+            if (details.Contains(date))
+                return details[date];
+            else
+                return null;
         }
 
         #endregion
@@ -109,22 +118,33 @@ namespace Academics.DataModel
         public DayInfo GetExactDayInfo(DateTimeOffset instructionDayDate)
         {
             int day = (int)instructionDayDate.DayOfWeek;
-            DateTimeOffset date = new DateTimeOffset(instructionDayDate.Year, instructionDayDate.Month, instructionDayDate.Day, 0, 0, 0, new TimeSpan(5, 30, 0));
+            DateTimeOffset date = new DateTimeOffset(instructionDayDate.Date, new TimeSpan(5, 30, 0));
             DayInfo dayInfo = new DayInfo();
+            Dictionary<Course, int> courseBlotCount = new Dictionary<Course, int>();
 
-            foreach(ClassHours classHours in _weekRegularClasses[day])
+            foreach (ClassHours classHours in _weekRegularClasses[day])
             {
-                AttendanceStub stub;
-                classHours.Parent.Attendance.Details.TryGetValue(date, out stub);
+                if (courseBlotCount.ContainsKey(classHours.Parent))
+                    courseBlotCount[classHours.Parent] += 1;
+                else
+                    courseBlotCount[classHours.Parent] = 0;
+
+                AttendanceGroup group = GetAttendanceGroup(classHours.Parent.Attendance._details, date);
+                AttendanceStub stub = null;
+                if (group != null)
+                    if (group.Details.Count > courseBlotCount[classHours.Parent])
+                        stub = group.Details[courseBlotCount[classHours.Parent]];
                 dayInfo.RegularClassDetails.Add(new KeyValuePair<ClassHours, AttendanceStub>(classHours, stub));
             }
-            foreach(LtpCourse course in _weekNeglectedCourses[day])
+            foreach (LtpCourse course in _weekNeglectedCourses[day])
             {
-                AttendanceStub stub;
-                if (course.Attendance.Details.TryGetValue(date, out stub))
-                    dayInfo.ExtraClassDetails.Add(new KeyValuePair<LtpCourse, AttendanceStub>(course, stub));
+                AttendanceGroup group = GetAttendanceGroup(course.Attendance._details, date);
+                if (group != null)
+                {
+                    foreach (AttendanceStub stub in group.Details)
+                        dayInfo.ExtraClassDetails.Add(new KeyValuePair<LtpCourse, AttendanceStub>(course, stub));
+                }
             }
-
             return dayInfo;
         }
 

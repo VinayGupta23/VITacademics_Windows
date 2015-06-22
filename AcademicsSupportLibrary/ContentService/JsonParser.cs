@@ -212,7 +212,7 @@ namespace Academics.ContentService
         private static void AssignAttendance(LtpCourse course, JsonObject attendanceObject)
         {
             int classLength = 1;
-            if(course as LBCCourse != null)
+            if (course as LBCCourse != null)
             {
                 classLength = (int)Char.GetNumericValue(course.Ltpc[2]);
             }
@@ -226,12 +226,12 @@ namespace Academics.ContentService
             foreach (JsonValue stubValue in detailsArray)
             {
                 JsonObject stubObject = stubValue.GetObject();
-                DateTime classDate = DateTime.ParseExact(stubObject.GetNamedString("date"), "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                DateTimeOffset classDate = new DateTimeOffset(DateTime.ParseExact(stubObject.GetNamedString("date"), "yyyy-MM-dd", CultureInfo.InvariantCulture), new TimeSpan(5, 30, 0));
 
-                course.Attendance.AddAttendanceStub(
-                    new DateTimeOffset(classDate, new TimeSpan(5, 30, 0)),
-                    stubObject.GetNamedString("status"),
-                    stubObject.GetNamedString("reason"));
+                course.Attendance.AddStubToDetails(classDate, new AttendanceStub(
+                                                                    stubObject.GetNamedString("slot"),
+                                                                    stubObject.GetNamedString("status"),
+                                                                    stubObject.GetNamedString("reason")));
             }
         }
         private static void AssignTimings(LtpCourse course, JsonArray timingsArray)
