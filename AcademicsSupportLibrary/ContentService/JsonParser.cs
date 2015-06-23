@@ -247,6 +247,7 @@ namespace Academics.ContentService
         }
         private static void AssignMarks(LtpCourse course, JsonObject marksObject)
         {
+            double marksScored = 0;
             JsonArray marksArray = marksObject.GetNamedArray("assessments");
             foreach (JsonValue marksValue in marksArray)
             {
@@ -261,18 +262,17 @@ namespace Academics.ContentService
                 else
                 {
                     markInfo = new MarkInfo(course, title, maxMarks, weightage,
-                                    // temporary
-                                    null,
-                                    //new DateTimeOffset(DateTime.ParseExact(markStubObject.GetNamedString("conducted_on"), "yyyy-MM-dd", CultureInfo.InvariantCulture), new TimeSpan(5, 30, 0)),
+                                    null, // currently, 'conducted date' is being skipped.
                                     markStubObject.GetNamedNumber("scored_marks"),
                                     markStubObject.GetNamedString("status"));
+
+                    marksScored += (double)markInfo.WeightedMarks;
                     course.TotalMarksTested += markInfo.Weightage;
                 }
                 course.AddMarkInfo(markInfo);
             }
-
-            JsonValue internalsValue = marksObject.GetNamedValue("scored_percentage");
-            course.InternalMarksScored = (internalsValue.ValueType == JsonValueType.Null) ? 0 : Math.Round(internalsValue.GetNumber(), 2);
+            
+            course.InternalMarksScored = Math.Round(marksScored, 2);
         }
 
         private static GradeInfo GetGradeInfo(JsonValue gradeValue)

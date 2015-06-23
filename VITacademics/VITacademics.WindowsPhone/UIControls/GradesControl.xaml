@@ -11,6 +11,16 @@
     d:DesignWidth="420"
     RequestedTheme="Light">
 
+    <UserControl.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                    <CommonNavigationTransitionInfo IsStaggeringEnabled="True"></CommonNavigationTransitionInfo>
+                </NavigationThemeTransition.DefaultNavigationTransitionInfo>
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </UserControl.Transitions>
+    
     <UserControl.Resources>
         <ResourceDictionary>
 
@@ -38,6 +48,10 @@
                 </Setter>
             </Style>
 
+            <TransitionCollection x:Name="TextTransitionCollection">
+                <EntranceThemeTransition FromHorizontalOffset="0" FromVerticalOffset="20"></EntranceThemeTransition>
+            </TransitionCollection>
+            
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -68,18 +82,18 @@
 
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Margin="0,7,0,7">
+                                    <Grid Margin="0,7,0,10" CommonNavigationTransitionInfo.IsStaggerElement="True">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
                                             <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
                                         </Grid.RowDefinitions>
 
-                                        <Border Width="60" Height="60" Margin="10,0,2,0"
-                                                Grid.RowSpan="2" Grid.Column="1"
+                                        <Border Width="60" Height="60" Margin="0,0,10,0"
+                                                Grid.RowSpan="2" Grid.Column="0"
                                                 CornerRadius="3" VerticalAlignment="Center"
                                                 Background="{Binding Grade, Converter={StaticResource GradeBrushConverter}}">
                                             <TextBlock Style="{StaticResource LabelTextBlockStyle}"
@@ -87,19 +101,22 @@
                                                        HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                                         </Border>
                                         
-                                        <TextBlock Grid.Column="0" VerticalAlignment="Center" 
+                                        <TextBlock Grid.Column="1" VerticalAlignment="Center"
                                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
-                                                   Text="{Binding CourseTitle}" 
-                                                   Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                                   Text="{Binding CourseTitle}"
+                                                   Style="{StaticResource SingleItemHeaderStyle}"
+                                                   Pivot.SlideInAnimationGroup="GroupOne"></TextBlock>
 
-                                        <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="SemiBold"
-                                                   MaxLines="2" Style="{StaticResource SingleItemContentStyle}">
+                                        <TextBlock Grid.Row="1" Grid.Column="1" FontWeight="SemiBold"
+                                                   MaxLines="2" Style="{StaticResource SingleItemContentStyle}"
+                                                   Pivot.SlideInAnimationGroup="GroupTwo">
                                             <Run Text="{Binding CourseCode}"></Run>, <Run Text="{Binding CourseType}"></Run>
                                             <LineBreak></LineBreak><Run Text="{Binding Credits}" FontWeight="Normal"></Run> <Run FontWeight="Normal" Text="credits"></Run> 
                                         </TextBlock>
-                                        <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource SingleItemContentStyle}"
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource SingleItemContentStyle}"
                                                    Text="{Binding CourseOption}" HorizontalAlignment="Right"
-                                                   Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
+                                                   Foreground="{ThemeResource PhoneAccentBrush}"
+                                                   Pivot.SlideInAnimationGroup="GroupThree"></TextBlock>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -178,12 +195,13 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBlock Text="Status" Style="{StaticResource GroupHeaderTextBlockStyle}"
-                                   Margin="0,0,0,10"></TextBlock>
+                                       Margin="0,0,0,10"></TextBlock>
                             <TextBlock Text="CGPA" Style="{StaticResource GroupHeaderTextBlockStyle}"
                                    Grid.Column="1" Margin="0,0,0,10" HorizontalAlignment="Right"></TextBlock>
                             <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding GradeHistory.Cgpa}" FontStretch="Condensed"
-                                   Style="{StaticResource HeaderTextBlockStyle}"
-                                   TextLineBounds="Tight" FontWeight="SemiBold"></TextBlock>
+                                       Style="{StaticResource HeaderTextBlockStyle}"
+                                       TextLineBounds="Tight" FontWeight="SemiBold"
+                                       Transitions="{StaticResource TextTransitionCollection}"></TextBlock>
                             <StackPanel Grid.Row="1" VerticalAlignment="Center">
                                 <TextBlock Grid.Column="0" Style="{StaticResource SingleItemSubHeaderStyle}" 
                                        FontWeight="SemiBold">
@@ -203,7 +221,7 @@
                     <ItemsControl ItemsSource="{Binding CourseGradePairs}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="17,7,19,10">
+                                <Grid Margin="17,7,19,10" CommonNavigationTransitionInfo.IsStaggerElement="True">
                                     <Grid.RowDefinitions>
                                         <RowDefinition></RowDefinition>
                                         <RowDefinition></RowDefinition>
@@ -213,8 +231,10 @@
                                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="{Binding CourseTitle}" Style="{StaticResource BodyTextBlockStyle}"
-                                               MaxLines="1" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"></TextBlock>
-                                    <TextBlock Grid.Row="1" Style="{StaticResource SingleItemContentStyle}">
+                                               MaxLines="1" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                                               Pivot.SlideInAnimationGroup="GroupOne"></TextBlock>
+                                    <TextBlock Grid.Row="1" Style="{StaticResource SingleItemContentStyle}"
+                                               Pivot.SlideInAnimationGroup="GroupTwo">
                                         Credits: <Run Text="{Binding Credits}"></Run>
                                     </TextBlock>
 
