@@ -12,6 +12,16 @@
     d:DesignWidth="420"
     RequestedTheme="Light">
     
+    <UserControl.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                    <CommonNavigationTransitionInfo IsStaggeringEnabled="True"></CommonNavigationTransitionInfo>
+                </NavigationThemeTransition.DefaultNavigationTransitionInfo>
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </UserControl.Transitions>
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -20,9 +30,9 @@
                     
                     <DataTemplate x:Key="CourseNotFoundTemplate">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="Uh oh, this course was dropped." Style="{StaticResource SingleItemHeaderStyle}"
+                            <TextBlock Text="Uh oh, this course wasn't found." Style="{StaticResource SingleItemHeaderStyle}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Text="Try opening something else from the menu" Style="{StaticResource LabelTextBlockStyle}"
+                            <TextBlock Text="Try opening something else" Style="{StaticResource LabelTextBlockStyle}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
@@ -30,7 +40,6 @@
                     <DataTemplate x:Key="LtpCourseTemplate">
                         <ScrollViewer>
                             <StackPanel>
-
                                 <StackPanel Margin="10,0,0,0" Grid.Column="1">
                                     <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" FontSize="25"
                                                MaxLines="0" TextWrapping="WrapWholeWords"
@@ -132,145 +141,62 @@
                         </ScrollViewer>
                     </DataTemplate>
 
-                    <DataTemplate x:Key="CustomMarkStubTemplate">
-                        <Grid Margin="0,0,0,20">
-                            <Grid.Resources>
-                                <helpers:NullableDateToStringConverter x:Key="NullableDateToStringConverter"></helpers:NullableDateToStringConverter>
-                            </Grid.Resources>
+                    <DataTemplate x:Key="MarkInfoTemplate">
+                        <Grid Margin="0,10,3,0" CommonNavigationTransitionInfo.IsStaggerElement="True">
                             <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="{Binding MarksTitle}" Grid.ColumnSpan="2" Margin="0,0,0,7"
-                                                       Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
-
-                            <Border Width="60" Height="60" CornerRadius="3" Grid.Row="1" Margin="7,0,0,0"
-                                                    Background="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}">
+                            <Border Width="60" Height="60" CornerRadius="3"
+                                    Background="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}">
                                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                           Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                           Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}"
+                                           Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                             </Border>
-                            <StackPanel Margin="13,0,0,0" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
-                                <StackPanel.Resources>
-                                    <Style TargetType="TextBlock" BasedOn="{StaticResource SingleItemContentStyle}">
-                                        <Setter Property="Foreground" Value="{ThemeResource PhoneMidBrush}"></Setter>
-                                    </Style>
-                                </StackPanel.Resources>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="max marks&#160;"></TextBlock>
-                                    <TextBlock Text="{Binding MaxMarks}"></TextBlock>
-                                    <TextBlock Text=", weightage:&#160;"></TextBlock>
-                                    <TextBlock Text="{Binding Weightage}"></TextBlock>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="conducted on:&#160;"></TextBlock>
-                                    <TextBlock Text="{Binding ConductedDate, Converter={StaticResource NullableDateToStringConverter}, ConverterParameter='not yet'}"></TextBlock>
-                                </StackPanel>
-                            </StackPanel>
 
+                            <TextBlock Grid.Row="2" Style="{StaticResource SingleItemContentStyle}"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"
+                                       Text="{Binding Status}" FontSize="11.5"></TextBlock>
+
+                            <Grid Grid.Column="1" Margin="13,0,0,0" VerticalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="{Binding Title}" Style="{StaticResource TitleTextBlockStyle}"
+                                           TextLineBounds="TrimToCapHeight" TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis" MaxLines="1"></TextBlock>
+                                <TextBlock Grid.Row="1" Style="{StaticResource SingleItemContentStyle}"
+                                           LineStackingStrategy="BlockLineHeight" Pivot.SlideInAnimationGroup="GroupOne">
+                                    Max <Run Text="{Binding MaxMarks}"></Run>
+                                </TextBlock>
+                                <TextBlock Grid.Row="1" HorizontalAlignment="Right" LineStackingStrategy="BlockLineHeight"
+                                           Style="{StaticResource SingleItemContentStyle}" Pivot.SlideInAnimationGroup="GroupOne">
+                                    Weighted <Run Text="{Binding WeightedMarks, TargetNullValue='-'}"></Run> / <Run Text="{Binding Weightage}"></Run>
+                                </TextBlock>
+                            </Grid>
                         </Grid>
                     </DataTemplate>
 
-                    <DataTemplate x:Key="CBLPivotTemplate">
+                    <DataTemplate x:Key="LtpCoursePivotTemplate">
                         <Pivot Style="{StaticResource ContentPivotStyle}">
-                            <PivotItem Header="details">
-                                <ContentPresenter ContentTemplate="{StaticResource LtpCourseTemplate}"></ContentPresenter>
-                            </PivotItem>
+                            
+                            <PivotItem Header="details" ContentTemplate="{StaticResource LtpCourseTemplate}"></PivotItem>
+                            
                             <PivotItem Header="attendance" DataContext="{Binding Attendance}">
                                 <local:AttendanceControl></local:AttendanceControl>
                             </PivotItem>
-                            <PivotItem Header="marks">
-                                <PivotItem.Resources>
-                                    <DataTemplate x:Key="MarkInfoTemplate">
-                                        <Grid Margin="0,10,0,0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                            </Grid.ColumnDefinitions>
-
-                                            <Border Width="60" Height="60" CornerRadius="3"
-                                                    Background="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}">
-                                                <StackPanel>
-                                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                           Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                                    <Rectangle Height="2" Width="40" Fill="{ThemeResource PhoneDisabledBrush}"></Rectangle>
-
-                                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                           Text="{Binding MaxMarks, Mode=OneTime, TargetNullValue='-'}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                                </StackPanel>
-                                            </Border>
-                                            <StackPanel Margin="13,0,0,0" Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Title}"
-                                                           Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-                                                <TextBlock Text="{Binding Status}"
-                                                           Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-                                            </StackPanel>
-                                        </Grid>
-                                    </DataTemplate>
-                                    <Style TargetType="ItemsControl">
-                                        <Setter Property="ItemTemplate" Value="{StaticResource MarkInfoTemplate}"></Setter>
-                                    </Style>
-                                </PivotItem.Resources>
-                                <ScrollViewer>
-                                    <StackPanel>
-                                        <TextBlock Text="CAT's (each out of 50)" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
-                                        <ItemsControl ItemsSource="{Binding CatMarks}"></ItemsControl>
-                                        <TextBlock Text="Quizzes (each out of 5)" Margin="0,23,0,3" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
-                                        <ItemsControl ItemsSource="{Binding QuizMarks}"></ItemsControl>
-                                        <TextBlock Text="Assignment (out of 5)" Margin="0,23,0,3" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
-                                        <ContentPresenter ContentTemplate="{StaticResource MarkInfoTemplate}" Margin="0,0,0,10"
-                                                          Content="{Binding}" DataContext="{Binding AssignmentMarks}"></ContentPresenter>
-                                    </StackPanel>
-                                </ScrollViewer>
-                            </PivotItem>
-                        </Pivot>
-                    </DataTemplate>
-                    
-                    <DataTemplate x:Key="PBLPivotTemplate">
-                        <Pivot Style="{StaticResource ContentPivotStyle}">
-                            <PivotItem Header="details">
-                                <ContentPresenter ContentTemplate="{StaticResource LtpCourseTemplate}"></ContentPresenter>
-                            </PivotItem>
-                            <PivotItem Header="attendance" DataContext="{Binding Attendance}">
-                                <local:AttendanceControl></local:AttendanceControl>
-                            </PivotItem>
+                            
                             <PivotItem Header="marks">
                                 <ScrollViewer>
-                                    <ItemsControl ItemsSource="{Binding PblMarks}"
-                                                  ItemTemplate="{StaticResource CustomMarkStubTemplate}"></ItemsControl>
+                                    <ItemsControl ItemsSource="{Binding MarksInfo}" ItemTemplate="{StaticResource MarkInfoTemplate}"></ItemsControl>    
                                 </ScrollViewer>
-                            </PivotItem>
-                        </Pivot>
-                    </DataTemplate>
-                    
-                    <DataTemplate x:Key="RBLPivotTemplate">
-                        <Pivot Style="{StaticResource ContentPivotStyle}">
-                            <PivotItem Header="details">
-                                <ContentPresenter ContentTemplate="{StaticResource LtpCourseTemplate}"></ContentPresenter>
-                            </PivotItem>
-                            <PivotItem Header="attendance" DataContext="{Binding Attendance}">
-                                <local:AttendanceControl></local:AttendanceControl>
-                            </PivotItem>
-                            <PivotItem Header="marks">
-                                <ScrollViewer>
-                                    <ItemsControl ItemsSource="{Binding RblMarks}"
-                                                  ItemTemplate="{StaticResource CustomMarkStubTemplate}"></ItemsControl>
-                                </ScrollViewer>
-                            </PivotItem>
-                        </Pivot>
-                    </DataTemplate>
-                    
-                    <DataTemplate x:Key="LBCPivotTemplate">
-                        <Pivot Style="{StaticResource ContentPivotStyle}">
-                            <PivotItem Header="details">
-                                <ContentPresenter ContentTemplate="{StaticResource LtpCourseTemplate}"></ContentPresenter>
-                            </PivotItem>
-                            <PivotItem Header="attendance" DataContext="{Binding Attendance}">
-                                <local:AttendanceControl></local:AttendanceControl>
                             </PivotItem>
                         </Pivot>
                     </DataTemplate>
@@ -329,10 +255,10 @@
                         </Pivot>
                     </DataTemplate>
                     
-                    <helpers:CourseTemplateSelector CBLTemplate="{StaticResource CBLPivotTemplate}"
-                                                    LBCTemplate="{StaticResource LBCPivotTemplate}"
-                                                    PBLTemplate="{StaticResource PBLPivotTemplate}"
-                                                    RBLTemplate="{StaticResource RBLPivotTemplate}"
+                    <helpers:CourseTemplateSelector CBLTemplate="{StaticResource LtpCoursePivotTemplate}"
+                                                    LBCTemplate="{StaticResource LtpCoursePivotTemplate}"
+                                                    PBLTemplate="{StaticResource LtpCoursePivotTemplate}"
+                                                    RBLTemplate="{StaticResource LtpCoursePivotTemplate}"
                                                     PBCTemplate="{StaticResource PBCPivotTemplate}"
                                                     FallbackTemplate="{StaticResource CourseNotFoundTemplate}"
                                                     x:Key="TemplateSelector"></helpers:CourseTemplateSelector>
@@ -341,10 +267,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-
-    <!-- For testing purposes only, uncomment the following and modify suitably:
-    <ContentPresenter ContentTemplate="{StaticResource LtpCourseTemplate}"></ContentPresenter>
-    End of testing code -->
 
     <ContentControl Content="{Binding SelectedCourse, Mode=OneWay}"
                     ContentTemplateSelector="{StaticResource TemplateSelector}"></ContentControl>

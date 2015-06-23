@@ -80,6 +80,7 @@ namespace Academics.DataModel
         private readonly int _weightage;
         private readonly DateTimeOffset? _conductedDate;
         private readonly double? _marks;
+        private readonly double? _weightedMarks;
         private readonly string _status;
 
         public string Title
@@ -107,6 +108,10 @@ namespace Academics.DataModel
             get
             { return _marks; }
         }
+        public double? WeightedMarks
+        {
+            get { return _weightedMarks; }
+        }
         public string Status
         {
             get
@@ -122,6 +127,9 @@ namespace Academics.DataModel
             _conductedDate = conductedDate;
             _marks = marks;
             _status = status;
+
+            if (_marks != null)
+                _weightedMarks = Math.Round((double)_marks * _weightage / _maxMarks, 2);
         }
 
     }
