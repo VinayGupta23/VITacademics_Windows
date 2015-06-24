@@ -252,7 +252,7 @@ namespace Academics.ContentService
             foreach (JsonValue marksValue in marksArray)
             {
                 JsonObject markStubObject = marksValue.GetObject();
-                string title = markStubObject.GetNamedString("title");
+                string title = markStubObject.GetNamedString("title").ToUpper();
                 int maxMarks = (int)markStubObject.GetNamedNumber("max_marks");
                 int weightage = (int)markStubObject.GetNamedNumber("weightage");
 
@@ -264,7 +264,7 @@ namespace Academics.ContentService
                     markInfo = new MarkInfo(course, title, maxMarks, weightage,
                                     null, // currently, 'conducted date' is being skipped.
                                     markStubObject.GetNamedNumber("scored_marks"),
-                                    markStubObject.GetNamedString("status"));
+                                    markStubObject.GetNamedString("status").ToUpper());
 
                     marksScored += (double)markInfo.WeightedMarks;
                     course.TotalMarksTested += markInfo.Weightage;

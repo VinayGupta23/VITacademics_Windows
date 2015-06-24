@@ -25,11 +25,11 @@ namespace VITacademics.Helpers
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             string status = value as string;
-            if (status == "Present")
+            if (string.Equals(status, "Present", StringComparison.OrdinalIgnoreCase))
                 return PresentBrush;
-            else if (status == "On Duty")
+            else if (string.Equals(status, "On Duty", StringComparison.OrdinalIgnoreCase))
                 return OnDutyBrush;
-            else if (status == "Absent")
+            else if (string.Equals(status, "Absent", StringComparison.OrdinalIgnoreCase))
                 return AbsentBrush;
             else
                 return FallbackBrush;

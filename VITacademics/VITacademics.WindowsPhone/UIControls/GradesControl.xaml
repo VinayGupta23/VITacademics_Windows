@@ -49,7 +49,7 @@
             </Style>
 
             <TransitionCollection x:Name="TextTransitionCollection">
-                <EntranceThemeTransition FromHorizontalOffset="0" FromVerticalOffset="20"></EntranceThemeTransition>
+                <EntranceThemeTransition FromHorizontalOffset="0" FromVerticalOffset="10"></EntranceThemeTransition>
             </TransitionCollection>
             
         </ResourceDictionary>
@@ -103,20 +103,17 @@
                                         
                                         <TextBlock Grid.Column="1" VerticalAlignment="Center"
                                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
-                                                   Text="{Binding CourseTitle}"
-                                                   Style="{StaticResource SingleItemHeaderStyle}"
-                                                   Pivot.SlideInAnimationGroup="GroupOne"></TextBlock>
+                                                   Text="{Binding CourseTitle}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
 
                                         <TextBlock Grid.Row="1" Grid.Column="1" FontWeight="SemiBold"
                                                    MaxLines="2" Style="{StaticResource SingleItemContentStyle}"
-                                                   Pivot.SlideInAnimationGroup="GroupTwo">
+                                                   Pivot.SlideInAnimationGroup="GroupOne">
                                             <Run Text="{Binding CourseCode}"></Run>, <Run Text="{Binding CourseType}"></Run>
                                             <LineBreak></LineBreak><Run Text="{Binding Credits}" FontWeight="Normal"></Run> <Run FontWeight="Normal" Text="credits"></Run> 
                                         </TextBlock>
                                         <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource SingleItemContentStyle}"
                                                    Text="{Binding CourseOption}" HorizontalAlignment="Right"
-                                                   Foreground="{ThemeResource PhoneAccentBrush}"
-                                                   Pivot.SlideInAnimationGroup="GroupThree"></TextBlock>
+                                                   Foreground="{ThemeResource PhoneAccentBrush}" Pivot.SlideInAnimationGroup="GroupTwo"></TextBlock>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
