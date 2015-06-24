@@ -15,6 +15,14 @@
         <Setter Property="LineStackingStrategy" Value="MaxHeight"></Setter>
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="SingleItemTitleStyle" BasedOn="{StaticResource BodyTextBlockStyle}">
+        <Setter Property="MaxLines" Value="1"></Setter>
+        <Setter Property="TextWrapping" Value="NoWrap"></Setter>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
+        <Setter Property="FontSize" Value="19.5"></Setter>
+        <Setter Property="FontWeight" Value="SemiBold"></Setter>
+    </Style>
+    
     <Style TargetType="TextBlock" x:Key="SingleItemSubHeaderStyle" BasedOn="{StaticResource MessageDialogContentStyle}">
         <Setter Property="Foreground" Value="{ThemeResource PhoneAccentBrush}"></Setter>
         <Setter Property="FontWeight" Value="Normal"></Setter>

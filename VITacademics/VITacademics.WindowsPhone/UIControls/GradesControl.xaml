@@ -105,11 +105,11 @@
                                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
                                                    Text="{Binding CourseTitle}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
 
-                                        <TextBlock Grid.Row="1" Grid.Column="1" FontWeight="SemiBold"
+                                        <TextBlock Grid.Row="1" Grid.Column="1"
                                                    MaxLines="2" Style="{StaticResource SingleItemContentStyle}"
                                                    Pivot.SlideInAnimationGroup="GroupOne">
                                             <Run Text="{Binding CourseCode}"></Run>, <Run Text="{Binding CourseType}"></Run>
-                                            <LineBreak></LineBreak><Run Text="{Binding Credits}" FontWeight="Normal"></Run> <Run FontWeight="Normal" Text="credits"></Run> 
+                                            <LineBreak></LineBreak><Run Text="{Binding Credits}"></Run> <Run Text="credits"></Run> 
                                         </TextBlock>
                                         <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource SingleItemContentStyle}"
                                                    Text="{Binding CourseOption}" HorizontalAlignment="Right"
@@ -227,8 +227,8 @@
                                         <ColumnDefinition Width="*"></ColumnDefinition>
                                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding CourseTitle}" Style="{StaticResource BodyTextBlockStyle}"
-                                               MaxLines="1" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                                    <TextBlock Text="{Binding CourseTitle}" Style="{StaticResource SingleItemTitleStyle}"
+                                               FontWeight="Normal"
                                                Pivot.SlideInAnimationGroup="GroupOne"></TextBlock>
                                     <TextBlock Grid.Row="1" Style="{StaticResource SingleItemContentStyle}"
                                                Pivot.SlideInAnimationGroup="GroupTwo">

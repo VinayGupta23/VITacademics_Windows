@@ -142,7 +142,7 @@
                     </DataTemplate>
 
                     <DataTemplate x:Key="MarkInfoTemplate">
-                        <Grid Margin="0,10,3,0" CommonNavigationTransitionInfo.IsStaggerElement="True">
+                        <Grid Margin="0,8,3,0" CommonNavigationTransitionInfo.IsStaggerElement="True">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"></RowDefinition>
                                 <RowDefinition Height="Auto"></RowDefinition>
@@ -169,9 +169,8 @@
                                     <RowDefinition></RowDefinition>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Text="{Binding Title}" Style="{StaticResource TitleTextBlockStyle}"
-                                           TextLineBounds="TrimToCapHeight" TextWrapping="NoWrap"
-                                           TextTrimming="CharacterEllipsis" MaxLines="1"></TextBlock>
+                                <TextBlock Text="{Binding Title}" Style="{StaticResource SingleItemTitleStyle}"
+                                           TextLineBounds="TrimToCapHeight"></TextBlock>
                                 <TextBlock Grid.Row="1" Style="{StaticResource SingleItemContentStyle}"
                                            LineStackingStrategy="BlockLineHeight" Pivot.SlideInAnimationGroup="GroupOne">
                                     Max <Run Text="{Binding MaxMarks}"></Run>

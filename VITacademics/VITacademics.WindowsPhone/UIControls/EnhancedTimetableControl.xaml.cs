@@ -190,8 +190,10 @@ namespace VITacademics.UIControls
                     header = "today";
                 else if (_dates[i].AddDays(-1).Date == date)
                     header = "tomorrow";
+                else if(_dates[i].AddDays(1).Date == date)
+                    header = "yesterday";
                 else
-                    header = _dates[i].ToString("ddd dd");
+                    header = _dates[i].ToString("ddd dd").ToLower();
 
                 (sender.Items[i] as PivotItem).Header = header;
             }
