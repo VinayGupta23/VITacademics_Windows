@@ -32,7 +32,7 @@
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="Uh oh, this course wasn't found." Style="{StaticResource SingleItemHeaderStyle}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Text="Try opening something else" Style="{StaticResource LabelTextBlockStyle}"
+                            <TextBlock Text="If this is unexpected, try refresh." Style="{StaticResource LabelTextBlockStyle}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
@@ -169,15 +169,25 @@
                                     <RowDefinition></RowDefinition>
                                 </Grid.RowDefinitions>
 
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                
                                 <TextBlock Text="{Binding Title}" Style="{StaticResource SingleItemTitleStyle}"
                                            TextLineBounds="TrimToCapHeight"></TextBlock>
                                 <TextBlock Grid.Row="1" Style="{StaticResource SingleItemContentStyle}"
                                            LineStackingStrategy="BlockLineHeight" Pivot.SlideInAnimationGroup="GroupOne">
                                     Max <Run Text="{Binding MaxMarks}"></Run>
                                 </TextBlock>
-                                <TextBlock Grid.Row="1" HorizontalAlignment="Right" LineStackingStrategy="BlockLineHeight"
-                                           Style="{StaticResource SingleItemContentStyle}" Pivot.SlideInAnimationGroup="GroupOne">
-                                    Weighted <Run Text="{Binding WeightedMarks, TargetNullValue='-'}"></Run> / <Run Text="{Binding Weightage}"></Run>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" 
+                                           HorizontalAlignment="Right" VerticalAlignment="Top"
+                                           TextLineBounds="Tight" Margin="0,1,0,0"
+                                           Text="weighted" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                <TextBlock Grid.Row="0" HorizontalAlignment="Right" LineStackingStrategy="BlockLineHeight"
+                                           Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Bottom"
+                                           Style="{StaticResource LabelTextBlockStyle}" Pivot.SlideInAnimationGroup="GroupOne">
+                                    <Run Text="{Binding WeightedMarks, TargetNullValue='-'}"></Run> / <Run Text="{Binding Weightage}"></Run>
                                 </TextBlock>
                             </Grid>
                         </Grid>
@@ -268,6 +278,7 @@
     </UserControl.Resources>
 
     <ContentControl Content="{Binding SelectedCourse, Mode=OneWay}"
-                    ContentTemplateSelector="{StaticResource TemplateSelector}"></ContentControl>
+                    ContentTemplateSelector="{StaticResource TemplateSelector}"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"></ContentControl>
     
 </UserControl>
