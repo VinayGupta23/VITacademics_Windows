@@ -30,7 +30,27 @@ namespace VITacademics.UIControls
 #endif
         }
 
-        public void GenerateView(string parameter)
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if(ActionRequested != null)
+            {
+                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), (e.ClickedItem as ClassHours).Parent.ClassNumber.ToString()));
+            }
+        }
+
+        public string DisplayTitle
+        {
+            get { return "Timetable"; }
+        }
+
+        public Dictionary<string, object> SaveState()
+        {
+            var state = new Dictionary<string,object>(1);
+            state.Add("currentIndex", rootPivot.SelectedIndex);
+            return state;
+        }
+
+        public void LoadView(string parameter, Dictionary<string, object> lastState = null)
         {
             try
             {
@@ -49,33 +69,15 @@ namespace VITacademics.UIControls
                     }
                 }
                 rootPivot.ItemsSource = pivotItems;
-            }
-            catch { }
-        }
 
-        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            if(ActionRequested != null)
-            {
-                ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), (e.ClickedItem as ClassHours).Parent.ClassNumber.ToString()));
-            }
-        }
-
-        public Dictionary<string, object> SaveState()
-        {
-            var state = new Dictionary<string,object>(1);
-            state.Add("currentIndex", rootPivot.SelectedIndex);
-            return state;
-        }
-
-        public void LoadState(Dictionary<string, object> lastState)
-        {
-            try
-            {
+                // Restore last state if available
                 if (lastState != null)
                     rootPivot.SelectedIndex = (int)lastState["currentIndex"];
             }
-            catch { }
+            catch
+            {
+                return;
+            }
         }
     }
 }

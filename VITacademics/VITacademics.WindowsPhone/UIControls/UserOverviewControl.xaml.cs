@@ -59,11 +59,9 @@ namespace VITacademics.UIControls
         #region IProxiedControl interface implementation
 
         public event EventHandler<RequestEventArgs> ActionRequested;
-
-        public void GenerateView(string parameter)
+        public string DisplayTitle
         {
-            CourseList = UserManager.CurrentUser.Courses;
-            TotalCredits = UserManager.CurrentUser.CoursesMetadata.TotalCredits;
+            get { return "Overview"; }
         }
 
         public Dictionary<string, object> SaveState()
@@ -71,8 +69,10 @@ namespace VITacademics.UIControls
             return null;
         }
 
-        public void LoadState(Dictionary<string, object> lastState)
+        public void LoadView(string parameter, Dictionary<string, object> lastState = null)
         {
+            CourseList = UserManager.CurrentUser.Courses;
+            TotalCredits = UserManager.CurrentUser.CoursesMetadata.TotalCredits;
         }
 
         #endregion
@@ -94,5 +94,7 @@ namespace VITacademics.UIControls
             if (ActionRequested != null)
                 ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl), (e.ClickedItem as Course).ClassNumber.ToString()));
         }
+
+        
     }
 }

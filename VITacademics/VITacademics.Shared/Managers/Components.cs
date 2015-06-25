@@ -42,7 +42,7 @@ namespace VITacademics.Managers
     public enum NavigationType
     {
         /// <summary>
-        /// Simple navigates to the requested page and stores the last page's session.
+        /// Simply navigates to the requested page and stores the last page's session.
         /// </summary>
         Default,
         /// <summary>
@@ -52,6 +52,7 @@ namespace VITacademics.Managers
     }
 
 #if WINDOWS_PHONE_APP
+
     /// <summary>
     /// Provides the contract for a page to allow or prevent app exit by pressing the back button.
     /// </summary>
@@ -66,10 +67,33 @@ namespace VITacademics.Managers
         bool AllowAppExit();
     }
 
-    public interface IProxiedControl : IManageable
+    public interface IProxiedControl
     {
+        /// <summary>
+        /// Gets the display title of the control. 
+        /// </summary>
+        string DisplayTitle { get; }
+        /// <summary>
+        /// An event that must be invoked when the control requires to perform some action out of its domain, such as page navigation.
+        /// </summary>
         event EventHandler<RequestEventArgs> ActionRequested;
-        void GenerateView(string parameter);
+        /// <summary>
+        /// This method should return any page specific state that is required to be stored. For correct behaviour, it is required that the state dictionary only contain primitive types.
+        /// </summary>
+        /// <returns>
+        /// Returns the state dictionary.
+        /// </returns>
+        Dictionary<string, object> SaveState();
+        /// <summary>
+        /// Load the view of the control optionally using the last state dictionary.
+        /// </summary>
+        /// <param name="parameter">
+        /// An additional string parameter containing any necessary external information.
+        /// </param>
+        /// <param name="lastState">
+        /// The last state of the control. This is null if there is no state.
+        /// </param>
+        void LoadView(string parameter, Dictionary<string, object> lastState = null);
     }
 
     public sealed class RequestEventArgs : EventArgs

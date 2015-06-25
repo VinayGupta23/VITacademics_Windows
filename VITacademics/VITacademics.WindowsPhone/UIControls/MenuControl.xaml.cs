@@ -57,7 +57,7 @@ namespace VITacademics.UIControls
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         public List<MenuItem> MenuItems
         {
             get;
@@ -77,11 +77,25 @@ namespace VITacademics.UIControls
             this.DataContext = this;
         }
 
+        #region IProxiedControl Interface Implementation
+
         public event EventHandler<RequestEventArgs> ActionRequested;
 
-        public void GenerateView(string parameter)
+        public string DisplayTitle
+        {
+            get { return "VITacademics"; }
+        }
+
+        public Dictionary<string, object> SaveState()
+        {
+            return null;
+        }
+
+        public void LoadView(string parameter, Dictionary<string, object> lastState = null)
         {
         }
+
+        #endregion
 
         private void MenuList_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -104,15 +118,6 @@ namespace VITacademics.UIControls
             }
         }
 
-
-        public Dictionary<string, object> SaveState()
-        {
-            return null;
-        }
-
-        public void LoadState(Dictionary<string, object> lastState)
-        {
-
-        }
+        
     }
 }

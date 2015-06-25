@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using VITacademics.Helpers;
 using VITacademics.Managers;
+using VITacademics.UIControls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -26,7 +27,7 @@ namespace VITacademics
     public sealed partial class SettingsPage : Page, IManageable
     {
 
-        public List<KeyValuePair<string, ControlTypeCodes>> HomePageOptions
+        public Dictionary<string, string> StartupPageOptions
         {
             get;
             private set;
@@ -42,7 +43,7 @@ namespace VITacademics
             get { return AppSettings.AutoRefresh; }
         }
 
-        public KeyValuePair<string, ControlTypeCodes> CurrentDefaultView
+        public string CurrentDefaultView
         {
             get;
             private set;
@@ -52,17 +53,17 @@ namespace VITacademics
         {
             this.InitializeComponent();
 
-            HomePageOptions = new List<KeyValuePair<string, ControlTypeCodes>>();
-            HomePageOptions.Add(new KeyValuePair<string, ControlTypeCodes>("Overview", ControlTypeCodes.Overview));
-            HomePageOptions.Add(new KeyValuePair<string, ControlTypeCodes>("Timetable", ControlTypeCodes.BasicTimetable));
-            HomePageOptions.Add(new KeyValuePair<string, ControlTypeCodes>("Daily Buzz", ControlTypeCodes.EnhancedTimetable));
-            HomePageOptions.Add(new KeyValuePair<string, ControlTypeCodes>("Grades", ControlTypeCodes.Grades));
+            StartupPageOptions = new Dictionary<string, string>();
+            StartupPageOptions.Add("Overview", typeof(UserOverviewControl).FullName);
+            StartupPageOptions.Add("Timetable", typeof(BasicTimetableControl).FullName);
+            StartupPageOptions.Add("Daily Buzz", typeof(EnhancedTimetableControl).FullName);
+            StartupPageOptions.Add("Grades", typeof(GradesControl).FullName);
 
-            ControlTypeCodes code = AppSettings.DefaultControlType;
-            foreach(var pair in HomePageOptions)
-                if (pair.Value == code)
+            string defaultControlTypeName = AppSettings.DefaultControlTypeName;
+            foreach (var pair in StartupPageOptions)
+                if (pair.Value == defaultControlTypeName)
                 {
-                    CurrentDefaultView = pair;
+                    CurrentDefaultView = pair.Key;
                     break;
                 }
 
@@ -114,7 +115,7 @@ namespace VITacademics
 
         private void PageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            AppSettings.DefaultControlType = ((KeyValuePair<string, ControlTypeCodes>)(sender as ComboBox).SelectedItem).Value;
+            AppSettings.DefaultControlTypeName = StartupPageOptions[(sender as ComboBox).SelectedItem as string];
         }
 
     }

@@ -27,15 +27,15 @@
                 <TextBlock Margin="0,20,0,0" Text="Logged in as:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                 <TextBlock Text="{Binding RegNo, Mode=OneTime}" Style="{ThemeResource SubheaderTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
 
-                <ComboBox Margin="0,20,0,0" ItemsSource="{Binding HomePageOptions}" DisplayMemberPath="Key"
-                  Header="Home Page" HeaderTemplate="{StaticResource LabelHeaderTemplate}"
-                  SelectionChanged="PageComboBox_SelectionChanged"
-                  x:Name="comboBox" SelectedItem="{Binding CurrentDefaultView, Mode=OneTime}"></ComboBox>
+                <ComboBox Margin="0,20,0,0" ItemsSource="{Binding StartupPageOptions.Keys}"
+                          Header="Startup Page" HeaderTemplate="{StaticResource LabelHeaderTemplate}"
+                          SelectionChanged="PageComboBox_SelectionChanged"
+                          x:Name="comboBox" SelectedItem="{Binding CurrentDefaultView, Mode=OneTime}"></ComboBox>
 
                 <ToggleSwitch Grid.Row="1" Margin="0,20,0,0" Toggled="RefreshOption_Toggled"
-                      x:Name="toggleSwitch" Grid.Column="1" OnContent="Yes" OffContent="No"
-                      Header="Auto refresh on startup" HeaderTemplate="{StaticResource LabelHeaderTemplate}"
-                      VerticalAlignment="Bottom" IsOn="{Binding AllowRefresh, Mode=OneTime}"></ToggleSwitch>
+                              x:Name="toggleSwitch" Grid.Column="1" OnContent="Yes" OffContent="No"
+                              Header="Auto refresh on startup" HeaderTemplate="{StaticResource LabelHeaderTemplate}"
+                              VerticalAlignment="Bottom" IsOn="{Binding AllowRefresh, Mode=OneTime}"></ToggleSwitch>
 
                 <Grid Margin="0,20,0,0">
                     <Grid.ColumnDefinitions>

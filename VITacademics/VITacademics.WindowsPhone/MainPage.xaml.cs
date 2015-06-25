@@ -120,7 +120,7 @@ namespace VITacademics
                         _contentControlManager.RefreshCurrentControl();
                         SetTitleAndContent();
                     }
-                    this._menu.GenerateView(null);
+                    this._menu.LoadView(null);
                 }
             }
         }
@@ -176,10 +176,10 @@ namespace VITacademics
                 if (freshData == false && _contentControlManager.CanGoBack)
                     _contentControlManager.ReturnToLastControl();
                 else
-                    _contentControlManager.NavigateToControl(AppSettings.DefaultControlType, null);
+                    _contentControlManager.NavigateToControl(AppSettings.DefaultControlTypeName, null);
                 SetTitleAndContent();
 
-                _menu.GenerateView(null);
+                _menu.LoadView(null);
                 IsContentAvailable = true;
             }
             
@@ -306,7 +306,7 @@ namespace VITacademics
             if (sender as MenuControl != null)
             {
                 MenuButton_Click(null, null);
-                _contentControlManager.ClearHistory();
+                _contentControlManager.Clear();
             }
 
             if (typeInfo.IsSubclassOf(typeof(UserControl)))
@@ -330,45 +330,20 @@ namespace VITacademics
             if (IsMenuOpen == true)
                 MenuButton_Click(null, null);
 
-            if (_contentControlManager.CurrentControlCode == ControlTypeCodes.EnhancedTimetable)
+            if (_contentControlManager.CurrentControl.GetType() == typeof(EnhancedTimetableControl))
                 _contentControlManager.RefreshCurrentControl();
             else
             {
-                _contentControlManager.ClearHistory();
+                _contentControlManager.Clear();
                 ProxiedControl_ActionRequested(null, new RequestEventArgs(typeof(EnhancedTimetableControl), null));
             }
         }
 
         private void SetTitleAndContent()
         {
-            string titleText = null;
-            ControlTypeCodes contentTypeCode = _contentControlManager.CurrentControlCode;
-
-            switch (contentTypeCode)
-            {
-                case ControlTypeCodes.Overview:
-                    titleText = "Overview";
-                    break;
-                case ControlTypeCodes.BasicTimetable:
-                    titleText = "Timetable";
-                    break;
-                case ControlTypeCodes.EnhancedTimetable:
-                    titleText = "Daily Buzz";
-                    break;
-                case ControlTypeCodes.CourseInfo:
-                    titleText = "Course Details";
-                    break;
-                case ControlTypeCodes.Grades:
-                    titleText = "Grades";
-                    break;
-                default:
-                    titleText = "VITacademics";
-                    break;
-            }
-
             contentPresenter.Content = _contentControlManager.CurrentControl;
             NotifyPropertyChanged("CanGoBack");
-            TitleText = titleText;
+            TitleText = _contentControlManager.CurrentControl.DisplayTitle;
         }
 
         #endregion
@@ -383,10 +358,10 @@ namespace VITacademics
                 return false;
             }
             else if (_contentControlManager.CurrentControl != null
-                     && _contentControlManager.CurrentControlCode != AppSettings.DefaultControlType)
+                     && _contentControlManager.CurrentControl.GetType().FullName != AppSettings.DefaultControlTypeName)
             {
-                _contentControlManager.ClearHistory();
-                _contentControlManager.NavigateToControl(AppSettings.DefaultControlType, null);
+                _contentControlManager.Clear();
+                _contentControlManager.NavigateToControl(AppSettings.DefaultControlTypeName, null);
                 SetTitleAndContent();
                 return false;
             }

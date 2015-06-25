@@ -8,66 +8,46 @@ using VITacademics.UIControls;
 namespace VITacademics.Helpers
 {
 
-    public enum ControlTypeCodes
-    {
-        Overview = 0,
-        BasicTimetable = 1,
-        EnhancedTimetable = 2,
-        CourseInfo = 3,
-        Grades = 4
-    }
-
     public class ControlManager : IManageable
     {
+        
+        #region Static Constructor and Helpers
 
-        #region Static Properties and Contructor
+        delegate object InstanceCreator();
 
-        private static readonly Dictionary<Type, ControlTypeCodes> _typeCodeDictionary;
-
-        private static Dictionary<Type, ControlTypeCodes> TypeCodeDictionary { get { return _typeCodeDictionary; } }
+        private static readonly Dictionary<string, InstanceCreator> _controlFactory;
 
         static ControlManager()
         {
-            _typeCodeDictionary = new Dictionary<Type, ControlTypeCodes>();
-            _typeCodeDictionary.Add(typeof(UserOverviewControl), ControlTypeCodes.Overview);
-            _typeCodeDictionary.Add(typeof(CourseInfoControl), ControlTypeCodes.CourseInfo);
-            _typeCodeDictionary.Add(typeof(BasicTimetableControl), ControlTypeCodes.BasicTimetable);
-            _typeCodeDictionary.Add(typeof(EnhancedTimetableControl), ControlTypeCodes.EnhancedTimetable);
-            _typeCodeDictionary.Add(typeof(GradesControl), ControlTypeCodes.Grades);
+            _controlFactory = new Dictionary<string, InstanceCreator>();
+            _controlFactory.Add(typeof(UserOverviewControl).FullName, () => new UserOverviewControl());
+            _controlFactory.Add(typeof(BasicTimetableControl).FullName, () => new BasicTimetableControl());
+            _controlFactory.Add(typeof(EnhancedTimetableControl).FullName, () => new EnhancedTimetableControl());
+            _controlFactory.Add(typeof(CourseInfoControl).FullName, () => new CourseInfoControl());
+            _controlFactory.Add(typeof(GradesControl).FullName, () => new GradesControl());
+        }
+
+        private static IProxiedControl GetInstance(string fullTypeName)
+        {
+            return (IProxiedControl)_controlFactory[fullTypeName].Invoke();
         }
 
         #endregion
 
         #region Fields and Properties
 
-        private List<int> _controlHistory;
+        private List<string> _controlHistory;
         private List<Dictionary<string, object>> _stateHistory;
         private List<string> _paramterHistory;
-
         private EventHandler<RequestEventArgs> _handler;
 
         private IProxiedControl _currentControl;
-        private ControlTypeCodes _currentControlCode;
         private string _currentParameter;
 
-        private string CurrentParameter
-        {
-            get { return _currentParameter; }
-        }
         public IProxiedControl CurrentControl
         {
             get { return _currentControl; }
         }
-        public ControlTypeCodes CurrentControlCode
-        {
-            get
-            {
-                if (_currentControl == null)
-                    throw new InvalidOperationException();
-                return _currentControlCode;
-            }
-        }
-
         public bool CanGoBack
         {
             get { return (_controlHistory.Count > 0); }
@@ -80,7 +60,7 @@ namespace VITacademics.Helpers
         public ControlManager(EventHandler<RequestEventArgs> handler)
         {
             _handler = handler;
-            ClearHistory();
+            Clear();
         }
 
         #endregion
@@ -94,34 +74,16 @@ namespace VITacademics.Helpers
 
         private void SaveCurrentControl()
         {
-            _controlHistory.Add((int)CurrentControlCode);
-            _paramterHistory.Add(CurrentParameter);
-            _stateHistory.Add(CurrentControl.SaveState());
+            _controlHistory.Add(_currentControl.GetType().FullName);
+            _paramterHistory.Add(_currentParameter);
+            _stateHistory.Add(_currentControl.SaveState());
         }
 
-        private void LoadControl(ControlTypeCodes controlTypeCode, string parameter)
+        private void LoadControl(string controlTypeName, string parameter, Dictionary<string, object> lastState = null)
         {
-            switch (controlTypeCode)
-            {
-                case ControlTypeCodes.Overview:
-                    _currentControl = new UserOverviewControl();
-                    break;
-                case ControlTypeCodes.CourseInfo:
-                    _currentControl = new CourseInfoControl();
-                    break;
-                case ControlTypeCodes.BasicTimetable:
-                    _currentControl = new BasicTimetableControl();
-                    break;
-                case ControlTypeCodes.EnhancedTimetable:
-                    _currentControl = new EnhancedTimetableControl();
-                    break;
-                case ControlTypeCodes.Grades:
-                    _currentControl = new GradesControl();
-                    break;
-            }
-            _currentControlCode = controlTypeCode;
+            _currentControl = GetInstance(controlTypeName);
             _currentControl.ActionRequested += ActionRequestedListener;
-            _currentControl.GenerateView(parameter);
+            _currentControl.LoadView(parameter, lastState);
             _currentParameter = parameter;
         }
 
@@ -137,26 +99,25 @@ namespace VITacademics.Helpers
 
         #region Public Methods
 
-        // Complete
-        public void ClearHistory()
+        public void Clear()
         {
-            _controlHistory = new List<int>();
+            _controlHistory = new List<string>();
             _stateHistory = new List<Dictionary<string, object>>();
             _paramterHistory = new List<string>();
             _currentControl = null;
+            _currentParameter = null;
         }
 
         public void NavigateToControl(Type controlType, string parameter)
         {
-            NavigateToControl(TypeCodeDictionary[controlType], parameter);
+            NavigateToControl(controlType.FullName, parameter);
         }
 
-        public void NavigateToControl(ControlTypeCodes typeCode, string parameter)
+        public void NavigateToControl(string controlTypeName, string parameter)
         {
             if (_currentControl != null)
                 SaveCurrentControl();
-
-            LoadControl(typeCode, parameter);
+            LoadControl(controlTypeName, parameter);
         }
 
         public void ReturnToLastControl()
@@ -164,37 +125,32 @@ namespace VITacademics.Helpers
             int count = _controlHistory.Count;
             if (count < 1)
                 return;
-            else
-            {
-                ControlTypeCodes controlTypeCode = (ControlTypeCodes)_controlHistory[count - 1];
-                string parameter = _paramterHistory[count - 1];
-                var lastState = _stateHistory[count - 1];
 
-                RemoveLastControl();
+            string controlTypeName = _controlHistory[count - 1];
+            string parameter = _paramterHistory[count - 1];
+            var lastState = _stateHistory[count - 1];
 
-                LoadControl(controlTypeCode, parameter);
-                CurrentControl.LoadState(lastState);
-            }
+            RemoveLastControl();
+            LoadControl(controlTypeName, parameter, lastState);
         }
 
         public void RefreshCurrentControl()
         {
             if (CurrentControl == null)
                 throw new InvalidOperationException("The current control is not yet assigned. Call NavigateToControl() to start.");
-
-            _currentControl.GenerateView(_currentParameter);
+            _currentControl.LoadView(_currentParameter);
         }
 
         public Dictionary<string, object> SaveState()
         {
-            List<int> controls = new List<int>(_controlHistory);
-            List<Dictionary<string, object>> states = new List<Dictionary<string,object>>(_stateHistory);
+            List<string> controls = new List<string>(_controlHistory);
+            List<Dictionary<string, object>> states = new List<Dictionary<string, object>>(_stateHistory);
             List<string> paramters = new List<string>(_paramterHistory);
 
             if (_currentControl != null)
             {
-                controls.Add((int)CurrentControlCode);
-                paramters.Add(CurrentParameter);
+                controls.Add(_currentControl.GetType().FullName);
+                paramters.Add(_currentParameter);
                 states.Add(CurrentControl.SaveState());
             }
 
@@ -209,13 +165,13 @@ namespace VITacademics.Helpers
         {
             try
             {
-                _controlHistory = lastState["controls"] as List<int>;
+                _controlHistory = lastState["controls"] as List<string>;
                 _stateHistory = lastState["states"] as List<Dictionary<string, object>>;
                 _paramterHistory = lastState["parameters"] as List<string>;
             }
             catch
             {
-                ClearHistory();
+                Clear();
             }
         }
 

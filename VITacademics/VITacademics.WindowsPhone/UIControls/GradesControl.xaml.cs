@@ -148,7 +148,20 @@ namespace VITacademics.UIControls
 
         #endregion
 
-        public async void GenerateView(string parameter)
+        public string DisplayTitle
+        {
+            get { return "Grades"; }
+        }
+
+        public Dictionary<string, object> SaveState()
+        {
+            var grades = new List<char>();
+            foreach (CourseGradePair cgPair in CourseGradePairs)
+                grades.Add(cgPair.Grade);
+            return new Dictionary<string, object>(1) { { "predictionGrades", grades } };
+        }
+
+        public async void LoadView(string parameter, Dictionary<string, object> lastState = null)
         {
             if (GradeHistory == null)
             {
@@ -163,7 +176,7 @@ namespace VITacademics.UIControls
             var uniqueCourseGroups = UserManager.CurrentUser.Courses.GroupBy<Course, string>((Course c) => c.CourseCode);
             foreach (var courseGroup in uniqueCourseGroups)
             {
-                if (string.Compare(courseGroup.ElementAt<Course>(0).CourseOption, "Audit", StringComparison.OrdinalIgnoreCase) == 0)
+                if (string.Equals(courseGroup.ElementAt<Course>(0).CourseOption, "Audit", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 ushort credits = 0;
@@ -176,25 +189,16 @@ namespace VITacademics.UIControls
                 }
                 CourseGradePairs.Add(new CourseGradePair(course.Title, credits));
             }
-        }
 
-        public Dictionary<string, object> SaveState()
-        {
-            //var grades = new List<char>();
-            //foreach (CourseGradePair cgPair in CourseGradePairs)
-            //    grades.Add(cgPair.Grade);
-            //return new Dictionary<string, object>(1) { { "predictionGrades", grades } };
-            return null;
-        }
-        public void LoadState(Dictionary<string, object> lastState)
-        {
-            //try
-            //{
-            //    var grades = lastState["predictionGrades"] as List<char>;
-            //    for (int i = 0; i < grades.Count; i++)
-            //        CourseGradePairs[i].Grade = grades[i];
-            //}
-            //catch { return; }
+            try
+            {
+                if (lastState == null)
+                    return;
+                var grades = lastState["predictionGrades"] as List<char>;
+                for (int i = 0; i < grades.Count; i++)
+                    CourseGradePairs[i].Grade = grades[i];
+            }
+            catch { return; }
         }
 
         #region Private Helper Methods and Event Handlers
@@ -313,6 +317,5 @@ namespace VITacademics.UIControls
         }
 
         #endregion
-
     }
 }
