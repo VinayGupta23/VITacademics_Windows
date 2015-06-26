@@ -10,54 +10,6 @@
     RequestedTheme="Dark"
     Background="{ThemeResource AlternateDarkBrush}">
     
-    <!-- Old design:
-    <Page.Resources>
-        <ResourceDictionary>
-            <Style TargetType="AppBarButton" x:Key="TopBarButtonStyle">
-                <Setter Property="IsCompact" Value="True"></Setter>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="AppBarButton">
-                            <Grid Width="40" Height="40">
-
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Pressed">
-                                            <Storyboard>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="ForegroundBrush"
-                                                        Storyboard.TargetProperty="Color"
-                                                        To="{Binding Path=Color, Source={StaticResource PhoneAccentBrush}}"></ColorAnimation>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Disabled">
-                                            <Storyboard>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="ForegroundBrush"
-                                                        Storyboard.TargetProperty="Color"
-                                                        To="Gray"></ColorAnimation>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Normal">
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-
-                                <Viewbox Height="32" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <ContentPresenter Content="{TemplateBinding Icon}">
-                                        <ContentPresenter.Foreground>
-                                            <SolidColorBrush Color="{ThemeResource PhoneControlForegroundColor}" x:Name="ForegroundBrush"></SolidColorBrush>
-                                        </ContentPresenter.Foreground>
-                                    </ContentPresenter>
-                                </Viewbox>
-
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </ResourceDictionary>
-    </Page.Resources>
-    -->
-    
     <!-- Bottom App Bar -->
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Compact" Background="{StaticResource AlternateDarkBrush}">
@@ -103,39 +55,9 @@
 
         <!-- Page Top Panel -->
         <Grid Margin="0,-1,0,0" RequestedTheme="Dark" Background="{StaticResource AlternateDarkBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <!--
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                -->
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                
-                <Viewbox Margin="13,0,-6,4" Width="40" Visibility="{Binding CanGoBack, Mode=OneWay}" VerticalAlignment="Center">
-                    <AppBarButton Icon="Back" VerticalContentAlignment="Center" IsCompact="True"
-                                  Click="ReturnButton_Click"></AppBarButton>
-                </Viewbox>
-                
-                <TextBlock Margin="19,10,0,10" FontSize="29" VerticalAlignment="Center"
-                           Text="{Binding TitleText, Mode=OneWay}" Foreground="{ThemeResource PhoneForegroundBrush}" LineStackingStrategy="MaxHeight"
-                           Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
-                
-                <!--<TextBlock Margin="19,3,0,7" VerticalAlignment="Center"
-                           Text="{Binding TitleText, Mode=OneWay}" Foreground="{ThemeResource PhoneForegroundBrush}" LineStackingStrategy="MaxHeight"
-                           Style="{StaticResource TitleTextBlockStyle}"></TextBlock>-->
-            </StackPanel>
-            <!--
-            <AppBarButton Grid.Column="1" Margin="0,0,15,0" Click="RefreshButton_Click"
-                          HorizontalAlignment="Center" VerticalAlignment="Center"            
-                          Icon="Refresh" Style="{StaticResource TopBarButtonStyle}"
-                          IsEnabled="{Binding IsIdle, Mode=OneWay}"></AppBarButton>
-            <AppBarButton Grid.Column="2" Margin="0,0,15,0" Click="MenuButton_Click"
-                          HorizontalAlignment="Center" VerticalAlignment="Center"
-                          IsEnabled="{Binding IsContentAvailable, Mode=OneWay}"
-                          Icon="AllApps" Style="{StaticResource TopBarButtonStyle}"></AppBarButton>
-            -->
+            <TextBlock Margin="19,6,0,8" VerticalAlignment="Center"
+                       Text="{Binding TitleText, Mode=OneWay}" Style="{StaticResource TitleTextBlockStyle}"
+                       Foreground="{ThemeResource PhoneForegroundBrush}" LineStackingStrategy="MaxHeight"></TextBlock>
         </Grid>
         
     </Grid>

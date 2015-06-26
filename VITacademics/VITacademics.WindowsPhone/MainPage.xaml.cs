@@ -15,7 +15,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Popups;
-
+using System.Text;
+using System.Linq;
 
 namespace VITacademics
 {
@@ -23,13 +24,15 @@ namespace VITacademics
     public sealed partial class MainPage : Page, IManageable, INotifyPropertyChanged, IAppReturnControllable
     {
 
-        private StatusBar _statusBar = StatusBar.GetForCurrentView();
+        private const string TITLE_SEPARATOR = "  >  ";
+
+        private StatusBar _statusBar;
         private MenuControl _menu;
         private ControlManager _contentControlManager;
         private bool _isMenuOpen;
         private bool _isIdle;
         private bool _isContentAvailable;
-        private string _titleText = null;
+        private TitleBuilder _titleBuilder = new TitleBuilder(TITLE_SEPARATOR);
         private bool _isCached = false;
 
         public bool IsIdle
@@ -48,30 +51,14 @@ namespace VITacademics
             {
                 _isMenuOpen = value;
                 NotifyPropertyChanged("TitleText");
-                NotifyPropertyChanged("CanGoBack");
             }
         }
         public string TitleText
         {
             get
             {
-                if (_titleText == null || IsMenuOpen == true) return "VITacademics";
-                else return _titleText;
-            }
-            set
-            {
-                _titleText = value;
-                NotifyPropertyChanged();
-            }
-        }
-        public Visibility CanGoBack
-        {
-            get
-            {
-                if (_contentControlManager != null && _contentControlManager.CanGoBack == true && IsMenuOpen == false)
-                    return Windows.UI.Xaml.Visibility.Visible;
-                else
-                    return Windows.UI.Xaml.Visibility.Collapsed;
+                if (IsMenuOpen == true) return "VITACADEMICS";
+                else return _titleBuilder.Title;
             }
         }
         public bool IsContentAvailable
@@ -93,6 +80,7 @@ namespace VITacademics
             _menu = new MenuControl();
             _contentControlManager = new ControlManager(ProxiedControl_ActionRequested);
 
+            _statusBar = StatusBar.GetForCurrentView();
             _statusBar.BackgroundColor = (Application.Current.Resources["AlternateDarkBrush"] as SolidColorBrush).Color;
             _statusBar.ForegroundColor = Colors.LightGray;
             _statusBar.ShowAsync();
@@ -114,14 +102,16 @@ namespace VITacademics
                 }
 
                 if (UserManager.CurrentUser.CoursesMetadata != null)
-                {
                     if (_contentControlManager.CurrentControl != null)
-                    {
                         _contentControlManager.RefreshCurrentControl();
+                    else
+                    {
+                        _contentControlManager.Clear();
+                        _titleBuilder.Clear();
+                        _contentControlManager.NavigateToControl(AppSettings.DefaultControlTypeName, null);
+                        _titleBuilder.SetTitle(_contentControlManager.CurrentControl.DisplayTitle);
                         SetTitleAndContent();
                     }
-                    this._menu.GenerateView(null);
-                }
             }
         }
 
@@ -134,7 +124,11 @@ namespace VITacademics
 
         public Dictionary<string, object> SaveState()
         {
-            return _contentControlManager.SaveState();
+            var dictionary = _contentControlManager.SaveState();
+            if (dictionary == null)
+                dictionary = new Dictionary<string, object>();
+            dictionary.Add("pageTitleComponents", _titleBuilder.Components);
+            return dictionary;
         }
 
         public async void LoadState(Dictionary<string, object> lastState)
@@ -149,8 +143,6 @@ namespace VITacademics
             {
                 if (UserManager.CurrentUser.CoursesMetadata != null)
                 {
-                    if (lastState != null)
-                        _contentControlManager.LoadState(lastState);
                     freshData = false;
                     status = StatusCode.Success;
                 }
@@ -160,8 +152,6 @@ namespace VITacademics
                     if (status == StatusCode.Success)
                     {
                         freshData = false;
-                        if (lastState != null)
-                            _contentControlManager.LoadState(lastState);
                     }
                     else
                     {
@@ -173,16 +163,26 @@ namespace VITacademics
 
             if (status == StatusCode.Success)
             {
-                if (freshData == false && _contentControlManager.CanGoBack)
-                    _contentControlManager.ReturnToLastControl();
-                else
-                    _contentControlManager.NavigateToControl(AppSettings.DefaultControlType, null);
+                if (freshData == false)
+                {
+                    if (lastState != null)
+                    {
+                        _contentControlManager.LoadState(lastState);
+                        _titleBuilder = new TitleBuilder(TITLE_SEPARATOR, lastState["pageTitleComponents"] as IEnumerable<string>);
+                    }
+                    if (_contentControlManager.CanGoBack)
+                        _contentControlManager.ReturnToLastControl();
+                    else
+                    {
+                        _contentControlManager.NavigateToControl(AppSettings.DefaultControlTypeName, null);
+                        _titleBuilder.SetTitle(_contentControlManager.CurrentControl.DisplayTitle);
+                    }
+                }
                 SetTitleAndContent();
-
-                _menu.GenerateView(null);
+                _menu.LoadView(null);
                 IsContentAvailable = true;
             }
-            
+
             DisplayStatus(status, !freshData);
             UserManager.PropertyChanged += UserManager_PropertyChanged;
             _menu.ActionRequested += ProxiedControl_ActionRequested;
@@ -193,10 +193,6 @@ namespace VITacademics
 
             if (freshData == false && AppSettings.AutoRefresh == true)
                 RefreshButton_Click(null, null);
-
-            if (AppSettings.FirstRun == true && UserManager.CurrentUser != null && UserManager.CurrentUser.Campus == "chennai")
-                new MessageDialog("Hello, we're sorry to tell you that some issues are pending regarding attendance in particular subjects for Chennai campus.\n\nWe're working hard at this right now and will soon be fixing it. Thank you for your feedback and patience :)",
-                                    "Note from the developer").ShowAsync();
         }
 
         #endregion
@@ -269,9 +265,59 @@ namespace VITacademics
 
         #region Navigation and ActionRequest Handlers
 
-        private void AboutButton_Click(object sender, RoutedEventArgs e)
+        private void MenuButton_Click(object sender, RoutedEventArgs e)
         {
-            PageManager.NavigateTo(typeof(AboutPage), null, NavigationType.Default);
+            if (IsMenuOpen)
+                menuPresenter.Content = null;
+            else
+                menuPresenter.Content = _menu;
+            IsMenuOpen = !IsMenuOpen;
+        }
+
+        private void ProxiedControl_ActionRequested(object sender, RequestEventArgs e)
+        {
+            TypeInfo typeInfo = e.TargetElement.GetTypeInfo();
+            if (typeInfo.IsSubclassOf(typeof(Page)))
+            {
+                PageManager.NavigateTo(e.TargetElement, null, NavigationType.Default);
+                return;
+            }
+
+            if (sender as MenuControl != null)
+            {
+                MenuButton_Click(null, null);
+                _contentControlManager.Clear();
+                _titleBuilder.Clear();
+            }
+
+            if (typeInfo.IsSubclassOf(typeof(UserControl)))
+            {
+
+                _contentControlManager.NavigateToControl(e.TargetElement, e.Parameter);
+                _titleBuilder.AddComponent(_contentControlManager.CurrentControl.DisplayTitle);
+                SetTitleAndContent();
+            }
+        }
+
+        private void ViewTodayButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsMenuOpen == true)
+                MenuButton_Click(null, null);
+
+            if (_contentControlManager.CurrentControl.GetType() == typeof(EnhancedTimetableControl))
+                _contentControlManager.RefreshCurrentControl();
+            else
+            {
+                _contentControlManager.Clear();
+                _titleBuilder.Clear();
+                ProxiedControl_ActionRequested(null, new RequestEventArgs(typeof(EnhancedTimetableControl), null));
+            }
+        }
+
+        private void SetTitleAndContent()
+        {
+            contentPresenter.Content = _contentControlManager.CurrentControl;
+            NotifyPropertyChanged("TitleText");
         }
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
@@ -284,91 +330,9 @@ namespace VITacademics
             PageManager.NavigateTo(typeof(SettingsPage), null, NavigationType.Default);
         }
 
-        private void MenuButton_Click(object sender, RoutedEventArgs e)
+        private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
-            if (IsMenuOpen)
-                menuPresenter.Content = null;
-            else
-                menuPresenter.Content = _menu;
-            IsMenuOpen = !IsMenuOpen;
-        }
-
-        private void ProxiedControl_ActionRequested(object sender, RequestEventArgs e)
-        {
-
-            TypeInfo typeInfo = e.TargetElement.GetTypeInfo();
-            if(typeInfo.IsSubclassOf(typeof(Page)))
-            {
-                PageManager.NavigateTo(e.TargetElement, null, NavigationType.Default);
-                return;
-            }
-
-            if (sender as MenuControl != null)
-            {
-                MenuButton_Click(null, null);
-                _contentControlManager.ClearHistory();
-            }
-
-            if (typeInfo.IsSubclassOf(typeof(UserControl)))
-            {
-                _contentControlManager.NavigateToControl(e.TargetElement, e.Parameter);
-                SetTitleAndContent();
-            }
-        }
-
-        private void ReturnButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_contentControlManager.CanGoBack)
-            {
-                _contentControlManager.ReturnToLastControl();
-                SetTitleAndContent();
-            }
-        }
-
-        private void ViewTodayButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (IsMenuOpen == true)
-                MenuButton_Click(null, null);
-
-            if (_contentControlManager.CurrentControlCode == ControlTypeCodes.EnhancedTimetable)
-                _contentControlManager.RefreshCurrentControl();
-            else
-            {
-                _contentControlManager.ClearHistory();
-                ProxiedControl_ActionRequested(null, new RequestEventArgs(typeof(EnhancedTimetableControl), null));
-            }
-        }
-
-        private void SetTitleAndContent()
-        {
-            string titleText = null;
-            ControlTypeCodes contentTypeCode = _contentControlManager.CurrentControlCode;
-
-            switch (contentTypeCode)
-            {
-                case ControlTypeCodes.Overview:
-                    titleText = "Overview";
-                    break;
-                case ControlTypeCodes.BasicTimetable:
-                    titleText = "Timetable";
-                    break;
-                case ControlTypeCodes.EnhancedTimetable:
-                    titleText = "Daily Buzz";
-                    break;
-                case ControlTypeCodes.CourseInfo:
-                    titleText = "Course Details";
-                    break;
-                case ControlTypeCodes.Grades:
-                    titleText = "Grades";
-                    break;
-                default:
-                    titleText = "VITacademics";
-                    break;
-            }
-
-            contentPresenter.Content = _contentControlManager.CurrentControl;
-            NotifyPropertyChanged("CanGoBack");
-            TitleText = titleText;
+            PageManager.NavigateTo(typeof(AboutPage), null, NavigationType.Default);
         }
 
         #endregion
@@ -382,11 +346,10 @@ namespace VITacademics
                 MenuButton_Click(null, null);
                 return false;
             }
-            else if (_contentControlManager.CurrentControl != null
-                     && _contentControlManager.CurrentControlCode != AppSettings.DefaultControlType)
+            else if (_contentControlManager.CurrentControl != null && _contentControlManager.CanGoBack)
             {
-                _contentControlManager.ClearHistory();
-                _contentControlManager.NavigateToControl(AppSettings.DefaultControlType, null);
+                _contentControlManager.ReturnToLastControl();
+                _titleBuilder.RemoveComponent();
                 SetTitleAndContent();
                 return false;
             }
@@ -397,4 +360,71 @@ namespace VITacademics
         #endregion
 
     }
+
+    class TitleBuilder
+    {
+        private readonly string _separator;
+        private Stack<string> _titleComponents;
+
+        public TitleBuilder(string seperator)
+        {
+            _titleComponents = new Stack<string>();
+            _separator = seperator;
+        }
+
+        public TitleBuilder(string seperator, IEnumerable<string> components)
+        {
+            _titleComponents = new Stack<string>(components);
+            _separator = seperator;
+        }
+
+        
+        public void SetTitle(string component)
+        {
+            _titleComponents = new Stack<string>();
+            _titleComponents.Push(component.ToUpper());
+        }
+
+        public void AddComponent(string component)
+        {
+            if (_titleComponents.Count > 0)
+                _titleComponents.Push(_separator);
+            _titleComponents.Push(component.ToUpper());
+        }
+
+        public void RemoveComponent()
+        {
+            _titleComponents.Pop();
+            _titleComponents.Pop();
+        }
+
+        public void Clear()
+        {
+            _titleComponents = new Stack<string>();
+        }
+
+        public string Title
+        {
+            get
+            {
+                StringBuilder titleBuilder = new StringBuilder();
+                foreach (string component in _titleComponents.Reverse())
+                    titleBuilder.Append(component);
+                return titleBuilder.ToString();
+            }
+        }
+
+        public List<string> Components
+        {
+            get
+            {
+                List<string> components = new List<string>();
+                foreach (string s in _titleComponents.Reverse())
+                    components.Add(s);
+                return components;
+            }
+        }
+
+    }
+
 }

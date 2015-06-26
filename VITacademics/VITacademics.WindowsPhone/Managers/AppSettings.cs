@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VITacademics.Helpers;
+using VITacademics.UIControls;
 using Windows.Storage;
 
 namespace VITacademics.Managers
@@ -19,7 +20,7 @@ namespace VITacademics.Managers
 
         static AppSettings()
         {
-           _settingsContainer = App._roamingSettings.CreateContainer(APP_SETTINGS_CONTAINER_NAME, ApplicationDataCreateDisposition.Always);
+            _settingsContainer = App._roamingSettings.CreateContainer(APP_SETTINGS_CONTAINER_NAME, ApplicationDataCreateDisposition.Always);
         }
 
         public static bool AutoRefresh
@@ -52,19 +53,19 @@ namespace VITacademics.Managers
                 _settingsContainer.Values[FIRST_RUN_KEY] = value;
             }
         }
-        public static ControlTypeCodes DefaultControlType
+        public static string DefaultControlTypeName
         {
             get
             {
                 object val = _settingsContainer.Values[DEFAULT_CONTROL_KEY];
                 if (val == null)
-                    return ControlTypeCodes.Overview;
+                    return typeof(UserOverviewControl).FullName;
                 else
-                    return (ControlTypeCodes)(int)val;
+                    return val as string;
             }
             set
             {
-                _settingsContainer.Values[DEFAULT_CONTROL_KEY] = (int)value;
+                _settingsContainer.Values[DEFAULT_CONTROL_KEY] = value;
             }
         }
 
@@ -72,6 +73,5 @@ namespace VITacademics.Managers
         {
             _settingsContainer.Values.Clear();
         }
-
     }
 }

@@ -22,6 +22,7 @@ namespace VITacademics.UIControls
     public sealed partial class CourseInfoControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
         public event EventHandler<RequestEventArgs> ActionRequested;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private Course _course;
 
@@ -45,7 +46,23 @@ namespace VITacademics.UIControls
 #endif
         }
 
-        public void GenerateView(string parameter)
+        public string DisplayTitle
+        {
+            get
+            {
+                if (_course != null)
+                    return _course.CourseCode;
+                else
+                    return "Course Details";
+            }
+        }
+
+        public Dictionary<string, object> SaveState()
+        {
+            return null;
+        }
+
+        public void LoadView(string parameter, Dictionary<string, object> lastState = null)
         {
             try
             {
@@ -56,18 +73,6 @@ namespace VITacademics.UIControls
                 SelectedCourse = null;
             }
         }
-
-        public Dictionary<string, object> SaveState()
-        {
-            return null;
-        }
-
-        public void LoadState(Dictionary<string, object> lastState)
-        {
-
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 
 }

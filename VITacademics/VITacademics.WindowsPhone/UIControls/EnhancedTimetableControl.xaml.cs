@@ -81,7 +81,19 @@ namespace VITacademics.UIControls
         public event EventHandler<RequestEventArgs> ActionRequested;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public async void GenerateView(string parameter)
+        public string DisplayTitle
+        {
+            get { return "Daily Buzz"; }
+        }
+
+        public Dictionary<string, object> SaveState()
+        {
+            var state = new Dictionary<string, object>(1);
+            state.Add("selectedDate", CurrentDate);
+            return state;
+        }
+        
+        public async void LoadView(string parameter, Dictionary<string, object> lastState = null)
         {
             try
             {
@@ -100,21 +112,8 @@ namespace VITacademics.UIControls
                 rootPivot.ItemsSource = pivotItems;
                 await CalendarManager.LoadCalendarAsync();
                 ContentReady = true;
-            }
-            catch { }
-        }
 
-        public Dictionary<string, object> SaveState()
-        {
-            var state = new Dictionary<string, object>(1);
-            state.Add("selectedDate", CurrentDate);
-            return state;
-        }
-
-        public void LoadState(Dictionary<string, object> lastState)
-        {
-            try
-            {
+                // Restore last state if available
                 if (lastState != null)
                 {
                     JumpToDate((DateTimeOffset)lastState["selectedDate"]);
@@ -266,12 +265,8 @@ namespace VITacademics.UIControls
                                         (e.ClickedItem as CalenderAwareInfoStub).SessionHours.Parent.ClassNumber.ToString()));
         }
 
-        private void ViewTodayButton_Click(object sender, RoutedEventArgs e)
-        {
-            JumpToDate(DateTimeOffset.Now);
-        }
-
         #endregion
 
+        
     }
 }
