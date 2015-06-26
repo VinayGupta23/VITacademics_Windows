@@ -20,7 +20,8 @@
             <StackPanel>
                 <StackPanel.Resources>
                     <DataTemplate x:Key="LabelHeaderTemplate">
-                        <TextBlock Text="{Binding}" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                        <TextBlock Text="{Binding}" Style="{StaticResource LabelTextBlockStyle}"
+                                   Margin="0,0,0,3"></TextBlock>
                     </DataTemplate>
                 </StackPanel.Resources>
 
@@ -28,7 +29,7 @@
                 <TextBlock Text="{Binding RegNo, Mode=OneTime}" Style="{ThemeResource SubheaderTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
 
                 <ComboBox Margin="0,20,0,0" ItemsSource="{Binding StartupPageOptions.Keys}"
-                          Header="Startup Page" HeaderTemplate="{StaticResource LabelHeaderTemplate}"
+                          Header="Display the following page on launch" HeaderTemplate="{StaticResource LabelHeaderTemplate}"
                           SelectionChanged="PageComboBox_SelectionChanged"
                           x:Name="comboBox" SelectedItem="{Binding CurrentDefaultView, Mode=OneTime}"></ComboBox>
 
