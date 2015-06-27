@@ -178,12 +178,18 @@ namespace VITacademics
                         _titleBuilder.SetTitle(_contentControlManager.CurrentControl.DisplayTitle);
                     }
                 }
+                else
+                {
+                    _contentControlManager.NavigateToControl(AppSettings.DefaultControlTypeName, null);
+                    _titleBuilder.SetTitle(_contentControlManager.CurrentControl.DisplayTitle);
+                }
+
                 SetTitleAndContent();
                 _menu.LoadView(null);
                 IsContentAvailable = true;
             }
 
-            DisplayStatus(status, !freshData);
+            await DisplayStatusAsync(status, !freshData);
             UserManager.PropertyChanged += UserManager_PropertyChanged;
             _menu.ActionRequested += ProxiedControl_ActionRequested;
 
@@ -219,46 +225,39 @@ namespace VITacademics
 
             StatusCode code = await UserManager.RefreshFromServerAsync();
 
-            DisplayStatus(code, false);
+            await DisplayStatusAsync(code, false);
         }
 
         private string GetTimeString(DateTimeOffset date)
         {
             date = date.ToLocalTime();
             DateTimeOffset today = DateTimeOffset.Now;
-            if (date.Month == today.Month)
-            {
-                if (date.Day == today.Day)
 
-                    return "at " + date.ToString("HH:mm");
-                else
-                    return "on " + date.ToString("ddd, HH:mm");
-            }
+            if (today.Date == date.Date)
+                return "at " + date.ToString("HH:mm");
+            else if (today.Date.Subtract(new TimeSpan(6, 0, 0, 0)) <= date)
+                return "on " + date.ToString("ddd, HH:mm");
             else
                 return "on " + date.ToString("dd MMM, HH:mm");
         }
-        private void DisplayStatus(StatusCode status, bool refreshedFromCache)
+        private async Task DisplayStatusAsync(StatusCode status, bool refreshedFromCache)
         {
-            var metaData = UserManager.CurrentUser.CoursesMetadata;
-
             if (status == StatusCode.Success)
             {
-                if (refreshedFromCache == false)
-                    _statusBar.ProgressIndicator.Text = "Last refreshed " + DateTimeOffset.Now.ToString("HH:mm");
-                else
-                    _statusBar.ProgressIndicator.Text = "Last refreshed " + GetTimeString(UserManager.CachedDataLastChanged);
+                _statusBar.ProgressIndicator.Text = "Last refreshed " + GetTimeString(UserManager.CachedDataLastChanged);
             }
             else
             {
-                if (metaData == null)
+                if (UserManager.CurrentUser.CoursesMetadata == null)
                     _statusBar.ProgressIndicator.Text = "No data, unable to refresh";
                 else
-                    _statusBar.ProgressIndicator.Text = "Unable to refresh, last updated " + GetTimeString(UserManager.CachedDataLastChanged);
+                    _statusBar.ProgressIndicator.Text = "Refresh failed, last updated " + GetTimeString(UserManager.CachedDataLastChanged);
+
                 StandardMessageDialogs.GetDialog(status).ShowAsync();
             }
 
             _statusBar.ProgressIndicator.ProgressValue = 0;
-            _statusBar.ProgressIndicator.ShowAsync();
+            await _statusBar.ProgressIndicator.ShowAsync();
         }
 
         #endregion
