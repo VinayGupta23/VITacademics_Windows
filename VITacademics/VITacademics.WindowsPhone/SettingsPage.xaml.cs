@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using VITacademics.Helpers;
 using VITacademics.Managers;
 using VITacademics.UIControls;
@@ -24,8 +25,10 @@ using Windows.UI.Xaml.Navigation;
 namespace VITacademics
 {
     
-    public sealed partial class SettingsPage : Page, IManageable
+    public sealed partial class SettingsPage : Page, IManageable, INotifyPropertyChanged
     {
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public Dictionary<string, string> StartupPageOptions
         {
@@ -49,6 +52,11 @@ namespace VITacademics
             private set;
         }
 
+        public bool IsNewSemesterAvailable
+        {
+            get { return AppSettings.IsSemesterUpgradeAvailable; }
+        }
+
         public SettingsPage()
         {
             this.InitializeComponent();
@@ -67,7 +75,21 @@ namespace VITacademics
                     break;
                 }
 
+            AppSettings.SettingsChanged += AppSettings_SettingsChanged;
+            this.Unloaded += SettingsPage_Unloaded;
             this.DataContext = this;
+        }
+
+        void SettingsPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            AppSettings.SettingsChanged -= AppSettings_SettingsChanged;
+        }
+
+        void AppSettings_SettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsSemesterUpgradeAvailable")
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsNewSemesterAvailable"));
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -88,7 +110,7 @@ namespace VITacademics
         {
             if(UserManager.IsBusy == true)
             {
-                await new MessageDialog("Please wait while your last requested task completes.", "Busy").ShowAsync();
+                await ShowBusyDialog();
                 return;
             }
             
@@ -116,6 +138,26 @@ namespace VITacademics
         private void PageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             AppSettings.DefaultControlTypeName = StartupPageOptions[(sender as ComboBox).SelectedItem as string];
+        }
+
+        private async void UpgradeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (UserManager.IsBusy == true)
+            {
+                await ShowBusyDialog();
+                return;
+            }
+
+            var status = await UserManager.RunMaintentanceForUpgradeAsync();
+            if (status == Academics.ContentService.StatusCode.Success)
+                PageManager.NavigateTo(typeof(MainPage), null, NavigationType.FreshStart);
+            else
+                await StandardMessageDialogs.GetDialog(Academics.ContentService.StatusCode.UnknownError).ShowAsync();
+        }
+
+        private async Task ShowBusyDialog()
+        {
+            await new MessageDialog("Please wait while your last requested task completes.", "Busy").ShowAsync();
         }
 
     }

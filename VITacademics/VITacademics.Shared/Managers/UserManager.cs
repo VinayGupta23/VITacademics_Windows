@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.IO;
 
 
 namespace VITacademics.Managers
@@ -363,10 +364,17 @@ namespace VITacademics.Managers
                         else
                             return response.Code;
                     }
-
+                    
                     User temp = JsonParser.TryParseData(response.Content);
                     if (temp == null)
                         return StatusCode.UnknownError;
+
+                    if(CurrentUser.CoursesMetadata != null)
+                        if (temp.CoursesMetadata.Semester != CurrentUser.CoursesMetadata.Semester)
+                        {
+                            AppSettings.IsSemesterUpgradeAvailable = true;
+                            return StatusCode.Success;
+                        }
 
                     CurrentUser = temp;
                     await TryCacheDataAsync(response.Content);
@@ -507,6 +515,32 @@ namespace VITacademics.Managers
                 });
 
             return new Response<AcademicHistory>(status, academicHistory);
+        }
+
+        public static async Task<StatusCode> RunMaintentanceForUpgradeAsync()
+        {
+            return await MonitoredTask(async () =>
+                {
+                    if (CurrentUser == null)
+                        return StatusCode.InvalidRequest;
+
+                    PropertyChanged = null;
+                    CurrentUser = new User(CurrentUser.RegNo, CurrentUser.DateOfBirth, CurrentUser.Campus, CurrentUser.PhoneNo);
+                    try
+                    {
+                        await CalendarManager.CreateNewCalendarAsync(CurrentUser);
+                        StorageFile dataFile = await _roamingFolder.GetFileAsync(DATA_JSON_FILE_NAME);
+                        await dataFile.DeleteAsync();
+                    }
+                    catch (FileNotFoundException)
+                    { ; }
+                    catch (Exception)
+                    {
+                        return StatusCode.UnknownError;
+                    }
+                    AppSettings.IsSemesterUpgradeAvailable = false;
+                    return StatusCode.Success;
+                });
         }
 
         #endregion

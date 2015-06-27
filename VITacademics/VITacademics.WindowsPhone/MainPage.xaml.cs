@@ -197,7 +197,7 @@ namespace VITacademics
             _isCached = true;
             IsIdle = !UserManager.IsBusy;
 
-            if (freshData == false && AppSettings.AutoRefresh == true)
+            if (freshData == false && AppSettings.AutoRefresh == true && AppSettings.IsSemesterUpgradeAvailable == false)
                 RefreshButton_Click(null, null);
         }
 
@@ -217,8 +217,30 @@ namespace VITacademics
 
         #region Refresh Event Handler and Dependencies
 
+        private async Task PromptNewSemesterAvailabilityAsync()
+        {
+            if (Frame.CurrentSourcePageType == typeof(SettingsPage))
+                return;
+
+            MessageDialog semUpgradeDialog = new MessageDialog("The current semester has closed and hence its support has ended. New data is now available.\n\nVisit 'settings' to upgrade the app when you're ready. You can continue viewing the current details until then.", "Semester Upgrade");
+            semUpgradeDialog.Commands.Add(new UICommand("settings", UpgradeCommandHandler));
+            semUpgradeDialog.Commands.Add(new UICommand("upgrade later", UpgradeCommandHandler));
+            await semUpgradeDialog.ShowAsync();
+        }
+
+        private void UpgradeCommandHandler(IUICommand command)
+        {
+            if (command.Label == "settings")
+                PageManager.NavigateTo(typeof(SettingsPage), null, NavigationType.Default);
+        }
+
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
+            if (AppSettings.IsSemesterUpgradeAvailable)
+            {
+                PromptNewSemesterAvailabilityAsync();
+                return;
+            }
             _statusBar.ProgressIndicator.Text = "Refreshing...";
             _statusBar.ProgressIndicator.ProgressValue = null;
             await _statusBar.ProgressIndicator.ShowAsync();
@@ -245,6 +267,8 @@ namespace VITacademics
             if (status == StatusCode.Success)
             {
                 _statusBar.ProgressIndicator.Text = "Last refreshed " + GetTimeString(UserManager.CachedDataLastChanged);
+                if (AppSettings.IsSemesterUpgradeAvailable)
+                    PromptNewSemesterAvailabilityAsync();
             }
             else
             {
