@@ -27,11 +27,15 @@
                 <local:HelpItem Title="Set reminders"
                                 HasIndex="True" Index="2"
                                 ImagePath="ms-appx:///Assets/HelpContent/DailyBuzz3.png"
-                                ContentText="Press and hold on the title of the course to set a reminder"></local:HelpItem>
+                                ContentText="Press and hold on the title of a course to set a reminder"></local:HelpItem>
                 <local:HelpItem Title="Track your attendance"
                                 HasIndex="True" Index="3"
                                 ImagePath="ms-appx:///Assets/HelpContent/Attendance1.png"
                                 ContentText="Set a target and let the app calculate your required classes"></local:HelpItem>
+                <local:HelpItem Title="View complete academic history"
+                                HasIndex="True" Index="4"
+                                ImagePath="ms-appx:///Assets/HelpContent/Grades1.png"
+                                ContentText="Tap to view information and select any semester"></local:HelpItem>
             </local:HelpItemCollection>
             
             <DataTemplate x:Key="FlipViewItemTemplate">
@@ -49,7 +53,7 @@
                     
                     <TextBlock Text="{Binding Title}" Grid.ColumnSpan="3" VerticalAlignment="Center"
                                TextAlignment="Center" Style="{StaticResource SubheaderTextBlockStyle}"
-                               FontSize="25"></TextBlock>
+                               FontSize="25" MaxLines="2"></TextBlock>
                     <Viewbox Grid.Row="1" Grid.Column="1">
                         <Image Source="{Binding ImagePath}"></Image>
                     </Viewbox>
@@ -85,7 +89,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Text="help" Style="{StaticResource SubheaderTextBlockStyle}"
-                   Margin="20,20,0,0" FontSize="43"></TextBlock>
+                   Margin="20,10,0,0" FontSize="43"></TextBlock>
         <TextBlock x:Name="pageNoTextBlock" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                    Margin="0,0,20,0" Style="{StaticResource ComboBoxPlaceholderTextBlockStyle}"></TextBlock>
         

@@ -139,14 +139,15 @@
     <Content Include="Assets\HelpContent\DailyBuzz1.png" />
     <Content Include="Assets\HelpContent\DailyBuzz2.png" />
     <Content Include="Assets\HelpContent\DailyBuzz3.png" />
+    <Content Include="Assets\HelpContent\Grades1.png" />
     <Content Include="Assets\Icons\GraphButton.scale-240.png" />
     <Content Include="Assets\Icons\TimetableButton.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />
-    <Content Include="Assets\Square150x150Logo.scale-240.png" />
-    <Content Include="Assets\Square44x44Logo.scale-240.png" />
-    <Content Include="Assets\Square71x71Logo.scale-240.png" />
-    <Content Include="Assets\StoreLogo.scale-240.png" />
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="Assets\Square150x150Logo.scale-240.png" />
+    <Content Include="Assets\square44x44logo.scale-240.png" />
+    <Content Include="Assets\square71x71logo.scale-240.png" />
+    <Content Include="Assets\storelogo.scale-240.png" />
     <Content Include="StoreManifest.xml" />
   </ItemGroup>
   <ItemGroup>

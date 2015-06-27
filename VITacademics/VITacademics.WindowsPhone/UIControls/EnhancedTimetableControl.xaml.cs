@@ -136,6 +136,7 @@ namespace VITacademics.UIControls
             EventMessages.Add("Assignment deadline");
             EventMessages.Add("Record submission");
             EventMessages.Add("LAB Mid-Term");
+            EventMessages.Add("LAB Term-End");
             EventMessages.Add("Class test");
             EventMessages.Add("Class cancelled");
 #if !DEBUG

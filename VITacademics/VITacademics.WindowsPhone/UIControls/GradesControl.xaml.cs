@@ -133,6 +133,9 @@ namespace VITacademics.UIControls
         {
             this.InitializeComponent();
             this.DataContext = this;
+#if !DEBUG
+            GoogleAnalytics.EasyTracker.GetTracker().SendView("Grades");
+#endif
         }
 
         #region Event Definitions and Related Handlers
