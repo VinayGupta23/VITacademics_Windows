@@ -12,6 +12,7 @@ using VITacademics.Managers;
 namespace VITacademics.Helpers
 {
 
+    // Pending changes.
     public class CalenderAwareInfoStub : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

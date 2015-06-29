@@ -476,6 +476,9 @@ namespace VITacademics.Managers
         /// <summary>
         /// Attempts to get the academic history for the current user by sending a network request. On success, this method also tries to cache the grades locally before returning.
         /// </summary>
+        /// <remarks>
+        /// If refresh yields new semester information, the existing data is untouched and the new semester flag is set. To then refresh data, call the <see cref="RunMaintentanceForUpgradeAsync"/> method first.
+        /// </remarks>
         /// <returns>
         /// A response containing status code and content. The content is the academic history on success, otherwise null.
         /// </returns>
@@ -517,6 +520,12 @@ namespace VITacademics.Managers
             return new Response<AcademicHistory>(status, academicHistory);
         }
 
+        /// <summary>
+        /// Resets calendar, clears cache and resets the new semester flag, to enable a direct refresh to new data. Other settings and credentials are retained.
+        /// </summary>
+        /// <returns>
+        /// A status code if reset was successful, otherwise an error code.
+        /// </returns>
         public static async Task<StatusCode> RunMaintentanceForUpgradeAsync()
         {
             return await MonitoredTask(async () =>
@@ -528,7 +537,9 @@ namespace VITacademics.Managers
                     CurrentUser = new User(CurrentUser.RegNo, CurrentUser.DateOfBirth, CurrentUser.Campus, CurrentUser.PhoneNo);
                     try
                     {
+#if WINDOWS_PHONE_APP
                         await CalendarManager.CreateNewCalendarAsync(CurrentUser);
+#endif
                         StorageFile dataFile = await _roamingFolder.GetFileAsync(DATA_JSON_FILE_NAME);
                         await dataFile.DeleteAsync();
                     }
