@@ -15,7 +15,7 @@ namespace VITacademics.Managers
     {
         private const string APP_SETTINGS_CONTAINER_NAME = "appSettings";
         private const string AUTO_REFRESH_KEY = "autoRefresh";
-        private const string DEFAULT_CONTROL_KEY = "defaultControlCode";
+        private const string DEFAULT_CONTROL_KEY = "defaultControlFullTypeName";
         private const string FIRST_RUN_KEY = "firstRun";
         private const string SEMESTER_UPGRADE_KEY = "semUpgradeAvailable";
 

@@ -145,6 +145,9 @@
     <Content Include="Assets\SplashScreen.scale-240.png" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Assets\Square150x150Logo.scale-240.png" />
+    <Content Include="Assets\square44x44logo.scale-240.png" />
+    <Content Include="Assets\square71x71logo.scale-240.png" />
+    <Content Include="Assets\storelogo.scale-240.png" />
     <Content Include="StoreManifest.xml" />
   </ItemGroup>
   <ItemGroup>

@@ -167,8 +167,12 @@ namespace VITacademics
                 {
                     if (lastState != null)
                     {
-                        _contentControlManager.LoadState(lastState);
-                        _titleBuilder = new TitleBuilder(TITLE_SEPARATOR, lastState["pageTitleComponents"] as IEnumerable<string>);
+                        try
+                        {
+                            _contentControlManager.LoadState(lastState);
+                            _titleBuilder = new TitleBuilder(TITLE_SEPARATOR, lastState["pageTitleComponents"] as IEnumerable<string>);
+                        }
+                        catch { }
                     }
                     if (_contentControlManager.CanGoBack)
                         _contentControlManager.ReturnToLastControl();
