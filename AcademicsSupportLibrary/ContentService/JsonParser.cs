@@ -217,6 +217,12 @@ namespace Academics.ContentService
                 classLength = (int)Char.GetNumericValue(course.Ltpc[2]);
             }
 
+            if (attendanceObject.GetNamedBoolean("supported") == false)
+            {
+                course.Attendance = new Attendance(course, 0, 0, 0, classLength);
+                return;
+            }
+
             ushort total = (ushort)attendanceObject.GetNamedNumber("total_classes");
             ushort attended = (ushort)attendanceObject.GetNamedNumber("attended_classes");
             double percentage = attendanceObject.GetNamedNumber("attendance_percentage");
@@ -247,6 +253,13 @@ namespace Academics.ContentService
         }
         private static void AssignMarks(LtpCourse course, JsonObject marksObject)
         {
+            if (marksObject.GetNamedBoolean("supported") == false)
+            {
+                course.InternalMarksScored = 0;
+                course.TotalMarksTested = 0;
+                return;
+            }
+            
             double marksScored = 0;
             JsonArray marksArray = marksObject.GetNamedArray("assessments");
             foreach (JsonValue marksValue in marksArray)

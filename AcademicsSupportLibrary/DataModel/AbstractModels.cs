@@ -33,7 +33,7 @@ namespace Academics.DataModel
     public abstract class LtpCourse : Course
     {
         private List<ClassHours> _timings;
-        internal List<MarkInfo> _marksInfo;
+        private List<MarkInfo> _marksInfo;
 
         public string Slot { get; internal set; }
         public string Venue { get; internal set; }
