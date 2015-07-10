@@ -29,12 +29,16 @@
                 <ResourceDictionary>
                     
                     <DataTemplate x:Key="CourseNotFoundTemplate">
-                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="Uh oh, this course wasn't found." Style="{StaticResource SingleItemHeaderStyle}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                            <TextBlock Text="If this is unexpected, try refresh." Style="{StaticResource LabelTextBlockStyle}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                                <TextBlock Text="Uh oh, this course wasn't found." Style="{StaticResource SingleItemHeaderStyle}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Bottom"></TextBlock>
+                                <TextBlock Text="If this is unexpected, try refresh." Style="{StaticResource LabelTextBlockStyle}"
+                                           Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top"></TextBlock>
+                        </Grid>
                     </DataTemplate>
                     
                     <DataTemplate x:Key="LtpCourseTemplate">
@@ -279,6 +283,6 @@
 
     <ContentControl Content="{Binding SelectedCourse, Mode=OneWay}"
                     ContentTemplateSelector="{StaticResource TemplateSelector}"
-                    HorizontalAlignment="Center" VerticalAlignment="Center"></ContentControl>
+                    HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"></ContentControl>
     
 </UserControl>
