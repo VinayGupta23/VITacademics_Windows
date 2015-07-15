@@ -39,6 +39,17 @@ namespace VITacademics.Managers
                 _store = await AppointmentManager.RequestStoreAsync(AppointmentStoreAccessType.AppCalendarsReadWrite);
         }
 
+        private static int FindInsertionIndex(CalendarAwareDayInfo dayInfo, DateTimeOffset startTime)
+        {
+            int i = 0;
+            for (i = 0; i < dayInfo.RegularClassesInfo.Count; i++)
+            {
+                if (DateTimeOffset.Compare(startTime, (dayInfo.RegularClassesInfo[i].StartTime)) <= 0)
+                    break;
+            }
+            return i;
+        }
+
         #endregion
 
         #region Management Specific API
@@ -84,57 +95,81 @@ namespace VITacademics.Managers
             await EnsureAvailabilityAsync();
             _calendar = (await _store.FindAppointmentCalendarsAsync())[0];
         }
-
-        public static async Task WriteAppointmentAsync(CalenderAwareInfoStub infoStub, string message)
+        
+        // !!!
+        public static async Task WriteAppointmentAsync(CalendarAwareStub stub, string message, TimeSpan reminderSpan)
         {
             if (_calendar == null)
                 throw new InvalidOperationException();
+            var infoStub = stub as RegularInfoStub;
 
             Appointment appt;
-            if (infoStub.AppointmentInfo == null)
+            if (infoStub.ApptInfo == null)
             {
                 appt = new Appointment();
+
                 appt.StartTime = infoStub.ContextDate.Date.Add(infoStub.SessionHours.StartHours.TimeOfDay);
                 appt.Duration = infoStub.SessionHours.EndHours - infoStub.SessionHours.StartHours;
-                appt.Reminder = TimeSpan.FromMinutes(15);
                 appt.Location = infoStub.SessionHours.Parent.Venue;
             }
             else
             {
-                appt = await _calendar.GetAppointmentAsync(infoStub.AppointmentInfo.Item1);
+                appt = await _calendar.GetAppointmentAsync(infoStub.ApptInfo.LocalId);
             }
 
             appt.Subject = string.Format("{0} - {1}", infoStub.SessionHours.Parent.CourseCode, message);
+            appt.Reminder = reminderSpan;
             await _calendar.SaveAppointmentAsync(appt);
-            infoStub.AppointmentInfo = new Tuple<string, string>(appt.LocalId, appt.Subject);
+            infoStub.ApptInfo = new AppointmentInfo(appt);
 #if !DEBUG
             GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Calendar Access", "Set reminder", null, 0);
 #endif
         }
 
-        public static async Task RemoveAppointmentAsync(CalenderAwareInfoStub infoStub)
+        public static async Task RemoveAppointmentAsync(CalendarAwareStub infoStub)
         {
             if (_calendar == null)
                 throw new InvalidOperationException();
 
-            if (infoStub.AppointmentInfo == null)
+            if (infoStub.ApptInfo == null)
                 return;
 
-            await _calendar.DeleteAppointmentAsync(infoStub.AppointmentInfo.Item1);
-            infoStub.AppointmentInfo = null;
+            await _calendar.DeleteAppointmentAsync(infoStub.ApptInfo.LocalId);
+            infoStub.ApptInfo = null;
         }
 
-        public static async Task AssignAppointmentIfAvailableAsync(CalenderAwareInfoStub infoStub)
+        public static async Task LoadRemindersAsync(CalendarAwareDayInfo dayInfo)
         {
             if (_calendar == null)
                 throw new InvalidOperationException();
-
-            DateTimeOffset startDate = infoStub.ContextDate.Date.Add(infoStub.SessionHours.StartHours.TimeOfDay);
-            var appts = await _calendar.FindAppointmentsAsync(startDate, TimeSpan.FromMinutes(1));
+            List<Appointment> appts = (await _calendar.FindAppointmentsAsync(dayInfo.ContextDate.Date, TimeSpan.FromDays(1))).ToList();
             if (appts.Count == 0)
-                infoStub.AppointmentInfo = null;
-            else
-                infoStub.AppointmentInfo = new Tuple<string, string>(appts[0].LocalId, appts[0].Subject);
+                return;
+
+            foreach (var stub in dayInfo.RegularClassesInfo)
+            {
+                Appointment appt;
+                try
+                {
+                    if (appts.Count == 0)
+                        break;
+                    appt = appts.First((Appointment a) => a.StartTime.TimeOfDay == stub.StartTime.TimeOfDay
+                                    && string.Equals(a.Subject.Substring(0, 6), stub.ContextCourse.CourseCode) == true);
+                }
+                catch { appt = null; }
+
+                if (appt != null)
+                {
+                    stub.ApptInfo = new AppointmentInfo(appt);
+                    appts.Remove(appt);
+                }
+            }
+
+            foreach (Appointment appt in appts)
+            {
+                int index = FindInsertionIndex(dayInfo, appt.StartTime);
+                dayInfo.RegularClassesInfo.Insert(index, new CustomInfoStub(dayInfo.ContextDate, appt));
+            }
         }
 
         #endregion

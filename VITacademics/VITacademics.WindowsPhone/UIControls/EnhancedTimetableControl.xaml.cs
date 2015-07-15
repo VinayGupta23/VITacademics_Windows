@@ -18,27 +18,27 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using VITacademics.Helpers;
 using Windows.UI.Popups;
+using System.Threading.Tasks;
 
 
 namespace VITacademics.UIControls
 {
     public sealed partial class EnhancedTimetableControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
-
         #region Fields and Properties
 
         private const int ARRAY_SIZE = 7;
 
-        private Timetable _timetable;
         private DateTimeOffset[] _dates = new DateTimeOffset[ARRAY_SIZE];
         private DateTimeOffset _currentDate;
         private DatePickerFlyout _datePickerFlyout;
-        private CalenderAwareInfoStub _currentStub;
+        private CalendarAwareStub _currentStub;
         private bool _contentReady;
-        private CalenderAwareDayInfo _awareDayInfo;
+        private CalendarAwareDayInfo _awareDayInfo;
 
         public delegate void DataChanged();
         private DataChanged DataUpdated;
+
         private bool ContentReady
         {
             get { return _contentReady; }
@@ -54,7 +54,7 @@ namespace VITacademics.UIControls
             get;
             set;
         }
-        public CalenderAwareDayInfo AwareDayInfo
+        public CalendarAwareDayInfo AwareDayInfo
         {
             get { return _awareDayInfo; }
             set
@@ -103,7 +103,6 @@ namespace VITacademics.UIControls
                     _datePickerFlyout.Hide();
                 eventMessageFlyout.Hide();
 
-                _timetable = UserManager.GetCurrentTimetable();
                 List<PivotItem> pivotItems = new List<PivotItem>(ARRAY_SIZE);
                 for (int i = 0; i < ARRAY_SIZE; i++)
                     pivotItems.Add(new PivotItem());
@@ -170,7 +169,7 @@ namespace VITacademics.UIControls
         private async void DataUpdatedHandler()
         {
             if (AwareDayInfo != null && ContentReady == true)
-                await AwareDayInfo.LoadAppointmentsAsync();
+                await CalendarManager.LoadRemindersAsync(AwareDayInfo);
         }
 
         private void Pivot_PivotItemLoading(Pivot sender, PivotItemEventArgs args)
@@ -190,7 +189,7 @@ namespace VITacademics.UIControls
                     header = "today";
                 else if (_dates[i].AddDays(-1).Date == date)
                     header = "tomorrow";
-                else if(_dates[i].AddDays(1).Date == date)
+                else if (_dates[i].AddDays(1).Date == date)
                     header = "yesterday";
                 else
                     header = _dates[i].ToString("ddd dd").ToLower();
@@ -199,7 +198,7 @@ namespace VITacademics.UIControls
             }
 
             CurrentDate = _dates[curIndex];
-            AwareDayInfo = new CalenderAwareDayInfo(CurrentDate, _timetable.GetExactDayInfo(_dates[curIndex]));
+            AwareDayInfo = new CalendarAwareDayInfo(CurrentDate);
             (sender.Items[curIndex] as PivotItem).DataContext = AwareDayInfo;
         }
 
@@ -231,8 +230,8 @@ namespace VITacademics.UIControls
 
         private void ItemRootGrid_Holding(object sender, HoldingRoutedEventArgs e)
         {
-            CalenderAwareInfoStub stub = (sender as FrameworkElement).DataContext as CalenderAwareInfoStub;
-            if (stub.AppointmentInfo == null)
+            CalendarAwareStub stub = (sender as FrameworkElement).DataContext as CalendarAwareStub;
+            if (stub.ApptInfo == null)
             {
                 addFlyout.ShowAt(sender as FrameworkElement);
             }
@@ -247,7 +246,7 @@ namespace VITacademics.UIControls
         {
             await eventMessageFlyout.ShowAtAsync(rootPivot);
             if (_currentStub != null && eventMessageFlyout.SelectedItem != null)
-                await CalendarManager.WriteAppointmentAsync(_currentStub, eventMessageFlyout.SelectedItem as string);
+                await CalendarManager.WriteAppointmentAsync(_currentStub, eventMessageFlyout.SelectedItem as string, TimeSpan.FromMinutes(15));
             _currentStub = null;
             eventMessageFlyout.SelectedItem = null;
         }
@@ -263,11 +262,10 @@ namespace VITacademics.UIControls
         {
             if (ActionRequested != null)
                 ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl),
-                                        (e.ClickedItem as CalenderAwareInfoStub).SessionHours.Parent.ClassNumber.ToString()));
+                                        (e.ClickedItem as CalendarAwareStub).ContextCourse.ClassNumber.ToString()));
         }
 
         #endregion
-
         
     }
 }

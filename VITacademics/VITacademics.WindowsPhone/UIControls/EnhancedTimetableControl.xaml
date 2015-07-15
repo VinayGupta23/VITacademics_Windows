@@ -81,22 +81,24 @@
                                                Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
                                     <TextBlock Text="{Binding SessionHours.EndHours, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='HH:mm'}"
                                                Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
-                                    <TextBlock Text="{Binding SessionHours.Parent.Venue}" Foreground="{ThemeResource PhoneMidBrush}"
+                                    <TextBlock Text="{Binding ContextCourse.Venue}" Foreground="{ThemeResource PhoneMidBrush}"
                                                Style="{StaticResource SingleItemContentStyle}" HorizontalAlignment="Center"></TextBlock>
                                 </StackPanel>
                             </Border>
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
                                 <local:GoMissAttendanceInfo Height="25" Grid.Column="1" Margin="-8,0,0,0"
-                                                            DataContext="{Binding SessionHours.Parent.Attendance}">
+                                                            DataContext="{Binding ContextCourse.Attendance}">
                                     <local:GoMissAttendanceInfo.Transitions>
                                         <TransitionCollection>
                                             <EntranceThemeTransition FromVerticalOffset="5" FromHorizontalOffset="0"></EntranceThemeTransition>
                                         </TransitionCollection>
                                     </local:GoMissAttendanceInfo.Transitions>
                                 </local:GoMissAttendanceInfo>
-                                <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}"
-                                           Style="{StaticResource AppointmentTextBlockStyle}"></TextBlock>
+                                <Border DataContext="{Binding ApptInfo, Mode=OneWay}">
+                                <TextBlock Text="{Binding Subject, Mode=OneWay}"
+                                            Style="{StaticResource AppointmentTextBlockStyle}"></TextBlock>
+                                </Border>
                             </StackPanel>
                         </Grid>
                     </DataTemplate>
@@ -115,7 +117,7 @@
                                     Background="WhiteSmoke" BorderThickness="0,0,0,13"
                                     BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
-                                            DataContext="{Binding SessionHours.Parent}">
+                                            DataContext="{Binding ContextCourse}">
                                     <TextBlock Text="{Binding CourseCode}" Style="{StaticResource LabelTextBlockStyle}"
                                                HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
                                     <TextBlock Text="{Binding Venue}" Style="{StaticResource SingleItemContentStyle}"
@@ -123,12 +125,14 @@
                                 </StackPanel>
                             </Border>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="{Binding SessionHours.Parent.Title}"
+                                <TextBlock Text="{Binding ContextCourse.Title}"
                                            Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
                                 <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemSubHeaderStyle}"
                                            Foreground="{ThemeResource PhoneMidBrush}"></TextBlock>
-                                <TextBlock Text="{Binding AppointmentInfo.Item2, Mode=OneWay}"
-                                           Style="{StaticResource AppointmentTextBlockStyle}"></TextBlock>
+                                <Border DataContext="{Binding ApptInfo, Mode=OneWay}">
+                                    <TextBlock Text="{Binding Subject, Mode=OneWay}"
+                                            Style="{StaticResource AppointmentTextBlockStyle}"></TextBlock>
+                                </Border>
                             </StackPanel>
                         </Grid>
                         
@@ -147,7 +151,7 @@
                                             <TextBlock Text="You have no classes today." Style="{ThemeResource GroupHeaderTextBlockStyle}"
                                                    Visibility="{Binding IsEmptyDay, Converter={StaticResource BoolToVisibilityConverter}}"></TextBlock>
 
-                                            <ListView ItemsSource="{Binding RegularClassesInfo}" ItemClick="List_ItemClick"
+                                            <ListView ItemsSource="{Binding RegularClassesInfo, Mode=OneWay}" ItemClick="List_ItemClick"
                                                       ItemTemplateSelector="{StaticResource classInfoTemplateSelector}"></ListView>
 
                                             <TextBlock Text="extra classes" Margin="0,25,0,0" Style="{StaticResource GroupHeaderTextBlockStyle}"

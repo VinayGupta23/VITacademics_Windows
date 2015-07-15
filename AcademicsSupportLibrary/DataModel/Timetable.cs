@@ -13,15 +13,10 @@ namespace Academics.DataModel
     public class Timetable
     {
 
-        #region Private Fields and Helper Plug-ins
+        #region Private Fields and Helpers
 
         private readonly List<ClassHours>[] _weekRegularClasses = new List<ClassHours>[7];
         private readonly List<LtpCourse>[] _weekNeglectedCourses = new List<LtpCourse>[7];
-
-        private static int ClassHoursComparision(ClassHours x, ClassHours y)
-        {
-            return DateTimeOffset.Compare(x.StartHours, y.StartHours);
-        }
 
         private static AttendanceGroup GetAttendanceGroup(AttendanceDetails details, DateTimeOffset date)
         {
@@ -96,7 +91,7 @@ namespace Academics.DataModel
                     }
                 }
                 foreach (var daySchedule in timetable._weekRegularClasses)
-                    daySchedule.Sort(ClassHoursComparision);
+                    daySchedule.Sort();
 
                 return timetable;
             }

@@ -118,7 +118,7 @@ namespace VITacademics.Helpers
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
-            CalenderAwareInfoStub infoStub = item as CalenderAwareInfoStub;
+            CalendarAwareStub infoStub = item as CalendarAwareStub;
             DateTimeOffset now = DateTimeOffset.Now;
             if (infoStub.ContextDate.Date == DateTimeOffset.Now.Date)
             {
@@ -169,6 +169,9 @@ namespace VITacademics.Helpers
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
+            if (item == null)
+                return FallbackTemplate;
+
             try
             {
                 Course course = item as Course;

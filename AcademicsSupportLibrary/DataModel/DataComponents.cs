@@ -35,7 +35,7 @@ namespace Academics.DataModel
 
     }
 
-    public class ClassHours : LtpCourseComponent
+    public class ClassHours : LtpCourseComponent, IComparable<ClassHours>
     {
         private readonly DateTimeOffset _startHours;
         private readonly DateTimeOffset _endHours;
@@ -70,6 +70,11 @@ namespace Academics.DataModel
             return String.Format("{0} to {1}",
                                  this.StartHours.ToString("HH:mm"),
                                  this.EndHours.ToString("HH:mm"));
+        }
+
+        public int CompareTo(ClassHours other)
+        {
+            return DateTimeOffset.Compare(this.StartHours, other.StartHours);
         }
     }
 
