@@ -123,6 +123,9 @@
     <Compile Include="UIControls\MenuControl.xaml.cs">
       <DependentUpon>MenuControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIControls\ReminderControl.xaml.cs">
+      <DependentUpon>ReminderControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UIControls\UserOverviewControl.xaml.cs">
       <DependentUpon>UserOverviewControl.xaml</DependentUpon>
     </Compile>
@@ -201,6 +204,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UIControls\MenuControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIControls\ReminderControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

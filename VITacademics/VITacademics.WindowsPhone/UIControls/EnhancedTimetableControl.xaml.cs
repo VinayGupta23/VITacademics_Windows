@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Navigation;
 using VITacademics.Helpers;
 using Windows.UI.Popups;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 
 namespace VITacademics.UIControls
@@ -27,14 +28,15 @@ namespace VITacademics.UIControls
     {
         #region Fields and Properties
 
-        private const int ARRAY_SIZE = 7;
+        private const int BUFFER_SIZE = 7;
 
-        private DateTimeOffset[] _dates = new DateTimeOffset[ARRAY_SIZE];
+        private DateTimeOffset[] _dates = new DateTimeOffset[BUFFER_SIZE];
         private DateTimeOffset _currentDate;
+        private bool _contentReady;
         private DatePickerFlyout _datePickerFlyout;
         private CalendarAwareStub _currentStub;
-        private bool _contentReady;
         private CalendarAwareDayInfo _awareDayInfo;
+        private bool _reminderSetupVisible;
 
         public delegate void DataChanged();
         private DataChanged DataUpdated;
@@ -49,11 +51,6 @@ namespace VITacademics.UIControls
             }
         }
 
-        public List<string> EventMessages
-        {
-            get;
-            set;
-        }
         public CalendarAwareDayInfo AwareDayInfo
         {
             get { return _awareDayInfo; }
@@ -69,17 +66,57 @@ namespace VITacademics.UIControls
             private set
             {
                 _currentDate = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("CurrentDate"));
+                NotifyPropertyChanged();
+            }
+        }
+        public CalendarAwareStub CurrentStub
+        {
+            get { return _currentStub; }
+            set
+            {
+                _currentStub = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public bool ReminderSetupVisible
+        {
+            get { return _reminderSetupVisible; }
+            set
+            {
+                _reminderSetupVisible = value;
+                NotifyPropertyChanged();
             }
         }
 
         #endregion
 
+        public EnhancedTimetableControl()
+        {
+            this.InitializeComponent();
+            this.DataContext = this;
+
+            DataUpdated += DataUpdatedHandler;
+            CurrentStub = null;
+            ReminderSetupVisible = false;
+
+#if !DEBUG
+            GoogleAnalytics.EasyTracker.GetTracker().SendView("Daily Buzz");
+#endif
+
+            if (AppSettings.FirstRun == true)
+                ShowPromptAsync();
+        }
+
         #region Interface Implementations
 
         public event EventHandler<RequestEventArgs> ActionRequested;
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public void NotifyPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public string DisplayTitle
         {
@@ -92,19 +129,18 @@ namespace VITacademics.UIControls
             state.Add("selectedDate", CurrentDate);
             return state;
         }
-        
+
         public async void LoadView(string parameter, Dictionary<string, object> lastState = null)
         {
             try
             {
-                addFlyout.Hide();
-                modifyFlyout.Hide();
+                AddMenuFlyout.Hide();
+                ModifyMenuFlyout.Hide();
                 if (_datePickerFlyout != null)
                     _datePickerFlyout.Hide();
-                eventMessageFlyout.Hide();
 
-                List<PivotItem> pivotItems = new List<PivotItem>(ARRAY_SIZE);
-                for (int i = 0; i < ARRAY_SIZE; i++)
+                List<PivotItem> pivotItems = new List<PivotItem>(BUFFER_SIZE);
+                for (int i = 0; i < BUFFER_SIZE; i++)
                     pivotItems.Add(new PivotItem());
                 _dates[0] = DateTimeOffset.Now;
                 rootPivot.PivotItemLoading += Pivot_PivotItemLoading;
@@ -122,32 +158,8 @@ namespace VITacademics.UIControls
         }
 
         #endregion
-
-        public EnhancedTimetableControl()
-        {
-            this.InitializeComponent();
-            this.DataContext = this;
-
-            EventMessages = new List<string>();
-            EventMessages.Add("Quiz I");
-            EventMessages.Add("Quiz II");
-            EventMessages.Add("Quiz III");
-            EventMessages.Add("Assignment deadline");
-            EventMessages.Add("Record submission");
-            EventMessages.Add("LAB Mid-Term");
-            EventMessages.Add("LAB Term-End");
-            EventMessages.Add("Class test");
-            EventMessages.Add("Class cancelled");
-#if !DEBUG
-            GoogleAnalytics.EasyTracker.GetTracker().SendView("Daily Buzz");
-#endif
-            DataUpdated += DataUpdatedHandler;
-
-            if (AppSettings.FirstRun == true)
-                ShowPromptAsync();
-        }
-
-        #region Methods
+        
+        #region First Run Pop-up Display
 
         private async void ShowPromptAsync()
         {
@@ -166,6 +178,8 @@ namespace VITacademics.UIControls
             AppSettings.FirstRun = false;
         }
 
+        #endregion
+
         private async void DataUpdatedHandler()
         {
             if (AwareDayInfo != null && ContentReady == true)
@@ -175,13 +189,13 @@ namespace VITacademics.UIControls
         private void Pivot_PivotItemLoading(Pivot sender, PivotItemEventArgs args)
         {
             int curIndex = sender.SelectedIndex;
-            for (int i = curIndex + 1; i < curIndex + (ARRAY_SIZE - 1); i++)
+            for (int i = curIndex + 1; i < curIndex + (BUFFER_SIZE - 1); i++)
             {
-                _dates[i % ARRAY_SIZE] = _dates[curIndex].AddDays(i - curIndex);
+                _dates[i % BUFFER_SIZE] = _dates[curIndex].AddDays(i - curIndex);
             }
-            int previousIndex = (curIndex + (ARRAY_SIZE - 1)) % ARRAY_SIZE;
+            int previousIndex = (curIndex + (BUFFER_SIZE - 1)) % BUFFER_SIZE;
             _dates[previousIndex] = _dates[curIndex].AddDays(-1);
-            for (int i = 0; i < ARRAY_SIZE; i++)
+            for (int i = 0; i < BUFFER_SIZE; i++)
             {
                 string header;
                 DateTimeOffset date = DateTimeOffset.Now.Date;
@@ -202,16 +216,14 @@ namespace VITacademics.UIControls
             (sender.Items[curIndex] as PivotItem).DataContext = AwareDayInfo;
         }
 
+        #region Date Selection Methods
+
         private void JumpToDate(DateTimeOffset requestedDate)
         {
-            int index = (rootPivot.SelectedIndex + 1) % ARRAY_SIZE;
+            int index = (rootPivot.SelectedIndex + 1) % BUFFER_SIZE;
             _dates[index] = requestedDate;
             rootPivot.SelectedIndex = index;
         }
-
-        #endregion
-
-        #region Event handlers
 
         private void DateButton_Click(object sender, RoutedEventArgs e)
         {
@@ -228,35 +240,82 @@ namespace VITacademics.UIControls
             sender.DatePicked -= DatePickerFlyout_DatePicked;
         }
 
+        #endregion
+
+        #region Reminder Menu and Flyout Handles
+
         private void ItemRootGrid_Holding(object sender, HoldingRoutedEventArgs e)
         {
             CalendarAwareStub stub = (sender as FrameworkElement).DataContext as CalendarAwareStub;
             if (stub.ApptInfo == null)
+                AddMenuFlyout.ShowAt(sender as FrameworkElement);
+            else
+                ModifyMenuFlyout.ShowAt(sender as FrameworkElement);
+            CurrentStub = stub;
+        }
+
+        private void AddMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ReminderSetupVisible = true;
+            rootPivot.Visibility = Visibility.Collapsed;
+        }
+
+        private void EditMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ReminderSetupVisible = true;
+            rootPivot.Visibility = Visibility.Collapsed;
+        }
+
+        private async void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
             {
-                addFlyout.ShowAt(sender as FrameworkElement);
+                await CalendarManager.RemoveAppointmentAsync(CurrentStub.ApptInfo.LocalId);
+                if (CurrentStub is RegularInfoStub)
+                    CurrentStub.ApptInfo = null;
+                else
+                    AwareDayInfo.RegularClassesInfo.Remove(CurrentStub);
+            }
+            catch { }
+            finally
+            {
+                CurrentStub = null;
+            }
+        }
+
+        private async void SetReminderButton_Click(object sender, RoutedEventArgs e)
+        {
+            ReminderControl reminderControl = (reminderContentControl.ContentTemplateRoot as FrameworkElement).FindName("reminderControl") as ReminderControl;
+            if (reminderControl.Agenda == "")
+            {
+                await new MessageDialog("Please select or type an agenda for the reminder.", "Missing Input").ShowAsync();
+                return;
             }
             else
             {
-                modifyFlyout.ShowAt(sender as FrameworkElement);
+                if (CurrentStub.ApptInfo != null)
+                    await CalendarManager.ModifyAppointmentAsync(CurrentStub.ApptInfo.LocalId, reminderControl.Agenda,
+                                                                 reminderControl.ContextDate, reminderControl.StartTime,
+                                                                 reminderControl.Duration, reminderControl.Reminder);
+                else
+                    await CalendarManager.WriteAppointmentAsync(CurrentStub.ContextCourse, reminderControl.Agenda,
+                                                                reminderControl.ContextDate, reminderControl.StartTime,
+                                                                reminderControl.Duration, reminderControl.Reminder);
             }
-            _currentStub = stub;
+
+            ReminderSetupVisible = false;
+            CurrentStub = null;
+            rootPivot.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
-        private async void WriteEventMenuItem_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            await eventMessageFlyout.ShowAtAsync(rootPivot);
-            if (_currentStub != null && eventMessageFlyout.SelectedItem != null)
-                await CalendarManager.WriteAppointmentAsync(_currentStub, eventMessageFlyout.SelectedItem as string, TimeSpan.FromMinutes(15));
-            _currentStub = null;
-            eventMessageFlyout.SelectedItem = null;
+            ReminderSetupVisible = false;
+            CurrentStub = null;
+            rootPivot.Visibility = Windows.UI.Xaml.Visibility.Visible;
         }
 
-        private async void DeleteEventMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            if (_currentStub != null)
-                await CalendarManager.RemoveAppointmentAsync(_currentStub);
-            _currentStub = null;
-        }
+        #endregion
 
         private void List_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -265,7 +324,7 @@ namespace VITacademics.UIControls
                                         (e.ClickedItem as CalendarAwareStub).ContextCourse.ClassNumber.ToString()));
         }
 
-        #endregion
         
+
     }
 }

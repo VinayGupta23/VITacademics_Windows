@@ -17,20 +17,20 @@ namespace VITacademics.Helpers
     {
         private readonly string _localId;
         private readonly string _subject;
-        private readonly TimeSpan? _reminder;
+        private readonly TimeSpan _reminder;
 
         public string LocalId
         { get { return _localId; } }
         public string Subject
         { get { return _subject; } }
-        public TimeSpan? Reminder
+        public TimeSpan Reminder
         { get { return _reminder; } }
 
         public AppointmentInfo(Appointment appt)
         {
             _localId = appt.LocalId;
-            _subject = appt.Subject;
-            _reminder = appt.Reminder;
+            _subject = CalendarManager.ExtractComponentsFromSubject(appt.Subject).Value;
+            _reminder = (TimeSpan)appt.Reminder;
         }
     }
 
@@ -43,6 +43,7 @@ namespace VITacademics.Helpers
         public event PropertyChangedEventHandler PropertyChanged;
 
         public DateTimeOffset ContextDate { get { return _contextDate; } }
+        public Course ContextCourse { get { return _contextCourse; } } 
         public AppointmentInfo ApptInfo
         {
             get { return _apptInfo; }
@@ -53,8 +54,9 @@ namespace VITacademics.Helpers
                     PropertyChanged(this, new PropertyChangedEventArgs("ApptInfo"));
             }
         }
-        public Course ContextCourse { get { return _contextCourse; } } 
-        public abstract DateTimeOffset StartTime { get; }
+
+        public abstract TimeSpan StartTime { get; }
+        public abstract TimeSpan EndTime { get; }
 
         public CalendarAwareStub(DateTimeOffset contextDate, Course contextCourse, Appointment appt)
         {
@@ -80,27 +82,31 @@ namespace VITacademics.Helpers
             _attendanceInfo = attendanceStub;
         }
 
-        public override DateTimeOffset StartTime
+        public override TimeSpan StartTime
         {
-            get { return SessionHours.StartHours; }
+            get { return SessionHours.StartHours.TimeOfDay; }
+        }
+        public override TimeSpan EndTime
+        {
+            get { return SessionHours.EndHours.TimeOfDay; }
         }
     }
 
     public class CustomInfoStub : CalendarAwareStub
     {
-        private DateTimeOffset _startTime;
-        private DateTimeOffset _endTime;
+        private TimeSpan _startTime;
+        private TimeSpan _endTime;
 
-        public override DateTimeOffset StartTime { get { return _startTime; } }
-        public DateTimeOffset EndTime { get { return _endTime; } }
+        public override TimeSpan StartTime { get { return _startTime; } }
+        public override TimeSpan EndTime { get { return _endTime; } }
 
         public CustomInfoStub(DateTimeOffset contextDate, Appointment customAppt)
             : base(contextDate, UserManager.CurrentUser.Courses.First((c) => c.CourseCode == customAppt.Subject.Substring(0, 6)), customAppt)
         {
             if (customAppt != null)
             {
-                _startTime = customAppt.StartTime;
-                _endTime = customAppt.StartTime.Add(customAppt.Duration);
+                _startTime = customAppt.StartTime.TimeOfDay;
+                _endTime = customAppt.StartTime.Add(customAppt.Duration).TimeOfDay;
             }
         }
     }

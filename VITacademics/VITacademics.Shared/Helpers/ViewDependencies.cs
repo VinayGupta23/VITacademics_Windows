@@ -115,15 +115,18 @@ namespace VITacademics.Helpers
     {
         public DataTemplate ClassTodayTemplate { get; set; }
         public DataTemplate ClassGeneralTemplate { get; set; }
+        public DataTemplate CustomInfoTemplate { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
             CalendarAwareStub infoStub = item as CalendarAwareStub;
+
+            if (infoStub is CustomInfoStub)
+                return CustomInfoTemplate;
+
             DateTimeOffset now = DateTimeOffset.Now;
             if (infoStub.ContextDate.Date == DateTimeOffset.Now.Date)
-            {
                 return ClassTodayTemplate;
-            }
             else
                 return ClassGeneralTemplate;
         }

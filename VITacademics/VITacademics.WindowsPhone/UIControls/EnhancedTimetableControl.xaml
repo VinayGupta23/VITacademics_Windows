@@ -19,27 +19,24 @@
 
                     <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></helpers:BoolToVisibilityConverter>
                     
-                    <MenuFlyout x:Name="addFlyout" Placement="Bottom">
+                    <MenuFlyout x:Name="AddMenuFlyout" Placement="Bottom">
                         <MenuFlyout.MenuFlyoutPresenterStyle>
                             <Style TargetType="MenuFlyoutPresenter">
                                 <Setter Property="RequestedTheme" Value="Light"></Setter>
                             </Style>
                         </MenuFlyout.MenuFlyoutPresenterStyle>
-                        <MenuFlyoutItem Text="add reminder" Click="WriteEventMenuItem_Click"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="add reminder..." Click="AddMenuItem_Click"></MenuFlyoutItem>
                     </MenuFlyout>
 
-                    <MenuFlyout x:Name="modifyFlyout" Placement="Bottom">
+                    <MenuFlyout x:Name="ModifyMenuFlyout" Placement="Bottom">
                         <MenuFlyout.MenuFlyoutPresenterStyle>
                             <Style TargetType="MenuFlyoutPresenter">
                                 <Setter Property="RequestedTheme" Value="Light"></Setter>
                             </Style>
                         </MenuFlyout.MenuFlyoutPresenterStyle>
-                        <MenuFlyoutItem Text="edit event" Click="WriteEventMenuItem_Click"></MenuFlyoutItem>
-                        <MenuFlyoutItem Text="delete" Click="DeleteEventMenuItem_Click"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="edit..." Click="EditMenuItem_Click"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="delete" Click="DeleteMenuItem_Click"></MenuFlyoutItem>
                     </MenuFlyout>
-                    
-                    <ListPickerFlyout x:Name="eventMessageFlyout" Placement="Full"
-                                      ItemsSource="{Binding EventMessages}"></ListPickerFlyout>
 
                     <Style TargetType="ListView">
                         <Setter Property="ItemContainerStyle">
@@ -64,7 +61,7 @@
                         </Setter>
                     </Style>
                     
-                    <DataTemplate x:Key="classTodayDataTemplate">
+                    <DataTemplate x:Key="ClassTodayDataTemplate">
                         <Grid Margin="0,0,0,17" Holding="ItemRootGrid_Holding" IsHoldingEnabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -103,7 +100,7 @@
                         </Grid>
                     </DataTemplate>
                     
-                    <DataTemplate x:Key="classGeneralDataTemplate">
+                    <DataTemplate x:Key="ClassGeneralDataTemplate">
                         <Grid Margin="0,0,0,17" Holding="ItemRootGrid_Holding" IsHoldingEnabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -138,9 +135,13 @@
                         
                     </DataTemplate>
 
-                    <helpers:ClassInfoTemplateSelector x:Key="classInfoTemplateSelector"
-                                                       ClassGeneralTemplate="{StaticResource classGeneralDataTemplate}"
-                                                       ClassTodayTemplate="{StaticResource classTodayDataTemplate}"></helpers:ClassInfoTemplateSelector>
+                    <DataTemplate x:Key="CustomInfoTemplate">
+                            
+                    </DataTemplate>
+                    
+                    <helpers:ClassInfoTemplateSelector x:Key="ClassInfoTemplateSelector"
+                                                       ClassGeneralTemplate="{StaticResource ClassGeneralDataTemplate}"
+                                                       ClassTodayTemplate="{StaticResource ClassTodayDataTemplate}"></helpers:ClassInfoTemplateSelector>
                     
                     <Style TargetType="PivotItem">
                         <Setter Property="ContentTemplate">
@@ -148,11 +149,11 @@
                                 <DataTemplate>
                                     <ScrollViewer>
                                         <StackPanel>
-                                            <TextBlock Text="You have no classes today." Style="{ThemeResource GroupHeaderTextBlockStyle}"
+                                            <TextBlock Text="You have no regular classes today." Style="{ThemeResource GroupHeaderTextBlockStyle}"
                                                    Visibility="{Binding IsEmptyDay, Converter={StaticResource BoolToVisibilityConverter}}"></TextBlock>
 
                                             <ListView ItemsSource="{Binding RegularClassesInfo, Mode=OneWay}" ItemClick="List_ItemClick"
-                                                      ItemTemplateSelector="{StaticResource classInfoTemplateSelector}"></ListView>
+                                                      ItemTemplateSelector="{StaticResource ClassInfoTemplateSelector}"></ListView>
 
                                             <TextBlock Text="extra classes" Margin="0,25,0,0" Style="{StaticResource GroupHeaderTextBlockStyle}"
                                                        Visibility="{Binding HadExtraClasses, Converter={StaticResource BoolToVisibilityConverter}}"></TextBlock>
@@ -197,6 +198,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+        
         <Pivot x:Name="rootPivot" Grid.Row="1" Margin="0,-13,0,0"
                Style="{StaticResource ContentPivotStyle}">
             <Pivot.TitleTemplate>
@@ -209,6 +211,41 @@
         <HyperlinkButton Content="{Binding CurrentDate, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='dd MMMM, yyyy'}"
                          x:Name="dateDisplayButton" Click="DateButton_Click" FontSize="20" FontWeight="Bold"
                          Foreground="{ThemeResource PhoneAccentBrush}" Margin="17,3,0,2" MinHeight="0"></HyperlinkButton>
+
+        <ContentControl Visibility="{Binding ReminderSetupVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+                        Content="{Binding CurrentStub, Mode=OneWay}" Grid.RowSpan="2" x:Name="reminderContentControl"
+                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            
+            <ContentControl.ContentTransitions>
+                <TransitionCollection>
+                    <EdgeUIThemeTransition Edge="Bottom"></EdgeUIThemeTransition>
+                </TransitionCollection>
+            </ContentControl.ContentTransitions>
+            
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <Grid Background="WhiteSmoke">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <local:ReminderControl Grid.ColumnSpan="2" Margin="20,10,20,3"
+                                               x:Name="reminderControl"></local:ReminderControl>
+                        <Button Grid.Row="1" Grid.Column="0" Content="save" Margin="17,0,8,5"
+                                Click="SetReminderButton_Click" HorizontalAlignment="Stretch"
+                                BorderThickness="0" Background="{ThemeResource PhoneAccentBrush}" Foreground="White"></Button>
+                        <Button Grid.Row="1" Grid.Column="1" Content="cancel" Margin="8,0,17,5"
+                                Click="CancelButton_Click" HorizontalAlignment="Stretch"
+                                BorderThickness="0" Background="{ThemeResource PhoneChromeBrush}"></Button>
+                    </Grid>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
+        
     </Grid>
     
 </UserControl>
