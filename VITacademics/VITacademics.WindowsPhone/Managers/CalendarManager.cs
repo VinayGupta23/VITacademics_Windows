@@ -39,20 +39,9 @@ namespace VITacademics.Managers
                 _store = await AppointmentManager.RequestStoreAsync(AppointmentStoreAccessType.AppCalendarsReadWrite);
         }
 
-        private static int FindInsertionIndex(CalendarAwareDayInfo dayInfo, TimeSpan startTime)
-        {
-            int i = 0;
-            for (i = 0; i < dayInfo.RegularClassesInfo.Count; i++)
-            {
-                if (TimeSpan.Compare(startTime, (dayInfo.RegularClassesInfo[i].StartTime)) <= 0)
-                    break;
-            }
-            return i;
-        }
-
         private static async Task WriteAppointmentCoreAsync(Appointment appt, string subjectKey, string subject, DateTimeOffset reminderDate, TimeSpan startTime, TimeSpan duration, TimeSpan reminder)
         {
-            appt.Subject = GetAgendaFromComponents(subjectKey, subject);
+            appt.Subject = string.Format("{0} - {1}", subjectKey, subject);
             appt.StartTime = reminderDate.Date.Add(startTime);
             appt.Duration = duration;
             appt.Reminder = reminder;
@@ -60,11 +49,6 @@ namespace VITacademics.Managers
 #if !DEBUG
             GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Calendar Access", "Set reminder", null, 0);
 #endif
-        }
-
-        private static string GetAgendaFromComponents(string key, string value)
-        {
-            return string.Format("{0} - {1}", key, value);
         }
 
         #endregion
@@ -159,32 +143,62 @@ namespace VITacademics.Managers
             if (appts.Count == 0)
                 return;
 
-            foreach (var stub in dayInfo.RegularClassesInfo)
+            if (dayInfo.IsEmptyDay)
             {
-                Appointment appt;
-                try
+                foreach (Appointment a in appts)
                 {
-                    if (appts.Count == 0)
-                        break;
-                    appt = appts.First((Appointment a) => a.StartTime.TimeOfDay == stub.StartTime
-                                    && string.Equals(a.Subject.Substring(0, 6), stub.ContextCourse.CourseCode) == true);
+                    Appointment fullAppt = await _calendar.GetAppointmentAsync(a.LocalId);
+                    dayInfo.RegularClassesInfo.Add(new CustomInfoStub(dayInfo.ContextDate, fullAppt));
                 }
-                catch { appt = null; }
-
-                if (appt != null)
-                {
-                    var fullAppt = await _calendar.GetAppointmentAsync(appt.LocalId);
-                    stub.ApptInfo = new AppointmentInfo(fullAppt);
-                    appts.Remove(appt);
-                }
+                return;
             }
 
-            foreach (Appointment appt in appts)
+            int i, j;
+            Appointment appt = null;
+            TimeSpan apptStart = default(TimeSpan);
+            for (i = 0, j = 0; j < appts.Count; )
             {
-                var fullAppt = await _calendar.GetAppointmentAsync(appt.LocalId);
-                int index = FindInsertionIndex(dayInfo, appt.StartTime.TimeOfDay);
-                dayInfo.RegularClassesInfo.Insert(index, new CustomInfoStub(dayInfo.ContextDate, fullAppt));
+                if (appt == null)
+                {
+                    appt = await _calendar.GetAppointmentAsync(appts[j].LocalId);
+                    apptStart = appt.StartTime.TimeOfDay;
+                }
+                CalendarAwareStub stub = dayInfo.RegularClassesInfo[i];
+                TimeSpan classStart = stub.StartTime;
+
+                if (apptStart == classStart && GetContextCourse(appt).ClassNumber == stub.ContextCourse.ClassNumber
+                        && stub.ApptInfo == null)
+                    stub.ApptInfo = new AppointmentInfo(appt);
+                else if (apptStart <= classStart)
+                    dayInfo.RegularClassesInfo.Insert(i++, new CustomInfoStub(dayInfo.ContextDate, appt));
+                else
+                {
+                    if (i < dayInfo.RegularClassesInfo.Count - 1)
+                    {
+                        i++;
+                        continue;
+                    }
+                    else
+                        dayInfo.RegularClassesInfo.Add(new CustomInfoStub(dayInfo.ContextDate, appt));
+                }
+                j++;
+                appt = null;
             }
+        }
+
+        public static Course GetContextCourse(Appointment appt)
+        {
+            if (appt == null)
+                return null;
+
+            string key = CalendarManager.ExtractComponentsFromSubject(appt.Subject).Key;
+            string[] parts = key.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string courseCode = parts[0].Trim();
+
+            if (parts.Length > 1)
+                return UserManager.CurrentUser.Courses.First((Course c) => c.CourseCode == courseCode && c.CourseMode == "LBC");
+            else
+                return UserManager.CurrentUser.Courses.First((Course c) => c.CourseCode == courseCode && c.CourseMode != "LBC");
         }
 
         public static KeyValuePair<string, string> ExtractComponentsFromSubject(string subject)

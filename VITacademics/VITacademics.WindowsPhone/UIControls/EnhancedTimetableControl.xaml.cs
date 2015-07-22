@@ -20,23 +20,55 @@ using VITacademics.Helpers;
 using Windows.UI.Popups;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
+using Windows.UI.Input;
 
 
 namespace VITacademics.UIControls
 {
     public sealed partial class EnhancedTimetableControl : UserControl, IProxiedControl, INotifyPropertyChanged
     {
+
+        #region Helper Class
+
+        internal class DummyCalendarInfoStub : CalendarAwareStub
+        {
+            private readonly TimeSpan _startTime;
+            private readonly TimeSpan _endTime;
+
+            public override TimeSpan StartTime
+            {
+                get { return _startTime; }
+            }
+
+            public override TimeSpan EndTime
+            {
+                get { return _endTime; }
+            }
+
+            public DummyCalendarInfoStub(Course course, DateTimeOffset date, TimeSpan start, TimeSpan end)
+                : base(date, course, null)
+            {
+                _startTime = start;
+                _endTime = end;
+            }
+        }
+
+        #endregion
+
         #region Fields and Properties
 
         private const int BUFFER_SIZE = 7;
 
         private DateTimeOffset[] _dates = new DateTimeOffset[BUFFER_SIZE];
         private DateTimeOffset _currentDate;
-        private bool _contentReady;
-        private DatePickerFlyout _datePickerFlyout;
         private CalendarAwareStub _currentStub;
         private CalendarAwareDayInfo _awareDayInfo;
+        private bool _contentReady;
         private bool _reminderSetupVisible;
+
+        private DatePickerFlyout _datePickerFlyout;
+        private ListPickerFlyout _listPickerFlyout;
 
         public delegate void DataChanged();
         private DataChanged DataUpdated;
@@ -134,10 +166,12 @@ namespace VITacademics.UIControls
         {
             try
             {
-                AddMenuFlyout.Hide();
-                ModifyMenuFlyout.Hide();
+                addMenuFlyout.Hide();
+                modifyMenuFlyout.Hide();
                 if (_datePickerFlyout != null)
                     _datePickerFlyout.Hide();
+                if (_listPickerFlyout != null)
+                    _listPickerFlyout.Hide();
 
                 List<PivotItem> pivotItems = new List<PivotItem>(BUFFER_SIZE);
                 for (int i = 0; i < BUFFER_SIZE; i++)
@@ -148,7 +182,6 @@ namespace VITacademics.UIControls
                 await CalendarManager.LoadCalendarAsync();
                 ContentReady = true;
 
-                // Restore last state if available
                 if (lastState != null)
                 {
                     JumpToDate((DateTimeOffset)lastState["selectedDate"]);
@@ -244,14 +277,36 @@ namespace VITacademics.UIControls
 
         #region Reminder Menu and Flyout Handles
 
-        private void ItemRootGrid_Holding(object sender, HoldingRoutedEventArgs e)
+        private void ItemRootBorder_Holding(object sender, HoldingRoutedEventArgs e)
         {
-            CalendarAwareStub stub = (sender as FrameworkElement).DataContext as CalendarAwareStub;
+            if (e.HoldingState != HoldingState.Started)
+                return;
+
+            Border source = sender as Border;
+            CalendarAwareStub stub = source.DataContext as CalendarAwareStub;
             if (stub.ApptInfo == null)
-                AddMenuFlyout.ShowAt(sender as FrameworkElement);
+                addMenuFlyout.ShowAt(source.Child as FrameworkElement);
             else
-                ModifyMenuFlyout.ShowAt(sender as FrameworkElement);
+                modifyMenuFlyout.ShowAt(source.Child as FrameworkElement);
             CurrentStub = stub;
+        }
+
+        private async void ManualEventAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            _listPickerFlyout = new ListPickerFlyout();
+            _listPickerFlyout.ItemsSource = UserManager.CurrentUser.Courses;
+            _listPickerFlyout.DisplayMemberPath = "Title";
+            await _listPickerFlyout.ShowAtAsync(sender as FrameworkElement);
+            if (_listPickerFlyout.SelectedIndex < 0)
+                return;
+
+            Course course = _listPickerFlyout.SelectedItem as Course;
+
+            DateTimeOffset dateNow = CurrentDate.Date.AddHours(DateTimeOffset.Now.TimeOfDay.Hours + 1);
+            DummyCalendarInfoStub dummyStub = new DummyCalendarInfoStub(course, dateNow, new TimeSpan(dateNow.Hour, 0, 0), new TimeSpan(dateNow.Hour + 1, 0, 0));
+            CurrentStub = dummyStub;
+            ReminderSetupVisible = true;
+            rootPivot.Visibility = Visibility.Collapsed;
         }
 
         private void AddMenuItem_Click(object sender, RoutedEventArgs e)
@@ -306,6 +361,9 @@ namespace VITacademics.UIControls
             ReminderSetupVisible = false;
             CurrentStub = null;
             rootPivot.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+            AwareDayInfo = new CalendarAwareDayInfo(CurrentDate);
+            (rootPivot.Items[rootPivot.SelectedIndex] as PivotItem).DataContext = AwareDayInfo;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -323,8 +381,6 @@ namespace VITacademics.UIControls
                 ActionRequested(this, new RequestEventArgs(typeof(CourseInfoControl),
                                         (e.ClickedItem as CalendarAwareStub).ContextCourse.ClassNumber.ToString()));
         }
-
-        
 
     }
 }

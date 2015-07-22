@@ -101,7 +101,7 @@ namespace VITacademics.Helpers
         public override TimeSpan EndTime { get { return _endTime; } }
 
         public CustomInfoStub(DateTimeOffset contextDate, Appointment customAppt)
-            : base(contextDate, UserManager.CurrentUser.Courses.First((c) => c.CourseCode == customAppt.Subject.Substring(0, 6)), customAppt)
+            : base(contextDate, CalendarManager.GetContextCourse(customAppt), customAppt)
         {
             if (customAppt != null)
             {
@@ -109,6 +109,7 @@ namespace VITacademics.Helpers
                 _endTime = customAppt.StartTime.Add(customAppt.Duration).TimeOfDay;
             }
         }
+        
     }
 
     public class CalendarAwareDayInfo

@@ -141,7 +141,11 @@ namespace VITacademics.UIControls
                     break;
             }
 
-            agendaList.Add("Class Cancelled");
+            if (course is LtpCourse)
+            {
+                agendaList.Add("Extra Class");
+                agendaList.Add("Class Cancelled");
+            }
             agendaList.Add("type...");
             return agendaList;
         }

@@ -43,7 +43,6 @@ namespace VITacademics.Helpers
 
     public class AttendanceToForegroundConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             double val = (double)value;
@@ -64,7 +63,6 @@ namespace VITacademics.Helpers
 
     public sealed class DateTimeToStringConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             DateTimeOffset date = (DateTimeOffset)value;
@@ -111,6 +109,7 @@ namespace VITacademics.Helpers
     }
 
 #if WINDOWS_PHONE_APP
+
     public class ClassInfoTemplateSelector : DataTemplateSelector
     {
         public DataTemplate ClassTodayTemplate { get; set; }
@@ -132,6 +131,35 @@ namespace VITacademics.Helpers
         }
     }
 
+    public class TimeSpanToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            /*
+            TimeSpan timeSpan = (TimeSpan)value;
+            StringBuilder sb = new StringBuilder();
+            sb.Append(GetStringComponent(timeSpan.Days, "days"));
+            sb.Append(GetStringComponent(timeSpan.Hours, "hours"));
+            sb.Append(GetStringComponent(timeSpan.Minutes, "mins"));
+            return sb.ToString();
+            */
+
+            return ((TimeSpan)value).ToString(parameter as string);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static string GetStringComponent(int value, string label)
+        {
+            if(value == 0)
+                return "";
+            else
+                return String.Format("{0} {1}", value, label);
+        }
+    }
     
 #endif
 
