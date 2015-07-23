@@ -48,10 +48,6 @@
                 </Setter>
             </Style>
 
-            <TransitionCollection x:Name="TextTransitionCollection">
-                <EntranceThemeTransition FromHorizontalOffset="0" FromVerticalOffset="10"></EntranceThemeTransition>
-            </TransitionCollection>
-            
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -109,11 +105,11 @@
                                                    MaxLines="2" Style="{StaticResource SingleItemContentStyle}"
                                                    Pivot.SlideInAnimationGroup="GroupOne">
                                             <Run Text="{Binding CourseCode}"></Run>, <Run Text="{Binding CourseType}"></Run>
-                                            <LineBreak></LineBreak><Run Text="{Binding Credits}"></Run> <Run Text="credits"></Run> 
+                                            <LineBreak></LineBreak><Run Text="{Binding Credits}"></Run> <Run Text="credits"></Run>
                                         </TextBlock>
                                         <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource SingleItemContentStyle}"
                                                    Text="{Binding CourseOption}" HorizontalAlignment="Right"
-                                                   Foreground="{ThemeResource PhoneAccentBrush}" Pivot.SlideInAnimationGroup="GroupTwo"></TextBlock>
+                                                   Foreground="{ThemeResource PhoneAccentBrush}" Pivot.SlideInAnimationGroup="GroupOne"></TextBlock>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -196,16 +192,15 @@
                             <TextBlock Text="CGPA" Style="{StaticResource GroupHeaderTextBlockStyle}"
                                    Grid.Column="1" Margin="0,0,0,10" HorizontalAlignment="Right"></TextBlock>
                             <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding GradeHistory.Cgpa}" FontStretch="Condensed"
-                                       Style="{StaticResource HeaderTextBlockStyle}"
-                                       TextLineBounds="Tight" FontWeight="SemiBold"
-                                       Transitions="{StaticResource TextTransitionCollection}"></TextBlock>
+                                       Style="{StaticResource HeaderTextBlockStyle}" Pivot.SlideInAnimationGroup="GroupOne"
+                                       TextLineBounds="Tight" FontWeight="SemiBold" HorizontalAlignment="Right"></TextBlock>
                             <StackPanel Grid.Row="1" VerticalAlignment="Center">
                                 <TextBlock Grid.Column="0" Style="{StaticResource SingleItemSubHeaderStyle}" 
-                                       FontWeight="SemiBold">
+                                           FontWeight="SemiBold">
                                        Credits Completed: <Run Text="{Binding GradeHistory.CreditsEarned}"></Run>
                                 </TextBlock>
                                 <TextBlock Grid.Column="0" Style="{StaticResource SingleItemContentStyle}"
-                                       Foreground="{ThemeResource PhoneForegroundBrush}">
+                                           Foreground="{ThemeResource PhoneForegroundBrush}">
                                        Credits Attempted: <Run Text="{Binding GradeHistory.CreditsRegistered}"></Run>
                                 </TextBlock>
                             </StackPanel>
@@ -228,10 +223,9 @@
                                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="{Binding CourseTitle}" Style="{StaticResource SingleItemTitleStyle}"
-                                               FontWeight="Normal"
-                                               Pivot.SlideInAnimationGroup="GroupOne"></TextBlock>
+                                               FontWeight="Normal"></TextBlock>
                                     <TextBlock Grid.Row="1" Style="{StaticResource SingleItemContentStyle}"
-                                               Pivot.SlideInAnimationGroup="GroupTwo">
+                                               Pivot.SlideInAnimationGroup="GroupOne">
                                         Credits: <Run Text="{Binding Credits}"></Run>
                                     </TextBlock>
 

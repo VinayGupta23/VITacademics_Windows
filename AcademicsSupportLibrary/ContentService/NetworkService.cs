@@ -16,7 +16,7 @@ namespace Academics.ContentService
         #region Private fields and constants
         
 #if DEBUG
-        private const string BASE_URI_STRING = "https://vitacademics-staging.herokuapp.com";
+        private const string BASE_URI_STRING = "https://vitacademics-rel.herokuapp.com";
 #else
         private const string BASE_URI_STRING = "https://vitacademics-rel.herokuapp.com";
 #endif

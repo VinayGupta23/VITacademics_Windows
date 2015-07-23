@@ -61,8 +61,8 @@
                                         <TextBlock Margin="10,0,0,0" Text="{Binding Venue}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Ltpc:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                                        <TextBlock Margin="10,0,0,0" Text="{Binding Ltpc}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                        <TextBlock Text="LTPJC:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding Ltpjc}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="Mode: " Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
@@ -234,6 +234,10 @@
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="Type:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                                         <TextBlock Margin="10,0,0,0" Text="{Binding SubjectType}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="LTPJC:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding Ltpjc}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
                                     </StackPanel>
                                     <Border Background="WhiteSmoke" Margin="0,23,0,0" CornerRadius="3">
                                         <StackPanel Margin="10,7,10,7">

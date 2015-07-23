@@ -66,7 +66,7 @@
                         <TextBlock Grid.Row="1" Margin="7,0,7,0" VerticalAlignment="Center"
                                    Text="New semester data available. Tap when ready."
                                    Style="{StaticResource BodyTextBlockStyle}" MaxLines="3" TextWrapping="WrapWholeWords"></TextBlock>
-                        <Button Content="upgrade" MinWidth="0" Grid.Row="1" Grid.Column="1" Margin="0,0,5,0"
+                        <Button Content="upgrade" Grid.Row="1" Grid.Column="1" Margin="0,0,5,0"
                                 Click="UpgradeButton_Click"></Button>
                         <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Margin="5,5,5,0" HorizontalAlignment="Right"
                                    Style="{StaticResource SingleItemContentStyle}" MaxLines="0">
@@ -84,7 +84,7 @@
                             <TextBlock Margin="0,0,20,0" Grid.Row="1" Text="Log out and reset all data" Style="{ThemeResource BodyTextBlockStyle}"></TextBlock>
                         </StackPanel>
                         <Button Grid.Column="1" Content="log out" Click="LogoutButton_Click"
-                                VerticalAlignment="Top" MinWidth="0"></Button>
+                                VerticalAlignment="Top"></Button>
                     </Grid>
 
                 </StackPanel>

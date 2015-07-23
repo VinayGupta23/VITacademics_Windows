@@ -27,6 +27,7 @@ namespace Academics.DataModel
         public string CourseOption { get; internal set; }
         public string SubjectType { get; internal set; }
         public string Faculty { get; internal set; }
+        public string Ltpjc { get; internal set; }
         public ushort Credits { get; internal set; }
     }
 
@@ -37,7 +38,6 @@ namespace Academics.DataModel
 
         public string Slot { get; internal set; }
         public string Venue { get; internal set; }
-        public string Ltpc { get; internal set; }
         public ReadOnlyCollection<ClassHours> Timings { get; private set; }
         public Attendance Attendance { get; internal set; }
         public double InternalMarksScored { get; internal set; }

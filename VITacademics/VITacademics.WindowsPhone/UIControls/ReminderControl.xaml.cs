@@ -58,7 +58,7 @@ namespace VITacademics.UIControls
             {
                 CalendarAwareStub stub = DataContext as CalendarAwareStub;
                 StartTime = stub.StartTime;
-                Duration = stub.EndTime - stub.StartTime;
+                Duration = stub.Duration;
                 ContextDate = stub.ContextDate;
                 ContextCourse = stub.ContextCourse;
 

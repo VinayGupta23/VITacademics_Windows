@@ -331,8 +331,11 @@ namespace VITacademics
             if (IsMenuOpen == true)
                 MenuButton_Click(null, null);
 
-            if (_contentControlManager.CurrentControl.GetType() == typeof(EnhancedTimetableControl))
-                _contentControlManager.RefreshCurrentControl();
+            if (_contentControlManager.CurrentControl is EnhancedTimetableControl)
+            {
+                EnhancedTimetableControl control = _contentControlManager.CurrentControl as EnhancedTimetableControl;
+                control.JumpToDate(DateTimeOffset.Now);
+            }
             else
             {
                 _contentControlManager.Clear();

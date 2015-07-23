@@ -17,11 +17,11 @@
             
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding ContextCourse.CourseCode}" Foreground="{ThemeResource PhoneAccentBrush}"
-                           Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                           Style="{StaticResource LabelTextBlockStyle}" Margin="0,0,10,0"></TextBlock>
                 <TextBlock Text="{Binding ContextCourse.Slot}" Foreground="{ThemeResource PhoneAccentBrush}"
                            Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
             </Grid>

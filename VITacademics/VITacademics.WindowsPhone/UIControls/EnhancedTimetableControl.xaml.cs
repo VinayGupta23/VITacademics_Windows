@@ -86,7 +86,7 @@ namespace VITacademics.UIControls
         public CalendarAwareDayInfo AwareDayInfo
         {
             get { return _awareDayInfo; }
-            set
+            private set
             {
                 _awareDayInfo = value;
                 DataUpdated();
@@ -104,7 +104,7 @@ namespace VITacademics.UIControls
         public CalendarAwareStub CurrentStub
         {
             get { return _currentStub; }
-            set
+            private set
             {
                 _currentStub = value;
                 NotifyPropertyChanged();
@@ -113,7 +113,7 @@ namespace VITacademics.UIControls
         public bool ReminderSetupVisible
         {
             get { return _reminderSetupVisible; }
-            set
+            private set
             {
                 _reminderSetupVisible = value;
                 NotifyPropertyChanged();
@@ -173,6 +173,13 @@ namespace VITacademics.UIControls
                 if (_listPickerFlyout != null)
                     _listPickerFlyout.Hide();
 
+                if(ContentReady == true)
+                {
+                    AwareDayInfo = new CalendarAwareDayInfo(CurrentDate);
+                    (rootPivot.Items[rootPivot.SelectedIndex] as PivotItem).DataContext = AwareDayInfo;
+                    return;
+                }
+
                 List<PivotItem> pivotItems = new List<PivotItem>(BUFFER_SIZE);
                 for (int i = 0; i < BUFFER_SIZE; i++)
                     pivotItems.Add(new PivotItem());
@@ -182,6 +189,7 @@ namespace VITacademics.UIControls
                 await CalendarManager.LoadCalendarAsync();
                 ContentReady = true;
 
+                // Restore last state if available.
                 if (lastState != null)
                 {
                     JumpToDate((DateTimeOffset)lastState["selectedDate"]);
@@ -251,7 +259,7 @@ namespace VITacademics.UIControls
 
         #region Date Selection Methods
 
-        private void JumpToDate(DateTimeOffset requestedDate)
+        public void JumpToDate(DateTimeOffset requestedDate)
         {
             int index = (rootPivot.SelectedIndex + 1) % BUFFER_SIZE;
             _dates[index] = requestedDate;

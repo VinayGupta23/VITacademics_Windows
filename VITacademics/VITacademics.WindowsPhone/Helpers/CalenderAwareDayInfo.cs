@@ -57,6 +57,16 @@ namespace VITacademics.Helpers
 
         public abstract TimeSpan StartTime { get; }
         public abstract TimeSpan EndTime { get; }
+        public TimeSpan Duration
+        {
+            get
+            {
+                TimeSpan duration = EndTime - StartTime;
+                if (EndTime < StartTime)
+                    duration = duration.Add(new TimeSpan(24, 0, 0));
+                return duration;
+            }
+        }
 
         public CalendarAwareStub(DateTimeOffset contextDate, Course contextCourse, Appointment appt)
         {

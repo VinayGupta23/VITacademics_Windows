@@ -55,8 +55,10 @@ namespace VITacademics.UIControls
             try
             {
                 Timetable timetable = UserManager.GetCurrentTimetable();
-                int j = 0;
+                int j = 0, todayIndex = -1;
                 List<PivotItem> pivotItems = new List<PivotItem>(7);
+                DayOfWeek today = DateTimeOffset.Now.DayOfWeek;
+                
                 for (int i = 0; i < 7; i++)
                 {
                     var daySchedule = timetable[(DayOfWeek)i];
@@ -65,14 +67,19 @@ namespace VITacademics.UIControls
                         pivotItems.Add(new PivotItem());
                         pivotItems[j].Header = ((DayOfWeek)i).ToString().ToLower();
                         pivotItems[j].DataContext = daySchedule;
+
+                        if (i == (int)today)
+                            todayIndex = j;
                         j++;
                     }
                 }
                 rootPivot.ItemsSource = pivotItems;
 
-                // Restore last state if available
+                // Restore last state if available.
                 if (lastState != null)
                     rootPivot.SelectedIndex = (int)lastState["currentIndex"];
+                else if (todayIndex > 0)
+                    rootPivot.SelectedIndex = todayIndex;
             }
             catch
             {

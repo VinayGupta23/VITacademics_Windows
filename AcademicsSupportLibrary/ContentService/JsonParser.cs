@@ -214,7 +214,7 @@ namespace Academics.ContentService
             int classLength = 1;
             if (course as LBCCourse != null)
             {
-                classLength = (int)Char.GetNumericValue(course.Ltpc[2]);
+                classLength = (int)Char.GetNumericValue(course.Ltpjc[2]);
             }
 
             if (attendanceObject.GetNamedBoolean("supported") == false)
@@ -331,13 +331,13 @@ namespace Academics.ContentService
             course.SubjectType = courseObject.GetNamedString("subject_type");
             course.Faculty = courseObject.GetNamedString("faculty");
             course.Title = courseObject.GetNamedString("course_title");
-            course.Credits = (ushort)int.Parse(courseObject.GetNamedString("ltpc").Substring(3));
+            course.Ltpjc = courseObject.GetNamedString("ltpjc");
+            course.Credits = (ushort)int.Parse(course.Ltpjc.Substring(4));
         }
 
         // Depth 1 Assignment (Ltp and NonLtp)
         private static void AssignBaseTypeDetails(LtpCourse ltpCourse, JsonObject courseObject)
         {
-            ltpCourse.Ltpc = courseObject.GetNamedString("ltpc");
             ltpCourse.Slot = courseObject.GetNamedString("slot");
             ltpCourse.Venue = courseObject.GetNamedString("venue");
 
