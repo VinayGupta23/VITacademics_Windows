@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Windows.Data.Json;
+using Academics.SystemMetadata;
 
 
 namespace Academics.ContentService
@@ -26,7 +27,7 @@ namespace Academics.ContentService
          *    
          *    However (on the contrary), refresh date must be retained in its universal time format for consistency across regions in which the client may travel. 
          *
-         * II. Any course that is not supported is skipped from the list as of the current parsing.
+         * II. Any course that is not supported and unknown is skipped from the list as of the current parsing.
          * 
          */
 
@@ -200,6 +201,33 @@ namespace Academics.ContentService
                 academicHistory.LastRefreshed = GetRefreshUTC(rootObject.GetNamedString("grades_refreshed"));
 
                 return academicHistory;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Parses the system json string and returns the contributors associated with the project. On being passed invalid formats, the method returns null.
+        /// </summary>
+        /// <param name="systemJsonString"></param>
+        /// <returns></returns>
+        public static List<Contributor> TryGetContributors(string systemJsonString)
+        {
+            try
+            {
+                JsonArray contributorsArray = JsonObject.Parse(systemJsonString).GetNamedArray("contributors");
+                List<Contributor> contributors = new List<Contributor>();
+                foreach (JsonValue contributorValue in contributorsArray)
+                {
+                    JsonObject contributorObj = contributorValue.GetObject();
+                    contributors.Add(new Contributor(
+                        contributorObj.GetNamedString("name"),
+                        contributorObj.GetNamedString("role"),
+                        contributorObj.GetNamedString("github_profile")));
+                }
+                return contributors;
             }
             catch
             {

@@ -23,6 +23,7 @@ namespace Academics.ContentService
         private const string LOGIN_STRING_FORMAT = "/api/v2/{0}/login/";
         private const string REFRESH_STRING_FORMAT = "/api/v2/{0}/refresh/";
         private const string GRADES_STRING_FORMAT = "/api/v2/{0}/grades/";
+        private const string SYSTEM_URI_STRING = "/api/v2/system";
 #if WINDOWS_PHONE_APP
         private const string WP_USER_AGENT = "Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 520) like iPhone OS 7_0_3 Mac OS X AppleWebKit/537 (KHTML, like Gecko) Mobile Safari/537";
 #else
@@ -35,18 +36,42 @@ namespace Academics.ContentService
 
         #region Private Helper Methods and Constructor
 
-        /// <summary>
-        /// Returns the content and status of the specified network request. Content is null if request fails.
-        /// </summary>
-        /// <param name="relativeUriFormat">
-        /// The (relative) uri format string into which user parameters will be introduced.
-        /// </param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        private static async Task<Response<string>> GetResponse(string relativeUriFormat, User user)
+        private static async Task<Response<string>> GetRootResponseAsync(HttpResponseMessage httpResponse)
         {
-            StatusCode statusCode = StatusCode.UnknownError;
             string content = null;
+            StatusCode statusCode;
+
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.Ok:
+                    content = await httpResponse.Content.ReadAsStringAsync();
+                    statusCode = JsonParser.GetStatus(content);
+                    break;
+                case HttpStatusCode.GatewayTimeout:
+                case HttpStatusCode.ServiceUnavailable:
+                case HttpStatusCode.InternalServerError:
+                    statusCode = StatusCode.ServerError;
+                    break;
+                default:
+                    statusCode = StatusCode.UnknownError;
+                    break;
+            }
+
+            return new Response<string>(statusCode, content);
+        }
+
+        private static Response<string> Format(this Response<string> response)
+        {
+            if (response.Code != StatusCode.Success)
+                return new Response<string>(response.Code, null);
+            else
+                return response;
+        }
+        
+        private static async Task<Response<string>> GetResponseAsync(string relativeUriFormat, User user)
+        {
+            Response<string> response;
+
             try
             {
                 string dob = user.DateOfBirth.ToString("ddMMyyyy", System.Globalization.CultureInfo.InvariantCulture);
@@ -59,47 +84,33 @@ namespace Academics.ContentService
 
                 string uriString = BASE_URI_STRING + String.Format(relativeUriFormat, user.Campus);
                 HttpResponseMessage httpResponse = await _httpClient.PostAsync(new Uri(uriString), postContent);
-
-                switch (httpResponse.StatusCode)
-                {
-                    case HttpStatusCode.Ok:
-                        {
-                            content = await httpResponse.Content.ReadAsStringAsync();
-                            statusCode = JsonParser.GetStatus(content);
-                            break;
-                        }
-                    case HttpStatusCode.GatewayTimeout:
-                    case HttpStatusCode.ServiceUnavailable:
-                        {
-                            statusCode = StatusCode.ServerError;
-                            break;
-                        }
-                    default:
-                        {
-                            statusCode = StatusCode.UnknownError;
-                            break;
-                        }
-                }
+                response = await GetRootResponseAsync(httpResponse);
             }
             catch
             {
-                statusCode = StatusCode.NoInternet;
+                response = new Response<string>(StatusCode.NoInternet, null);
             }
 
-            if (statusCode != StatusCode.Success)
-                content = null;
-            return new Response<string>(statusCode, content);
+            return response.Format();
         }
 
+        /// <summary>
+        /// Returns the content and status of the specified network request. Content is null if request fails.
+        /// </summary>
+        /// <param name="relUriFormat">
+        /// The (relative) uri format string into which user parameters will be introduced.
+        /// </param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private static async Task<Response<string>> GetContentAsync(string relUriFormat, User user)
         {
-            Response<string> response = await GetResponse(relUriFormat, user);
+            Response<string> response = await GetResponseAsync(relUriFormat, user);
 
             if (response.Code == StatusCode.SessionTimeout)
             {
                 StatusCode loginStatus = await TryLoginAsync(user);
                 if (loginStatus == StatusCode.Success)
-                    response = await GetResponse(relUriFormat, user);
+                    response = await GetResponseAsync(relUriFormat, user);
                 else
                     response = new Response<string>(loginStatus, null);
             }
@@ -140,7 +151,7 @@ namespace Academics.ContentService
             int i = 1;
             while (i++ <= MAX_ATTEMPTS)
             {
-                statusCode = (await GetResponse(LOGIN_STRING_FORMAT, user)).Code;
+                statusCode = (await GetResponseAsync(LOGIN_STRING_FORMAT, user)).Code;
 
                 if (statusCode == StatusCode.TemporaryError         // If Error parsing the captcha (or)
                     || statusCode == StatusCode.InvalidCredentials) // If the captcha was parsed incorrectly
@@ -183,6 +194,13 @@ namespace Academics.ContentService
         public static async Task<Response<string>> TryGetGradesAsync(User user)
         {
             return await GetContentAsync(GRADES_STRING_FORMAT, user);
+        }
+
+        public static async Task<Response<string>> TryGetSystemInfoAsync()
+        {
+            HttpResponseMessage httpResponse = await _httpClient.GetAsync(new Uri(BASE_URI_STRING + SYSTEM_URI_STRING));
+            Response<string> response = (await GetRootResponseAsync(httpResponse)).Format();
+            return response;
         }
 
         #endregion
