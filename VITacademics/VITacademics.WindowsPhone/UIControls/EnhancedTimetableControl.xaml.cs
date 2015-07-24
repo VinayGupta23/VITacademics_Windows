@@ -173,27 +173,28 @@ namespace VITacademics.UIControls
                 if (_listPickerFlyout != null)
                     _listPickerFlyout.Hide();
 
-                if(ContentReady == true)
+                if (ContentReady == true)
                 {
                     AwareDayInfo = new CalendarAwareDayInfo(CurrentDate);
                     (rootPivot.Items[rootPivot.SelectedIndex] as PivotItem).DataContext = AwareDayInfo;
                     return;
                 }
 
+                DateTimeOffset startDate;
+                // Restore last state if available.
+                if (lastState != null)
+                    startDate = (DateTimeOffset)lastState["selectedDate"];
+                else
+                    startDate = DateTimeOffset.Now;
+
                 List<PivotItem> pivotItems = new List<PivotItem>(BUFFER_SIZE);
                 for (int i = 0; i < BUFFER_SIZE; i++)
                     pivotItems.Add(new PivotItem());
-                _dates[0] = DateTimeOffset.Now;
+                _dates[0] = startDate;
                 rootPivot.PivotItemLoading += Pivot_PivotItemLoading;
                 rootPivot.ItemsSource = pivotItems;
                 await CalendarManager.LoadCalendarAsync();
                 ContentReady = true;
-
-                // Restore last state if available.
-                if (lastState != null)
-                {
-                    JumpToDate((DateTimeOffset)lastState["selectedDate"]);
-                }
             }
             catch { }
         }
@@ -261,9 +262,13 @@ namespace VITacademics.UIControls
 
         public void JumpToDate(DateTimeOffset requestedDate)
         {
-            int index = (rootPivot.SelectedIndex + 1) % BUFFER_SIZE;
-            _dates[index] = requestedDate;
-            rootPivot.SelectedIndex = index;
+            if (requestedDate.Date == CurrentDate.Date)
+                return;
+            List<PivotItem> pivotItems = new List<PivotItem>(BUFFER_SIZE);
+            for (int i = 0; i < BUFFER_SIZE; i++)
+                pivotItems.Add(new PivotItem());
+            _dates[0] = requestedDate;
+            rootPivot.ItemsSource = pivotItems;
         }
 
         private void DateButton_Click(object sender, RoutedEventArgs e)

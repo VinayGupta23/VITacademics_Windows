@@ -197,6 +197,9 @@ namespace VITacademics
             request.Data.Properties.Title = "VITacademics - Academic Metrics";
             request.Data.Properties.Description = "Try out the latest featured VITacademics app!";
             request.Data.SetWebLink(new Uri("https://vitacademics-rel.herokuapp.com/"));
+#if !DEBUG
+            GoogleAnalytics.EasyTracker.GetTracker().SendEvent("Feedback", "Shared App", null, 0);
+#endif
         }
 
         #endregion

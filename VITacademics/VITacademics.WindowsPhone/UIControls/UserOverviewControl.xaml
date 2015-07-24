@@ -51,8 +51,8 @@
                                         <RowDefinition></RowDefinition>
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="4*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="3.2*"></ColumnDefinition>
+                                        <ColumnDefinition Width="1*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2"
@@ -79,7 +79,7 @@
                                     </StackPanel>
                                     <ProgressBar Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" Background="LightGray"
                                                  Foreground="{Binding Attendance.Percentage, Converter={StaticResource AttendanceToForegroundConverter}}"
-                                                 Value="{Binding Attendance.Percentage}" Height="7" VerticalAlignment="Center" VerticalContentAlignment="Center"></ProgressBar>
+                                                 Value="{Binding Attendance.Percentage}" Height="7.5" VerticalAlignment="Center" VerticalContentAlignment="Center"></ProgressBar>
                                 </Grid>
                             </Border>
                         </DataTemplate>
