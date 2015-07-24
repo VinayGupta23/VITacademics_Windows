@@ -23,6 +23,7 @@ namespace Academics.ContentService
         private const string LOGIN_STRING_FORMAT = "/api/v2/{0}/login/";
         private const string REFRESH_STRING_FORMAT = "/api/v2/{0}/refresh/";
         private const string GRADES_STRING_FORMAT = "/api/v2/{0}/grades/";
+        private const string ADVISOR_STRING_FORMAT = "/api/v2/{0}/advisor/";
         private const string SYSTEM_URI_STRING = "/api/v2/system";
 #if WINDOWS_PHONE_APP
         private const string WP_USER_AGENT = "Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 520) like iPhone OS 7_0_3 Mac OS X AppleWebKit/537 (KHTML, like Gecko) Mobile Safari/537";
@@ -41,24 +42,24 @@ namespace Academics.ContentService
             string content = null;
             StatusCode statusCode;
 
-            switch (httpResponse.StatusCode)
-            {
-                case HttpStatusCode.Ok:
-                    content = await httpResponse.Content.ReadAsStringAsync();
-                    statusCode = JsonParser.GetStatus(content);
-                    break;
-                case HttpStatusCode.GatewayTimeout:
-                case HttpStatusCode.ServiceUnavailable:
-                case HttpStatusCode.InternalServerError:
-                    statusCode = StatusCode.ServerError;
-                    break;
-                default:
-                    statusCode = StatusCode.UnknownError;
-                    break;
-            }
+                switch (httpResponse.StatusCode)
+                {
+                    case HttpStatusCode.Ok:
+                            content = await httpResponse.Content.ReadAsStringAsync();
+                            statusCode = JsonParser.GetStatus(content);
+                            break;
+                    case HttpStatusCode.GatewayTimeout:
+                    case HttpStatusCode.ServiceUnavailable:
+                    case HttpStatusCode.InternalServerError:
+                            statusCode = StatusCode.ServerError;
+                            break;
+                    default:
+                            statusCode = StatusCode.UnknownError;
+                            break;
+                        }
 
             return new Response<string>(statusCode, content);
-        }
+                }
 
         private static Response<string> Format(this Response<string> response)
         {
@@ -66,7 +67,7 @@ namespace Academics.ContentService
                 return new Response<string>(response.Code, null);
             else
                 return response;
-        }
+            }
         
         private static async Task<Response<string>> GetResponseAsync(string relativeUriFormat, User user)
         {
@@ -194,6 +195,11 @@ namespace Academics.ContentService
         public static async Task<Response<string>> TryGetGradesAsync(User user)
         {
             return await GetContentAsync(GRADES_STRING_FORMAT, user);
+        }
+
+        public static async Task<Response<string>> TryGetAdvisorDetailsAsync(User user)
+        {
+            return await GetContentAsync(ADVISOR_STRING_FORMAT, user);
         }
 
         public static async Task<Response<string>> TryGetSystemInfoAsync()

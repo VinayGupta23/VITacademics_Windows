@@ -235,6 +235,34 @@ namespace Academics.ContentService
             }
         }
 
+        /// <summary>
+        /// Parses the Json string and returns the details of the faculty advisor assinged to the user. On failure, the method returns null.
+        /// </summary>
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
+        public static FacultyAdvisor TryParseAdvisorDetails(String jsonString)
+        {
+            try
+            {
+                JsonObject advisorObject = JsonObject.Parse(jsonString).GetNamedObject("advisor");
+                FacultyAdvisor fa = new FacultyAdvisor();
+                fa.Name = advisorObject.GetNamedString("name");
+                fa.School = advisorObject.GetNamedString("school");
+                fa.Designation = advisorObject.GetNamedString("designation");
+                fa.Division = advisorObject.GetNamedString("division");
+                fa.Phone = advisorObject.GetNamedString("phone");
+                fa.Email = advisorObject.GetNamedString("email");
+                fa.Cabin = advisorObject.GetNamedString("cabin");
+                fa.Intercom = advisorObject.GetNamedString("intercom");
+
+                return fa;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         #region Helper Methods
 
         private static void AssignAttendance(LtpCourse course, JsonObject attendanceObject)

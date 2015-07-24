@@ -23,6 +23,7 @@ namespace VITacademics.Managers
         private const string RESOURCE_NAME = "VITacademics";
         private const string DATA_JSON_FILE_NAME = "UserData.txt";
         private const string GRADES_JSON_FILE_NAME = "Grades.txt";
+        private const string ADVISOR_JSON_FILE_NAME = "Advisor.txt";
         private const string CACHE_DATA_OWNER_KEY = "cachedData_owner";
         private const string CACHE_DATA_TIME_KEY = "cachedData_time";
 
@@ -344,6 +345,9 @@ namespace VITacademics.Managers
         /// <summary>
         /// Refreshes and assigns the user details by requesting fresh data from the server. On success, the data is also cached before the function returns.
         /// </summary>
+        /// <remarks>
+        /// If refresh yields new semester information, the existing data is untouched and the new semester flag is set. To then refresh data, call the <see cref="RunMaintentanceForUpgradeAsync"/> method first.
+        /// </remarks>
         /// <returns>
         /// Returns a status code containing information about the request's result.
         /// </returns>
@@ -476,9 +480,6 @@ namespace VITacademics.Managers
         /// <summary>
         /// Attempts to get the academic history for the current user by sending a network request. On success, this method also tries to cache the grades locally before returning.
         /// </summary>
-        /// <remarks>
-        /// If refresh yields new semester information, the existing data is untouched and the new semester flag is set. To then refresh data, call the <see cref="RunMaintentanceForUpgradeAsync"/> method first.
-        /// </remarks>
         /// <returns>
         /// A response containing status code and content. The content is the academic history on success, otherwise null.
         /// </returns>
@@ -519,6 +520,88 @@ namespace VITacademics.Managers
 
             return new Response<AcademicHistory>(status, academicHistory);
         }
+
+        /// <summary>
+        /// Gets the faculty advisor details for the current user by reading from the cache.
+        /// </summary>
+        /// <returns>
+        /// A response containing status code and content. The content is the advisor details on success, otherwise null.
+        /// </returns>
+        /// <remarks>
+        /// This method does not choke the UserManager as it is usually quick and does not alter CurrentUser.
+        /// However to avoid potential stream failures, do not call this method parallely with <see cref="RequestAdvisorFromServerAsync"/>.
+        /// </remarks>
+        public static async Task<Response<FacultyAdvisor>> GetAdvisorFromCacheAsync()
+        {
+            FacultyAdvisor facultyAdvisor = null;
+            StatusCode statusCode = StatusCode.NoData;
+
+            if (CurrentUser == null)
+                statusCode = StatusCode.InvalidRequest;
+            else
+                try
+                {
+                    StorageFile advisorFile = await _localFolder.GetFileAsync(ADVISOR_JSON_FILE_NAME);
+                    string jsonString = await StorageHelper.TryReadAsync(advisorFile);
+                    if (JsonParser.GetJsonStringOwner(jsonString).RegNo == CurrentUser.RegNo)
+                    {
+                        facultyAdvisor = JsonParser.TryParseAdvisorDetails(jsonString);
+                        if (facultyAdvisor != null)
+                            statusCode = StatusCode.Success;
+                        else
+                            statusCode = StatusCode.UnknownError;
+                    }
+                }
+                catch
+                { }
+
+            return new Response<FacultyAdvisor>(statusCode, facultyAdvisor);
+        }
+
+        /// <summary>
+        /// Attempts to get the faculty advisor details for the current user by sending a network request. On success, this method also tries to cache details locally before returning.
+        /// </summary>
+        /// <returns>
+        /// A response containing status code and content. The content is the advisor details on success, otherwise null.
+        /// </returns>
+        public static async Task<Response<FacultyAdvisor>> RequestAdvisorFromServerAsync()
+        {
+            FacultyAdvisor facultyAdvisor = null;
+
+            StatusCode status = await MonitoredTask(async () =>
+            {
+                try
+                {
+                    if (CurrentUser == null)
+                        return StatusCode.InvalidRequest;
+
+                    Response<string> response = await NetworkService.TryGetAdvisorDetailsAsync(CurrentUser);
+                    if (response.Code != StatusCode.Success)
+                        return response.Code;
+                    facultyAdvisor = JsonParser.TryParseAdvisorDetails(response.Content);
+
+                    if (facultyAdvisor != null)
+                    {
+                        try
+                        {
+                            StorageFile advisorFile = await _localFolder.CreateFileAsync(ADVISOR_JSON_FILE_NAME, CreationCollisionOption.ReplaceExisting);
+                            await StorageHelper.TryWriteAsync(advisorFile, response.Content);
+                        }
+                        catch { }
+                        return StatusCode.Success;
+                    }
+                    else
+                        return StatusCode.UnknownError;
+                }
+                catch
+                {
+                    return StatusCode.UnknownError;
+                }
+            });
+
+            return new Response<FacultyAdvisor>(status, facultyAdvisor);
+        }
+
 
         /// <summary>
         /// Resets calendar, clears cache and resets the new semester flag, to enable a direct refresh to new data. Other settings and credentials are retained.
