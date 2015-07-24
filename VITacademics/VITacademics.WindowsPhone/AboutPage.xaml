@@ -10,7 +10,7 @@
     Background="{ThemeResource AlternateDarkBrush}">
 
     <ScrollViewer Margin="0,0,0,0">
-        <Grid Margin="0,55,0,0">
+        <Grid Margin="0,50,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="4*"></ColumnDefinition>
@@ -24,10 +24,8 @@
             <Viewbox Grid.Column="1">
                 <StackPanel>
                     <Image Source="ms-appx:///Assets/AppLogo.png" Width="200" Height="200"></Image>
-                    <TextBlock Text="VITacademics" Style="{StaticResource HeaderTextBlockStyle}"
-                           HorizontalAlignment="Center"></TextBlock>
-                    <TextBlock Text="beta" HorizontalAlignment="Center"
-                           Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                    <TextBlock Text="VITacademics" Style="{StaticResource HeaderTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
+                    <TextBlock Text="{Binding AppVersion}" Style="{StaticResource BodyTextBlockStyle}" HorizontalAlignment="Center" Foreground="{ThemeResource PhoneMidBrush}"></TextBlock>
                 </StackPanel>
             </Viewbox>
 
@@ -53,35 +51,69 @@
                 <TextBlock Text="VIT University, Vellore"
                     HorizontalAlignment="Center" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
 
-                <TextBlock Text="contact and feedback" Margin="0,60,0,5"
-                           Foreground="{ThemeResource PhoneForegroundBrush}" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
-                <TextBlock Text="Have any suggestions? Found a bug? We'd love to hear from you! Contact the developer:"
+                <TextBlock Text="about and feedback" Margin="0,50,0,7" Foreground="{ThemeResource PhoneForegroundBrush}" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                
+                <RichTextBlock>
+                    <Paragraph Foreground="{Binding Foreground, ElementName=textBlock}" FontSize="{Binding FontSize, ElementName=textBlock}">
+                        VITacademics is your ultimate companion app for managing academics. I really hope you're having a great experience!
+                        <LineBreak></LineBreak><LineBreak></LineBreak>Get in touch, rate or share the app from the
+                        <Hyperlink Foreground="{ThemeResource PhoneAccentBrush}" FontSize="{Binding FontSize, ElementName=textBlock}"
+                                   Click="FeedbackButton_Click">feedback</Hyperlink> page.        
+                    </Paragraph>
+                </RichTextBlock>
+
+                <TextBlock Text="contributors' timeline" Margin="0,30,0,5" Foreground="{ThemeResource PhoneForegroundBrush}" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                <TextBlock Text="All those who have been or are associated with this project. Tap on a name to view their github profile."
                            Style="{StaticResource ContentTextStyle}"></TextBlock>
-                <Button Margin="0,13,0,0" Content="send email" Click="EmailButton_Click"></Button>
 
-                <RichTextBlock Margin="0,30,0,0">
+                <ListView ItemsSource="{Binding Contributors}" Margin="0,5,0,20"
+                          ItemClick="ContributorList_ItemClick" IsItemClickEnabled="True">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,20,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Viewbox Margin="5" Stretch="Uniform">
+                                    <SymbolIcon Symbol="Contact"></SymbolIcon>
+                                </Viewbox>
+                            <StackPanel Grid.Column="1">
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource SingleItemHeaderStyle}" Foreground="{ThemeResource PhoneAccentBrush}" ></TextBlock>
+                                <TextBlock Text="{Binding Roles}" Style="{StaticResource SingleItemContentStyle}" MaxLines="0"></TextBlock>
+                            </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Grid Margin="0,0,0,20" Visibility="{Binding ProgressIndicatorVisiblity, Mode=OneWay}">
+                    <TextBlock Text="Refreshing contributors list..." Style="{StaticResource GroupHeaderTextBlockStyle}" MaxLines="0"
+                               VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                    <ProgressRing IsActive="True" Background="Transparent" Foreground="WhiteSmoke"
+                                  HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed"></ProgressRing>
+                </Grid>
+
+                <StackPanel Visibility="{Binding StatusVisibility, Mode=OneWay}">
+                    <TextBlock Text="Uh oh, we couldn't get the contributors list."
+                           Foreground="IndianRed" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                    <TextBlock Text="There may be a server or network error." Foreground="Silver"
+                           Style="{StaticResource ContentTextStyle}" Margin="0,0,0,20"></TextBlock>
+                </StackPanel>
+
+                <RichTextBlock Margin="0,10,0,20">
                     <Paragraph Foreground="{Binding Foreground, ElementName=textBlock}" FontSize="{Binding FontSize, ElementName=textBlock}">
-                        VITacademics for Windows Phone 8.1 is an independently developed project. Contribute to its development
+                        VITacademics is an independently developed project. Contribute to its development
                         <Hyperlink Foreground="{ThemeResource PhoneAccentBrush}" FontSize="{Binding FontSize, ElementName=textBlock}"
-                                   NavigateUri="https://github.com/VinayGupta23/VITacademics_Windows">
-                            here
-                        </Hyperlink>.
+                                   NavigateUri="https://github.com/VinayGupta23/VITacademics_Windows">here</Hyperlink>.
                     </Paragraph>
                 </RichTextBlock>
-
-                <TextBlock Text="VITacademics server" Margin="0,30,0,7"
-                           Foreground="{ThemeResource PhoneForegroundBrush}" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
-
-                <RichTextBlock Margin="0,0,0,20">
-                    <Paragraph Foreground="{Binding Foreground, ElementName=textBlock}" FontSize="{Binding FontSize, ElementName=textBlock}">
-                        The app's supporting API server. View its contributors or contribute to its development
-                        <Hyperlink Foreground="{ThemeResource PhoneAccentBrush}" FontSize="{Binding FontSize, ElementName=textBlock}"
-                                   NavigateUri="https://github.com/aneesh-neelam/VITacademics">
-                            here
-                        </Hyperlink>.
-                    </Paragraph>
-                </RichTextBlock>
-
+                
             </StackPanel>
         </Grid>
     </ScrollViewer>

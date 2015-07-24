@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </Page.Resources>
     
-    <Pivot Title="VITACADEMICS" Style="{StaticResource ContentPivotStyle}">
+    <Pivot Title="VITACADEMICS" Style="{StaticResource ContentPivotStyle}" x:Name="rootPivot">
         <Pivot.TitleTemplate>
             <DataTemplate>
                 <TextBlock Text="{Binding}" Margin="0,0,0,10"></TextBlock>
@@ -90,6 +90,48 @@
                 </StackPanel>
             </ScrollViewer>
         </PivotItem>
+
+        <PivotItem Header="feedback">
+            <ScrollViewer>
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock" x:Key="ItemHeaderStyle" BasedOn="{StaticResource GroupHeaderTextBlockStyle}">
+                            <Setter Property="Foreground" Value="{ThemeResource PhoneAccentBrush}"></Setter>
+                        </Style>
+                        <Style TargetType="TextBlock" x:Key="ItemContentStyle" BasedOn="{StaticResource BodyTextBlockStyle}">
+                            <Setter Property="Foreground" Value="Silver"></Setter>
+                            <Setter Property="Margin" Value="0,7,0,3"></Setter>
+                        </Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Margin" Value="0,0,0,20"></Setter>
+                        </Style>
+                    </StackPanel.Resources>
+                    
+                    <TextBlock Text="contact" Style="{StaticResource ItemHeaderStyle}"></TextBlock>
+                    <TextBlock Style="{StaticResource ItemContentStyle}">
+                        Have suggestions? Found a bug? Do drop in a mail so we can fix it.
+                    </TextBlock>
+                    <Button Content="email" Margin="0" Click="EmailButton_Click"></Button>
+                    <TextBlock Style="{StaticResource SingleItemContentStyle}" Margin="0,1,0,25" TextLineBounds="Tight">
+                        Btw, you <Run FontStyle="Oblique">are</Run> running the latest version, right?
+                    </TextBlock>
+                    
+                    <TextBlock Text="rate and review" Style="{StaticResource ItemHeaderStyle}"></TextBlock>
+                    <TextBlock Style="{StaticResource ItemContentStyle}">
+                        Liked the app? Do rate and review on the store to support me :)
+                    </TextBlock>
+                    <Button Content="rate" Click="ReviewButton_Click"></Button>
+                    
+                    <TextBlock Text="share app" Style="{StaticResource ItemHeaderStyle}"></TextBlock>
+                    <TextBlock Style="{StaticResource ItemContentStyle}">
+                        Let people know! Please support the team by sharing the app with all your friends.
+                    </TextBlock>
+                    <Button Content="share" Click="ShareButton_Click"></Button>
+                    
+                </StackPanel>
+            </ScrollViewer>
+        </PivotItem>
+        
     </Pivot>
     
 </Page>

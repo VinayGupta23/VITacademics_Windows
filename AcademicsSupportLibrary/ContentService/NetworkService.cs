@@ -198,9 +198,16 @@ namespace Academics.ContentService
 
         public static async Task<Response<string>> TryGetSystemInfoAsync()
         {
-            HttpResponseMessage httpResponse = await _httpClient.GetAsync(new Uri(BASE_URI_STRING + SYSTEM_URI_STRING));
-            Response<string> response = (await GetRootResponseAsync(httpResponse)).Format();
-            return response;
+            try
+            {
+                HttpResponseMessage httpResponse = await _httpClient.GetAsync(new Uri(BASE_URI_STRING + SYSTEM_URI_STRING));
+                Response<string> response = (await GetRootResponseAsync(httpResponse)).Format();
+                return response;
+            }
+            catch
+            {
+                return new Response<string>(StatusCode.NoInternet, null);
+            }
         }
 
         #endregion

@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\MessageDialogs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewDependencies.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\Components.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Managers\MetadataProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\PageManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\StorageHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Managers\UserManager.cs" />

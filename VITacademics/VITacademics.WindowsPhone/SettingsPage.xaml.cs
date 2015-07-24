@@ -8,9 +8,12 @@ using System.Threading.Tasks;
 using VITacademics.Helpers;
 using VITacademics.Managers;
 using VITacademics.UIControls;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Email;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -20,6 +23,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.ApplicationModel.DataTransfer;
 
 
 namespace VITacademics
@@ -27,35 +31,8 @@ namespace VITacademics
     
     public sealed partial class SettingsPage : Page, IManageable, INotifyPropertyChanged
     {
-
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public Dictionary<string, string> StartupPageOptions
-        {
-            get;
-            private set;
-        }
-
-        public string RegNo
-        {
-            get { return UserManager.CurrentUser.RegNo.ToUpper(); }
-        }
-
-        public bool AllowRefresh
-        {
-            get { return AppSettings.AutoRefresh; }
-        }
-
-        public string CurrentDefaultView
-        {
-            get;
-            private set;
-        }
-
-        public bool IsNewSemesterAvailable
-        {
-            get { return AppSettings.IsSemesterUpgradeAvailable; }
-        }
+        DataTransferManager _dataTransferManager;
 
         public SettingsPage()
         {
@@ -80,6 +57,47 @@ namespace VITacademics
             this.DataContext = this;
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            PageManager.RegisterPage(this);
+            _dataTransferManager = DataTransferManager.GetForCurrentView();
+            _dataTransferManager.DataRequested += DataTransferManager_DataRequested;
+
+            if (e.Parameter != null && e.Parameter.ToString() == "feedback")
+                rootPivot.SelectedIndex = 1;
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            _dataTransferManager.DataRequested -= DataTransferManager_DataRequested;
+            _dataTransferManager = null;
+        }
+
+        #region Settings Tab Members
+
+        public Dictionary<string, string> StartupPageOptions
+        {
+            get;
+            private set;
+        }
+        public string RegNo
+        {
+            get { return UserManager.CurrentUser.RegNo.ToUpper(); }
+        }
+        public bool AllowRefresh
+        {
+            get { return AppSettings.AutoRefresh; }
+        }
+        public string CurrentDefaultView
+        {
+            get;
+            private set;
+        }
+        public bool IsNewSemesterAvailable
+        {
+            get { return AppSettings.IsSemesterUpgradeAvailable; }
+        }
+
         void SettingsPage_Unloaded(object sender, RoutedEventArgs e)
         {
             AppSettings.SettingsChanged -= AppSettings_SettingsChanged;
@@ -92,28 +110,14 @@ namespace VITacademics
                     PropertyChanged(this, new PropertyChangedEventArgs("IsNewSemesterAvailable"));
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            PageManager.RegisterPage(this);
-        }
-
-        public Dictionary<string, object> SaveState()
-        {
-            return null;
-        }
-
-        public void LoadState(Dictionary<string, object> lastState)
-        {
-        }
-
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            if(UserManager.IsBusy == true)
+            if (UserManager.IsBusy == true)
             {
                 await ShowBusyDialog();
                 return;
             }
-            
+
             MessageDialog msgDialog = new MessageDialog("This will log you out and delete all calendar appointments. Are you sure you want to continue?", "Logout?");
             msgDialog.Commands.Add(new UICommand("Logout", LogOutUser));
             msgDialog.Commands.Add(new UICommand("Cancel", LogOutUser));
@@ -158,6 +162,52 @@ namespace VITacademics
         private async Task ShowBusyDialog()
         {
             await new MessageDialog("Please wait while your last requested task completes.", "Busy").ShowAsync();
+        }
+
+        #endregion
+
+        #region Feedback Tab Members
+
+        private const string DEV_EMAIL_ID = "vinaygupta_dev@outlook.com";
+        private const string DEV_NAME = "Vinay Gupta";
+
+        private async void EmailButton_Click(object sender, RoutedEventArgs e)
+        {
+            EmailMessage emailMsg = new EmailMessage();
+
+            emailMsg.Subject = "Feedback - VITacademics (Windows Phone)";
+            emailMsg.To.Add(new EmailRecipient(DEV_EMAIL_ID, DEV_NAME));
+
+            await EmailManager.ShowComposeNewEmailAsync(emailMsg);
+        }
+
+        private async void ReviewButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("ms-windows-store:reviewapp?appid=" + MetadataProvider.AppId));
+        }
+
+        private void ShareButton_Click(object sender, RoutedEventArgs e)
+        {
+            DataTransferManager.ShowShareUI();
+        }
+
+        private void DataTransferManager_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
+        {
+            DataRequest request = args.Request;
+            request.Data.Properties.Title = "VITacademics - Academic Metrics";
+            request.Data.Properties.Description = "Try out the latest featured VITacademics app!";
+            request.Data.SetWebLink(new Uri("https://vitacademics-rel.herokuapp.com/"));
+        }
+
+        #endregion
+
+        public Dictionary<string, object> SaveState()
+        {
+            return null;
+        }
+
+        public void LoadState(Dictionary<string, object> lastState)
+        {
         }
 
     }
