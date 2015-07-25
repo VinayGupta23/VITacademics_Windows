@@ -73,6 +73,7 @@ namespace VITacademics.UIControls
             MenuItems.Add(new MenuItem("timetable", "your regular schedule of classes", "ms-appx:///Assets/Icons/TimetableButton.scale-240.png"));
             MenuItems.Add(new MenuItem("daily buzz", "watch your activity and set reminders", Symbol.Calendar));
             MenuItems.Add(new MenuItem("grades", "academic history and cgpa calculator", "ms-appx:///Assets/Icons/GraphButton.scale-240.png"));
+            MenuItems.Add(new MenuItem("faculty advisor", "view your faculty advisor details", Symbol.ContactInfo));
 
             this.DataContext = this;
         }
@@ -112,6 +113,8 @@ namespace VITacademics.UIControls
                         ActionRequested(this, new RequestEventArgs(typeof(EnhancedTimetableControl), null));
                     else if (item == MenuItems[3])
                         ActionRequested(this, new RequestEventArgs(typeof(GradesControl), null));
+                    else if (item == MenuItems[4])
+                        ActionRequested(this, new RequestEventArgs(typeof(AdvisorControl), null));
                     else
                         return;
                 }

@@ -25,6 +25,7 @@ namespace VITacademics.Helpers
             _controlFactory.Add(typeof(EnhancedTimetableControl).FullName, () => new EnhancedTimetableControl());
             _controlFactory.Add(typeof(CourseInfoControl).FullName, () => new CourseInfoControl());
             _controlFactory.Add(typeof(GradesControl).FullName, () => new GradesControl());
+            _controlFactory.Add(typeof(AdvisorControl).FullName, () => new AdvisorControl());
         }
 
         private static IProxiedControl GetInstance(string fullTypeName)

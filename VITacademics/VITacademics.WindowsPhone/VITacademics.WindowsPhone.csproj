@@ -102,6 +102,9 @@
     <Compile Include="SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIControls\AdvisorControl.xaml.cs">
+      <DependentUpon>AdvisorControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UIControls\AttendanceControl.xaml.cs">
       <DependentUpon>AttendanceControl.xaml</DependentUpon>
     </Compile>
@@ -176,6 +179,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIControls\AdvisorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

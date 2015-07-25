@@ -86,8 +86,7 @@
 
                                 <Border Background="WhiteSmoke" Margin="0,23,0,0" CornerRadius="3">
                                     <StackPanel Margin="10,7,10,7">
-                                        <TextBlock Text="Class Timings"
-                                               Style="{ThemeResource GroupHeaderTextBlockStyle}"></TextBlock>
+                                        <TextBlock Text="Class Timings" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
                                         <ItemsControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Timings}"
                                           Margin="0,13,0,0">
                                             <ItemsControl.ItemTemplate>
@@ -241,8 +240,7 @@
                                     </StackPanel>
                                     <Border Background="WhiteSmoke" Margin="0,23,0,0" CornerRadius="3">
                                         <StackPanel Margin="10,7,10,7">
-                                            <TextBlock Text="Additional Details"
-                                               Style="{ThemeResource GroupHeaderTextBlockStyle}"></TextBlock>
+                                            <TextBlock Text="Additional Details" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
                                             <Grid Margin="0,13,0,0">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"></ColumnDefinition>
