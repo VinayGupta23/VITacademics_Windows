@@ -17,23 +17,23 @@
 
             <local:HelpItemCollection x:Name="HelpItems">
                 <local:HelpItem Title="Introducing Daily Buzz"
-                                HasIndex="False"
-                                ImagePath="ms-appx:///Assets/HelpContent/DailyBuzz1.png"
-                                ContentText="View your schedule and reminders integrated with attendance"></local:HelpItem>
-                <local:HelpItem Title="See your everyday activity"
                                 HasIndex="True" Index="1"
-                                ImagePath="ms-appx:///Assets/HelpContent/DailyBuzz2.png"
-                                ContentText="Tap here to jump to a date"></local:HelpItem>
-                <local:HelpItem Title="Set reminders"
+                                ImagePath="ms-appx:///Assets/HelpContent/DailyBuzz1.png"
+                                ContentText="Your schedule integrated with attendance. Tap to jump to a date"></local:HelpItem>
+                <local:HelpItem Title="Set quick reminders"
                                 HasIndex="True" Index="2"
-                                ImagePath="ms-appx:///Assets/HelpContent/DailyBuzz3.png"
+                                ImagePath="ms-appx:///Assets/HelpContent/DailyBuzz2.png"
                                 ContentText="Press and hold on the title of a course to set a reminder"></local:HelpItem>
-                <local:HelpItem Title="Track your attendance"
+                <local:HelpItem Title="Customize reminders"
                                 HasIndex="True" Index="3"
+                                ImagePath="ms-appx:///Assets/HelpContent/DailyBuzz3.png"
+                                ContentText="Tap to set up a fully custom reminder for a course"></local:HelpItem>
+                <local:HelpItem Title="Track your attendance"
+                                HasIndex="True" Index="4"
                                 ImagePath="ms-appx:///Assets/HelpContent/Attendance1.png"
                                 ContentText="Set a target and let the app calculate your required classes"></local:HelpItem>
                 <local:HelpItem Title="View complete academic history"
-                                HasIndex="True" Index="4"
+                                HasIndex="True" Index="5"
                                 ImagePath="ms-appx:///Assets/HelpContent/Grades1.png"
                                 ContentText="Tap to view information and select any semester"></local:HelpItem>
             </local:HelpItemCollection>
@@ -71,7 +71,7 @@
                                HorizontalAlignment="Center" VerticalAlignment="Center"
                                Text="{Binding Index}" Foreground="{ThemeResource PhoneForegroundBrush}"></TextBlock>
                         </Grid>
-                        <TextBlock Margin="10,0,0,0" Text="{Binding ContentText}"
+                        <TextBlock Margin="13,0,0,0" Text="{Binding ContentText}"
                                    Style="{StaticResource BodyTextBlockStyle}"
                                    Grid.Column="1" TextAlignment="Left"></TextBlock>
                     </Grid>

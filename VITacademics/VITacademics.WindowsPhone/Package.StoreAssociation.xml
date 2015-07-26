@@ -187,6 +187,7 @@
     <MainPackageIdentityName>21894BioCrossX.VITacademics8.1</MainPackageIdentityName>
     <ReservedNames>
       <ReservedName>VITacademics 8.1</ReservedName>
+      <ReservedName>VITacademics</ReservedName>
     </ReservedNames>
   </ProductReservedInfo>
   <AccountPackageIdentityNames>
@@ -194,11 +195,11 @@
     <MainPackageIdentityName>21894BioCrossX.VITacademicsWindows</MainPackageIdentityName>
     <MainPackageIdentityName>21894BioCrossX.VITacademics</MainPackageIdentityName>
   </AccountPackageIdentityNames>
-  <PackageInfoList LandingUrl="https://dev.windowsphone.com/AppSubmission/AssociationLanding?windowsProductId=6a0a64d8-d038-456c-8aa1-f6e68d44591d">
+  <PackageInfoList LandingUrl="https://dev.windows.com/dashboard/Application?appId=9NBLGGH07P9Z">
     <PackageInfo>
       <OsMinVersion>6.3.0.0</OsMinVersion>
-      <PackageArchitecture>neutral</PackageArchitecture>
-      <PackageMaxArchitectureVersion>3.0.0.9</PackageMaxArchitectureVersion>
+      <PackageArchitecture>Neutral</PackageArchitecture>
+      <PackageMaxArchitectureVersion>3.0.0.10</PackageMaxArchitectureVersion>
     </PackageInfo>
   </PackageInfoList>
 </StoreAssociation>

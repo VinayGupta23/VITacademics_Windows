@@ -15,11 +15,11 @@
 
             <StackPanel Visibility="{Binding DetailsVisibility, Mode=OneWay}">
                 <TextBlock Text="{Binding Advisor.Designation}" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-                <TextBlock Text="{Binding Advisor.Name}" Style="{StaticResource SingleItemHeaderStyle}" FontWeight="Bold"
+                <TextBlock Text="{Binding Advisor.Name}" Style="{StaticResource SingleItemHeaderStyle}" FontWeight="SemiBold"
                            MaxLines="0" TextWrapping="WrapWholeWords"></TextBlock>
                 <Border Background="WhiteSmoke" CornerRadius="3" Margin="0,20,0,25">
                     <StackPanel Margin="7,7,7,7" DataContext="{Binding Advisor}">
-                        <TextBlock Text="{Binding School}" Style="{StaticResource TitleTextBlockStyle}" Margin="0,0,0,5"></TextBlock>
+                        <TextBlock Text="{Binding School}" Style="{StaticResource TitleTextBlockStyle}" Margin="0,0,0,3"></TextBlock>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Division:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
                             <TextBlock Margin="10,0,0,0" Text="{Binding Division}" Style="{StaticResource BodyTextBlockStyle}"
