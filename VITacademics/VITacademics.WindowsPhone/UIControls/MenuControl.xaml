@@ -52,8 +52,7 @@
                                  HorizontalAlignment="Left" VerticalAlignment="Center"></Viewbox>
                         
                         <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource ListViewItemTextBlockStyle}"
-                                        FontSize="27"></TextBlock>
+                            <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource MenuItemTextBlockStyle}"></TextBlock>
                             <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource SingleItemContentStyle}"
                                        LineStackingStrategy="BlockLineHeight" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
                         </StackPanel>

@@ -9,52 +9,59 @@
     d:DesignHeight="700"
     d:DesignWidth="420"
     RequestedTheme="Light">
-    
-    <StackPanel Background="White">
-        <StackPanel Margin="19,0,19,0">
-            <TextBlock Margin="0,17,0,0" Text="Senior Professor" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
-            <TextBlock Text="BALAKRISHNA TRIPATI" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
-            
-            <Grid Margin="0,20,0,30">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                </Grid.RowDefinitions>
-                <TextBlock Text="SENSE" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
-                <TextBlock Grid.Row="1" Text="Photonics and Microwave Division" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
-            </Grid>
 
-            <Border Background="WhiteSmoke" CornerRadius="3" Margin="0,0,0,20">
-                <StackPanel Margin="10,7,10,7">
-                    <TextBlock Text="Cabin Details" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
-                    <Grid Margin="0,10,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="Location:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                        <TextBlock Grid.Column="1" Margin="10,0,0,0" Style="{StaticResource BodyTextBlockStyle}" Text="TT-144-144"></TextBlock>
-                        <TextBlock Text="Intercom:" Grid.Row="1" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
-                        <TextBlock Grid.Column="1" Grid.Row="1" Margin="10,0,0,0" Style="{StaticResource BodyTextBlockStyle}"
-                                                           TextWrapping="WrapWholeWords" MaxLines="0" Text="2485"></TextBlock>
-                    </Grid>
-                </StackPanel>
-            </Border>
-            
-            <TextBlock Text="call mobile" FontSize="27" Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
-            <TextBlock Text="+919789052918" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
-            
-            <TextBlock Margin="0,20,0,0" FontSize="27" Text="email" Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
-            <TextBlock Text="sham.bavik@vit.ac.in" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
+    <ScrollViewer>
+        <StackPanel Margin="19,17,19,17">
 
-            <TextBlock Margin="0,20,0,0" Text="cabin" FontSize="27" Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
-            <TextBlock Text="TT-144-144" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
+            <StackPanel Visibility="{Binding DetailsVisibility, Mode=OneWay}">
+                <TextBlock Text="{Binding Advisor.Designation}" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                <TextBlock Text="{Binding Advisor.Name}" Style="{StaticResource SingleItemHeaderStyle}" FontWeight="Bold"
+                           MaxLines="0" TextWrapping="WrapWholeWords"></TextBlock>
+                <Border Background="WhiteSmoke" CornerRadius="3" Margin="0,20,0,25">
+                    <StackPanel Margin="7,7,7,7" DataContext="{Binding Advisor}">
+                        <TextBlock Text="{Binding School}" Style="{StaticResource TitleTextBlockStyle}" Margin="0,0,0,5"></TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Division:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                            <TextBlock Margin="10,0,0,0" Text="{Binding Division}" Style="{StaticResource BodyTextBlockStyle}"
+                                       MaxLines="0" TextWrapping="WrapWholeWords"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Cabin:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                            <TextBlock Margin="10,0,0,0" Text="{Binding Cabin}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Intercom:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                            <TextBlock Margin="10,0,0,0" Text="{Binding Intercom}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                <ListView ItemsSource="{Binding ContactMenuItems, Mode=OneWay}" Margin="0,0,0,20"
+                          IsItemClickEnabled="True" ItemClick="ContactList_ItemClick">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,20">
+                                <TextBlock Text="{Binding Item1}" Style="{StaticResource MenuItemTextBlockStyle}"></TextBlock>
+                                <TextBlock Text="{Binding Item2}" Style="{StaticResource SingleItemSubHeaderStyle}">
+                                    <TextBlock.Transitions>
+                                        <TransitionCollection>
+                                            <ContentThemeTransition></ContentThemeTransition>
+                                        </TransitionCollection>
+                                    </TextBlock.Transitions>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
             
+            <StackPanel>
+                <TextBlock Text="{Binding RefreshMessage, Mode=OneWay}" Style="{StaticResource SingleItemContentStyle}"
+                           Foreground="{ThemeResource PhoneMidBrush}" MaxLines="0"></TextBlock>
+                <HyperlinkButton x:Name="refreshButton" Content="refresh" Click="RefreshButton_Click" Padding="0"
+                                 FontSize="18" Foreground="{ThemeResource PhoneAccentBrush}"></HyperlinkButton>
+            </StackPanel>
+        
         </StackPanel>
-    </StackPanel>
-    
+    </ScrollViewer>
 </UserControl>

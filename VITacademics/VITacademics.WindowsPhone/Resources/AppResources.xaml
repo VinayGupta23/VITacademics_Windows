@@ -44,6 +44,10 @@
         <Setter Property="FontWeight" Value="SemiBold"></Setter>
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="MenuItemTextBlockStyle" BasedOn="{StaticResource ListViewItemTextBlockStyle}">
+        <Setter Property="FontSize" Value="27"></Setter>
+    </Style>
+    
     <Style TargetType="Pivot" x:Key="ContentPivotStyle">
         <Setter Property="HeaderTemplate">
             <Setter.Value>
