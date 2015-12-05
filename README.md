@@ -7,7 +7,7 @@ VITacademics is an open source project developed to assist students of VIT Unive
 
 ##### VITacademics for Windows Phone 8.1
 
-Latest release version: v3.1.0.0, Get it from the store now! [link broken]
+Latest release version: v3.1.0.0, Get it from the store now! [Store Link](https://www.microsoft.com/en-us/store/apps/vitacademics-81/9nblggh07p9z)
 
 ##### VITacademics for Windows 8.1
 
