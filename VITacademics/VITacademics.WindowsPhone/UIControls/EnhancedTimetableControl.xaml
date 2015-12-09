@@ -278,7 +278,7 @@
         <HyperlinkButton Click="ManualEventAddButton_Click" HorizontalAlignment="Right"
                          Margin="0,1,13,3" MinHeight="0">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="0,0,5,0" Text="add event" Style="{StaticResource BodyTextBlockStyle}" FontSize="20"
+                <TextBlock Margin="0,0,4,0" Text="add event" Style="{StaticResource BodyTextBlockStyle}" FontSize="20"
                            Foreground="{ThemeResource PhoneAccentBrush}" FontWeight="Normal" LineStackingStrategy="BlockLineHeight"></TextBlock>
                 <!-- Symbol next to add event button?
                 <Viewbox Width="20" Height="20" Stretch="Uniform">

@@ -88,7 +88,7 @@ namespace Academics.ContentService
             {
                 JsonObject rootObject = JsonObject.Parse(jsonString);
                 string regNo = rootObject.GetNamedString("reg_no");
-                DateTimeOffset dob = DateTimeOffset.ParseExact(rootObject.GetNamedString("dob"), "ddMMyyyy", CultureInfo.InvariantCulture);
+                DateTimeOffset dob = DateTimeOffset.ParseExact(rootObject.GetNamedString("dob"), "ddMMyyyy", null);
                 string campus = rootObject.GetNamedString("campus");
                 string phoneNo = null;
                 if (campus == "chennai")
@@ -288,7 +288,7 @@ namespace Academics.ContentService
             foreach (JsonValue stubValue in detailsArray)
             {
                 JsonObject stubObject = stubValue.GetObject();
-                DateTimeOffset classDate = new DateTimeOffset(DateTime.ParseExact(stubObject.GetNamedString("date"), "yyyy-MM-dd", CultureInfo.InvariantCulture), new TimeSpan(5, 30, 0));
+                DateTimeOffset classDate = new DateTimeOffset(DateTime.ParseExact(stubObject.GetNamedString("date"), "yyyy-MM-dd", null), new TimeSpan(5, 30, 0));
 
                 course.Attendance.AddStubToDetails(classDate, new AttendanceStub(
                                                                     stubObject.GetNamedString("slot"),
@@ -365,12 +365,12 @@ namespace Academics.ContentService
         private static DateTimeOffset GetIST(string timeString)
         {
             return new DateTimeOffset(
-                (DateTime.Parse(timeString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal)),
+                (DateTime.Parse(timeString, null, DateTimeStyles.AssumeUniversal)),
                 new TimeSpan(5, 30, 0));
         }
         private static DateTimeOffset GetRefreshUTC(string refreshDateString)
         {
-            return DateTimeOffset.Parse(refreshDateString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            return DateTimeOffset.Parse(refreshDateString, null, DateTimeStyles.AssumeUniversal);
         }
 
         #endregion
