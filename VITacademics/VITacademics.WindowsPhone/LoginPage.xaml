@@ -66,7 +66,7 @@
                          Grid.Row="3" Grid.Column="1" Content="Chennai"></RadioButton>
             <TextBox x:Name="phoneNoBox" Header="Parent's number" Text="{Binding PhoneNo, Mode=TwoWay}"
                      Grid.Row="1" Margin="0,0,15,0" Grid.Column="0" InputScope="TelephoneNumber"></TextBox>
-            <Button x:Name="loginButton" Content="Login" Click="LoginButton_Click"
+            <Button x:Name="loginButton" Content="Log In" Click="LoginButton_Click"
                     Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"></Button>
         </Grid>
     </Grid>

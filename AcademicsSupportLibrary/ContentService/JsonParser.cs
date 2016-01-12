@@ -372,6 +372,17 @@ namespace Academics.ContentService
         {
             return DateTimeOffset.Parse(refreshDateString, null, DateTimeStyles.AssumeUniversal);
         }
+        private static string TryGetNamedString(this JsonObject jsonObject, string name, string fallbackValue)
+        {
+            try
+            {
+                if (jsonObject.GetNamedValue(name).ValueType != JsonValueType.Null)
+                    return jsonObject.GetNamedString(name);
+                else
+                    return fallbackValue;
+            }
+            catch { return fallbackValue; }
+        }
 
         #endregion
 
@@ -382,10 +393,10 @@ namespace Academics.ContentService
         {
             course.ClassNumber = (ushort)courseObject.GetNamedNumber("class_number");
             course.CourseCode = courseObject.GetNamedString("course_code");
-            course.CourseMode = courseObject.GetNamedString("course_mode");
-            course.CourseOption = courseObject.GetNamedString("course_option");
-            course.SubjectType = courseObject.GetNamedString("subject_type");
-            course.Faculty = courseObject.GetNamedString("faculty");
+            course.CourseMode = courseObject.TryGetNamedString("course_mode", "NA");
+            course.CourseOption = courseObject.TryGetNamedString("course_option", "NA");
+            course.SubjectType = courseObject.TryGetNamedString("subject_type", "NA");
+            course.Faculty = courseObject.TryGetNamedString("faculty", "NA");
             course.Title = courseObject.GetNamedString("course_title");
             course.Ltpjc = courseObject.GetNamedString("ltpjc");
             course.Credits = (ushort)int.Parse(course.Ltpjc.Substring(4));
@@ -394,8 +405,8 @@ namespace Academics.ContentService
         // Depth 1 Assignment (Ltp and NonLtp)
         private static void AssignBaseTypeDetails(LtpCourse ltpCourse, JsonObject courseObject)
         {
-            ltpCourse.Slot = courseObject.GetNamedString("slot");
-            ltpCourse.Venue = courseObject.GetNamedString("venue");
+            ltpCourse.Slot = courseObject.TryGetNamedString("slot", "NA");
+            ltpCourse.Venue = courseObject.TryGetNamedString("venue", "NA");
 
             AssignTimings(ltpCourse, courseObject.GetNamedArray("timings"));
             AssignAttendance(ltpCourse, courseObject.GetNamedObject("attendance"));
@@ -424,10 +435,7 @@ namespace Academics.ContentService
         }
         private static void AssignSpecificDetails(PBCCourse course, JsonObject courseObject)
         {
-            if (courseObject.GetNamedValue("project_title").ValueType != JsonValueType.Null)
-                course.ProjectTitle = courseObject.GetNamedString("project_title");
-            else
-                course.ProjectTitle = null;
+            course.ProjectTitle = courseObject.TryGetNamedString("project_title", null);
         }
 
         // Private API

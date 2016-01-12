@@ -118,15 +118,15 @@ namespace VITacademics
                 return;
             }
 
-            MessageDialog msgDialog = new MessageDialog("This will log you out and delete all calendar appointments. Are you sure you want to continue?", "Logout?");
-            msgDialog.Commands.Add(new UICommand("Logout", LogOutUser));
+            MessageDialog msgDialog = new MessageDialog("This will log you out and delete all calendar appointments. Are you sure you want to continue?", "Log Out?");
+            msgDialog.Commands.Add(new UICommand("Log Out", LogOutUser));
             msgDialog.Commands.Add(new UICommand("Cancel", LogOutUser));
             await msgDialog.ShowAsync();
         }
 
         private async void LogOutUser(IUICommand command)
         {
-            if (command.Label == "Logout")
+            if (command.Label == "Log Out")
             {
                 await StatusBar.GetForCurrentView().ProgressIndicator.HideAsync();
                 await UserManager.DeleteSavedUserAsync();
