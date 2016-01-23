@@ -1,3 +1,0 @@
-C:\Users\Vinay\Source\Repos\VITacademics_Windows\AcademicsSupportLibrary\AcademicsSupportLibrary.csproj;neutral
-C:\Users\Vinay\Source\Repos\VITacademics_Windows\DataPlotterTools\DataPlotterTools.csproj;neutral
-C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\VITacademics.WindowsPhone.csproj;neutral
