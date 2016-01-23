@@ -1,0 +1,326 @@
+﻿<UserControl
+    x:Class="VITacademics.UIControls.EnhancedTimetableControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics.UIControls"
+    xmlns:helpers="using:VITacademics.Helpers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="720"
+    d:DesignWidth="420"
+    RequestedTheme="Light">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx:///Resources/AttendanceResources.xaml"></ResourceDictionary>
+                <ResourceDictionary>
+                    
+                    <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></helpers:BoolToVisibilityConverter>
+                    <helpers:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter"></helpers:TimeSpanToStringConverter>
+                    
+                    <SolidColorBrush x:Key="InfoTileBackgroundBrush" Color="WhiteSmoke"></SolidColorBrush>
+                    <x:Double x:Key="InfoTileSize">80</x:Double>
+                    
+                    <MenuFlyout x:Name="addMenuFlyout" Placement="Bottom">
+                        <MenuFlyout.MenuFlyoutPresenterStyle>
+                            <Style TargetType="MenuFlyoutPresenter">
+                                <Setter Property="RequestedTheme" Value="Light"></Setter>
+                            </Style>
+                        </MenuFlyout.MenuFlyoutPresenterStyle>
+                        <MenuFlyoutItem Text="add reminder..." Click="AddMenuItem_Click"></MenuFlyoutItem>
+                    </MenuFlyout>
+
+                    <MenuFlyout x:Name="modifyMenuFlyout" Placement="Bottom">
+                        <MenuFlyout.MenuFlyoutPresenterStyle>
+                            <Style TargetType="MenuFlyoutPresenter">
+                                <Setter Property="RequestedTheme" Value="Light"></Setter>
+                            </Style>
+                        </MenuFlyout.MenuFlyoutPresenterStyle>
+                        <MenuFlyoutItem Text="edit..." Click="EditMenuItem_Click"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="delete" Click="DeleteMenuItem_Click"></MenuFlyoutItem>
+                    </MenuFlyout>
+
+                    <Style TargetType="ListView">
+                        <Setter Property="ItemContainerStyle">
+                            <Setter.Value>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment"
+                                            Value="Stretch"></Setter>
+                                </Style>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="IsItemClickEnabled" Value="True"></Setter>
+                    </Style>
+
+                    <Style TargetType="ContentControl" x:Key="AppointmentContentControl">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <Grid DataContext="{Binding Mode=OneWay}">
+                                        <Grid.Resources>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource LabelTextBlockStyle}">
+                                                <Setter Property="Foreground" Value="{ThemeResource PhoneAccentBrush}"></Setter>
+                                            </Style>
+                                        </Grid.Resources>
+                                        <TextBlock Text="{Binding Subject}"></TextBlock>
+                                    </Grid>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        <Setter Property="ContentTransitions">
+                            <Setter.Value>
+                                <TransitionCollection>
+                                    <EntranceThemeTransition></EntranceThemeTransition>
+                                </TransitionCollection>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
+                    <Style TargetType="Border" x:Key="HoldableRootBorderStyle">
+                        <Setter Property="Background" Value="Transparent"></Setter>
+                        <Setter Property="BorderBrush" Value="Transparent"></Setter>
+                        <Setter Property="BorderThickness" Value="0"></Setter>
+                        <Setter Property="IsHoldingEnabled" Value="True"></Setter>
+                    </Style>
+                    
+                    <DataTemplate x:Key="ClassTodayDataTemplate">
+                        <Border Style="{StaticResource HoldableRootBorderStyle}" Holding="ItemRootBorder_Holding">
+                            <Grid Margin="0,0,0,17">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <!-- Info Tile -->
+                                <Border Width="{StaticResource InfoTileSize}" Height="{StaticResource InfoTileSize}" Margin="0,0,10,0"
+                                        Background="{StaticResource InfoTileBackgroundBrush}" BorderThickness="0,0,0,3"
+                                        BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding SessionHours.StartHours, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='HH:mm'}"
+                                                   Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
+                                        <TextBlock Text="{Binding SessionHours.EndHours, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='HH:mm'}"
+                                                   Style="{StaticResource LabelTextBlockStyle}" HorizontalAlignment="Center"></TextBlock>
+                                        <TextBlock Text="{Binding ContextCourse.Venue}" Foreground="{ThemeResource PhoneMidBrush}"
+                                                   Style="{StaticResource SingleItemContentStyle}" HorizontalAlignment="Center"></TextBlock>
+                                    </StackPanel>
+                                </Border>
+                                <!-- List Item Content -->
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="{Binding SessionHours.Parent.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                    <local:GoMissAttendanceInfo Height="25" Grid.Column="1" Margin="-8,0,0,0"
+                                                                DataContext="{Binding ContextCourse.Attendance}">
+                                        <local:GoMissAttendanceInfo.Transitions>
+                                            <TransitionCollection>
+                                                <EntranceThemeTransition FromVerticalOffset="5" FromHorizontalOffset="0"></EntranceThemeTransition>
+                                            </TransitionCollection>
+                                        </local:GoMissAttendanceInfo.Transitions>
+                                    </local:GoMissAttendanceInfo>
+                                    <ContentControl DataContext="{Binding ApptInfo, Mode=OneWay}" Content="{Binding}"
+                                                    Style="{StaticResource AppointmentContentControl}"></ContentControl>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                    
+                    <DataTemplate x:Key="ClassGeneralDataTemplate">
+                        <Border Style="{StaticResource HoldableRootBorderStyle}" Holding="ItemRootBorder_Holding">
+                            <Grid Margin="0,0,0,17">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <!-- Info Tile -->
+                                <Border Width="{StaticResource InfoTileSize}"  Height="{StaticResource InfoTileSize}" Margin="0,0,10,0"
+                                        Background="{StaticResource InfoTileBackgroundBrush}" BorderThickness="0,0,0,13"
+                                        BorderBrush="{Binding AttendanceInfo.Status, Converter={StaticResource StatusToForegroundConverter}, FallbackValue='LightGray'}">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                DataContext="{Binding ContextCourse}">
+                                        <TextBlock Text="{Binding CourseCode}" Style="{StaticResource LabelTextBlockStyle}"
+                                                   HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
+                                        <TextBlock Text="{Binding Venue}" Style="{StaticResource SingleItemContentStyle}"
+                                                   HorizontalAlignment="Center" TextAlignment="Center" Foreground="{ThemeResource PhoneMidBrush}"></TextBlock>
+                                    </StackPanel>
+                                </Border>
+                                <!-- List Item Content -->
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="{Binding ContextCourse.Title}"
+                                               Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                    <TextBlock Text="{Binding SessionHours}" Style="{StaticResource SingleItemSubHeaderStyle}"
+                                               Foreground="{ThemeResource PhoneMidBrush}"></TextBlock>
+                                    <ContentControl DataContext="{Binding ApptInfo, Mode=OneWay}" Content="{Binding}"
+                                                    Style="{StaticResource AppointmentContentControl}"></ContentControl>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="CustomInfoTemplate">
+                        <Border Holding="ItemRootBorder_Holding" Style="{StaticResource HoldableRootBorderStyle}">
+                            <Grid Margin="0,0,0,17">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <!-- Info Tile -->
+                                <Border Width="{StaticResource InfoTileSize}" Height="{StaticResource InfoTileSize}"
+                                        Margin="0,0,10,0" Background="{StaticResource AlternateMediumBrush}" BorderThickness="0">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" RequestedTheme="Dark">
+                                        <Viewbox Height="30" Stretch="Uniform" HorizontalAlignment="Center">
+                                        <SymbolIcon Symbol="Clock" Foreground="{ThemeResource PhoneForegroundBrush}" Margin="0"></SymbolIcon>
+                                        </Viewbox>
+                                        <TextBlock Style="{StaticResource LabelTextBlockStyle}" Foreground="{ThemeResource PhoneForegroundBrush}"
+                                                   HorizontalAlignment="Center" TextAlignment="Center" TextLineBounds="TrimToBaseline">
+                                            <Run Text="{Binding StartTime, Converter={StaticResource TimeSpanToStringConverter}, ConverterParameter='h\\:mm'}"></Run>
+                                        </TextBlock>
+                                        <TextBlock Style="{StaticResource SingleItemContentStyle}" Foreground="{ThemeResource PhoneMidBrush}"
+                                                   HorizontalAlignment="Center" TextAlignment="Center">
+                                            <Run Text="{Binding EndTime, Converter={StaticResource TimeSpanToStringConverter}, ConverterParameter='h\\:mm'}"></Run>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                                <!-- List Item Content -->
+                                <StackPanel VerticalAlignment="Center" Grid.Column="1">
+                                    <TextBlock Text="{Binding ContextCourse.Title}" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                    <TextBlock Text="{Binding ContextCourse.Venue, FallbackValue={Binding ContextCourse.CourseCode}}" Style="{StaticResource SingleItemContentStyle}"
+                                               Foreground="{ThemeResource PhoneMidBrush}"></TextBlock>
+                                    <ContentControl DataContext="{Binding ApptInfo, Mode=OneWay}" Content="{Binding}"
+                                                    Style="{StaticResource AppointmentContentControl}" ContentTransitions="{x:Null}"></ContentControl>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                    
+                    <helpers:ClassInfoTemplateSelector x:Key="ClassInfoTemplateSelector"
+                                                       ClassGeneralTemplate="{StaticResource ClassGeneralDataTemplate}"
+                                                       ClassTodayTemplate="{StaticResource ClassTodayDataTemplate}"
+                                                       CustomInfoTemplate="{StaticResource CustomInfoTemplate}"></helpers:ClassInfoTemplateSelector>
+                    
+                    <Style TargetType="PivotItem">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <ScrollViewer>
+                                        <StackPanel>
+                                            
+                                            <TextBlock Text="You have no regular classes today." Style="{ThemeResource GroupHeaderTextBlockStyle}"
+                                                   Visibility="{Binding IsEmptyDay, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0,0,0,20"></TextBlock>
+
+                                            <ListView ItemsSource="{Binding RegularClassesInfo, Mode=OneWay}" ItemClick="List_ItemClick"
+                                                      ItemTemplateSelector="{StaticResource ClassInfoTemplateSelector}"
+                                                      IsHoldingEnabled="True"></ListView>
+
+                                            <TextBlock Text="extra classes" Margin="0,17,0,0" Style="{StaticResource GroupHeaderTextBlockStyle}"
+                                                       Visibility="{Binding HadExtraClasses, Converter={StaticResource BoolToVisibilityConverter}}"></TextBlock>
+                                            <ListView ItemsSource="{Binding ExtraClassesInfo}" Margin="0,15,0,0">
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Margin="0,0,0,13">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition></RowDefinition>
+                                                                <RowDefinition></RowDefinition>
+                                                                <RowDefinition></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <TextBlock Grid.Row="0" Text="{Binding Key.Title}"
+                                                                       Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                                            <TextBlock Grid.Row="1" Text="{Binding Key.CourseCode}"
+                                                                       Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                                            <TextBlock Grid.Row="1" Text="{Binding Key.Venue}"
+                                                                       HorizontalAlignment="Right" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                                            <TextBlock Grid.Row="2" Text="{Binding Value.Status}" Style="{StaticResource LabelTextBlockStyle}"
+                                                                       Margin="0,3,0,0" TextLineBounds="TrimToCapHeight"
+                                                                       Foreground="{Binding Value.Status, Converter={StaticResource StatusToForegroundConverter}}"></TextBlock>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
+                                        
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Pivot x:Name="rootPivot" Grid.Row="1" Margin="0,-13,0,0"
+               Style="{StaticResource ContentPivotStyle}">
+            <Pivot.TitleTemplate>
+                <DataTemplate>
+                    <TextBlock Visibility="Collapsed"></TextBlock>
+                </DataTemplate>
+            </Pivot.TitleTemplate>
+        </Pivot>
+
+        <HyperlinkButton Content="{Binding CurrentDate, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='dd MMMM, yyyy'}"
+                         x:Name="dateDisplayButton" Click="DateButton_Click" FontSize="20" FontWeight="Bold"
+                         Foreground="{ThemeResource PhoneAccentBrush}" Margin="17,3,0,2" MinHeight="0"></HyperlinkButton>
+        <HyperlinkButton Click="ManualEventAddButton_Click" HorizontalAlignment="Right"
+                         Margin="0,1,13,3" MinHeight="0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="0,0,4,0" Text="add event" Style="{StaticResource BodyTextBlockStyle}" FontSize="20"
+                           Foreground="{ThemeResource PhoneAccentBrush}" FontWeight="Normal" LineStackingStrategy="BlockLineHeight"></TextBlock>
+                <!-- Symbol next to add event button?
+                <Viewbox Width="20" Height="20" Stretch="Uniform">
+                        <SymbolIcon Symbol="Add" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Foreground="{ThemeResource PhoneAccentBrush}" Margin="0"></SymbolIcon>
+                </Viewbox>
+                -->
+            </StackPanel>
+        </HyperlinkButton>
+
+        <ContentControl x:Name="reminderContentControl" Visibility="{Binding ReminderSetupVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+                        Content="{Binding CurrentStub, Mode=OneWay}" Grid.RowSpan="2"
+                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <ContentControl.ContentTransitions>
+                <TransitionCollection>
+                    <EdgeUIThemeTransition Edge="Bottom"></EdgeUIThemeTransition>
+                </TransitionCollection>
+            </ContentControl.ContentTransitions>
+            
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <Grid Background="WhiteSmoke">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <local:ReminderControl x:Name="reminderControl" Grid.ColumnSpan="2" Margin="20,10,20,3"></local:ReminderControl>
+                        <Button Grid.Row="1" Grid.Column="0" Content="save" Margin="17,0,8,5"
+                                Click="SetReminderButton_Click" HorizontalAlignment="Stretch"
+                                BorderThickness="0" Background="{ThemeResource PhoneAccentBrush}" Foreground="White"></Button>
+                        <Button Grid.Row="1" Grid.Column="1" Content="cancel" Margin="8,0,17,5"
+                                Click="CancelButton_Click" HorizontalAlignment="Stretch"
+                                BorderThickness="0" Background="{ThemeResource PhoneChromeBrush}"></Button>
+                    </Grid>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
+        
+    </Grid>
+    
+</UserControl>

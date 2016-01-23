@@ -1,0 +1,137 @@
+﻿<Page
+    x:Class="VITacademics.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics"
+    xmlns:helpers="using:VITacademics.Helpers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    RequestedTheme="Dark"
+    Background="{ThemeResource AlternateDarkBrush}">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <helpers:BoolToVisibilityConverter x:Key="BoolVisibilityConverter"></helpers:BoolToVisibilityConverter>
+        </ResourceDictionary>
+    </Page.Resources>
+    
+    <Pivot Title="VITACADEMICS" Style="{StaticResource ContentPivotStyle}" x:Name="rootPivot">
+        <Pivot.TitleTemplate>
+            <DataTemplate>
+                <TextBlock Text="{Binding}" Margin="0,0,0,10"></TextBlock>
+            </DataTemplate>
+        </Pivot.TitleTemplate>
+        
+        <PivotItem Header="settings">
+            <ScrollViewer>
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <DataTemplate x:Key="LabelHeaderTemplate">
+                            <TextBlock Text="{Binding}" Style="{StaticResource LabelTextBlockStyle}"
+                                   Margin="0,0,0,3"></TextBlock>
+                        </DataTemplate>
+                    </StackPanel.Resources>
+
+                    <TextBlock Margin="0,7,0,2" Text="Logged in as:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                    <TextBlock Text="{Binding RegNo, Mode=OneTime}" Style="{ThemeResource SubheaderTextBlockStyle}" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
+
+                    <ComboBox Margin="0,20,0,0" ItemsSource="{Binding StartupPageOptions.Keys}"
+                          Header="Display the following page on launch" HeaderTemplate="{StaticResource LabelHeaderTemplate}"
+                          SelectionChanged="PageComboBox_SelectionChanged"
+                          x:Name="comboBox" SelectedItem="{Binding CurrentDefaultView, Mode=OneTime}"></ComboBox>
+
+                    <ToggleSwitch Grid.Row="1" Margin="0,20,0,0" Toggled="RefreshOption_Toggled"
+                              x:Name="toggleSwitch" Grid.Column="1" OnContent="Yes" OffContent="No"
+                              Header="Auto refresh on startup" HeaderTemplate="{StaticResource LabelHeaderTemplate}"
+                              VerticalAlignment="Bottom" IsOn="{Binding AllowRefresh, Mode=OneTime}"></ToggleSwitch>
+
+                    <Grid Margin="0,20,0,0" Visibility="{Binding IsNewSemesterAvailable, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Border Padding="9,10,0,11" Grid.ColumnSpan="2" Margin="0,0,0,5"
+                                Background="{StaticResource AlternateMediumBrush}">
+                            <TextBlock Text="Upgrade app" Foreground="{ThemeResource PhoneMidBrush}"
+                                       VerticalAlignment="Center" TextLineBounds="Tight" LineStackingStrategy="BaselineToBaseline"
+                                       Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                        </Border>
+                        <TextBlock Grid.Row="1" Margin="7,0,7,0" VerticalAlignment="Center"
+                                   Text="New semester data available. Tap when ready."
+                                   Style="{StaticResource BodyTextBlockStyle}" MaxLines="3" TextWrapping="WrapWholeWords"></TextBlock>
+                        <Button Content="upgrade" Grid.Row="1" Grid.Column="1" Margin="0,0,5,0"
+                                Click="UpgradeButton_Click"></Button>
+                        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Margin="5,5,5,0" HorizontalAlignment="Right"
+                                   Style="{StaticResource SingleItemContentStyle}" MaxLines="0">
+                            Current semester details will be erased.
+                        </TextBlock>
+                    </Grid>
+
+                    <Grid Margin="0,40,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Reset App" VerticalAlignment="Center" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                            <TextBlock Margin="0,0,20,0" Grid.Row="1" Text="Log out and reset all data" Style="{ThemeResource BodyTextBlockStyle}"></TextBlock>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="log out" Click="LogoutButton_Click"
+                                VerticalAlignment="Top"></Button>
+                    </Grid>
+
+                </StackPanel>
+            </ScrollViewer>
+        </PivotItem>
+
+        <PivotItem Header="feedback">
+            <ScrollViewer>
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock" x:Key="ItemHeaderStyle" BasedOn="{StaticResource GroupHeaderTextBlockStyle}">
+                            <Setter Property="Foreground" Value="{ThemeResource PhoneAccentBrush}"></Setter>
+                        </Style>
+                        <Style TargetType="TextBlock" x:Key="ItemContentStyle" BasedOn="{StaticResource BodyTextBlockStyle}">
+                            <Setter Property="Foreground" Value="Silver"></Setter>
+                            <Setter Property="Margin" Value="0,7,0,3"></Setter>
+                        </Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Margin" Value="0,0,0,20"></Setter>
+                        </Style>
+                    </StackPanel.Resources>
+                    
+                    <TextBlock Text="contact" Style="{StaticResource ItemHeaderStyle}"></TextBlock>
+                    <TextBlock Style="{StaticResource ItemContentStyle}">
+                        Have suggestions? Found a bug? Do drop in a mail so we can fix it.
+                    </TextBlock>
+                    <Button Content="email" Margin="0" Click="EmailButton_Click"></Button>
+                    <TextBlock Style="{StaticResource SingleItemContentStyle}" Margin="0,1,0,25" TextLineBounds="Tight">
+                        Btw, you <Run FontStyle="Oblique">are</Run> running the latest version, right?
+                    </TextBlock>
+                    
+                    <TextBlock Text="rate and review" Style="{StaticResource ItemHeaderStyle}"></TextBlock>
+                    <TextBlock Style="{StaticResource ItemContentStyle}">
+                        Liked the app? Do rate and review on the store to support me :)
+                    </TextBlock>
+                    <Button Content="rate" Click="ReviewButton_Click"></Button>
+                    
+                    <TextBlock Text="share app" Style="{StaticResource ItemHeaderStyle}"></TextBlock>
+                    <TextBlock Style="{StaticResource ItemContentStyle}">
+                        Let people know! Please support the team by sharing the app with all your friends.
+                    </TextBlock>
+                    <Button Content="share" Click="ShareButton_Click"></Button>
+                    
+                </StackPanel>
+            </ScrollViewer>
+        </PivotItem>
+        
+    </Pivot>
+    
+</Page>
