@@ -1,0 +1,291 @@
+﻿<UserControl
+    x:Class="VITacademics.UIControls.CourseInfoControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics.UIControls"
+    xmlns:helpers="using:VITacademics.Helpers"
+    xmlns:dp="using:DataPlotterTools"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="720"
+    d:DesignWidth="420"
+    RequestedTheme="Light">
+    
+    <UserControl.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                    <CommonNavigationTransitionInfo IsStaggeringEnabled="True"></CommonNavigationTransitionInfo>
+                </NavigationThemeTransition.DefaultNavigationTransitionInfo>
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </UserControl.Transitions>
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx:///Resources/AttendanceResources.xaml"></ResourceDictionary>
+                <ResourceDictionary>
+                    
+                    <DataTemplate x:Key="CourseNotFoundTemplate">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                                <TextBlock Text="Uh oh, this course wasn't found." Style="{StaticResource SingleItemHeaderStyle}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Bottom"></TextBlock>
+                                <TextBlock Text="If this is unexpected, try refresh." Style="{StaticResource LabelTextBlockStyle}"
+                                           Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top"></TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                    
+                    <DataTemplate x:Key="LtpCourseTemplate">
+                        <ScrollViewer>
+                            <StackPanel>
+                                <StackPanel Margin="10,0,0,0" Grid.Column="1">
+                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" FontSize="25"
+                                               MaxLines="0" TextWrapping="WrapWholeWords"
+                                               Margin="0,0,0,10" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Code:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding CourseCode}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Slot:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding Slot}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Venue:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding Venue}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="LTPJC:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding Ltpjc}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Mode: " Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,1,0" Text="{Binding CourseMode}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                        <TextBlock Text="," Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding CourseOption}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Type:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding SubjectType}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Faculty:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Grid.Column="1" Margin="10,0,0,0" TextWrapping="WrapWholeWords" MaxLines="0" Text="{Binding Faculty}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </Grid>
+                                </StackPanel>
+
+                                <Border Background="WhiteSmoke" Margin="0,23,0,0" CornerRadius="3">
+                                    <StackPanel Margin="10,7,10,7">
+                                        <TextBlock Text="Class Timings" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                                        <ItemsControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Timings}"
+                                          Margin="0,13,0,0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="0,0,0,7">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{Binding Day}" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                                        <TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="{Binding}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+
+                                <Grid Margin="0,23,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                        <ColumnDefinition Width="5*"></ColumnDefinition>
+                                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                        <ColumnDefinition Width="8*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="1" Margin="5,0,17,0" DataContext="{Binding Attendance}"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource SingleItemContentStyle}">
+                                                <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
+                                            </Style>
+                                        </StackPanel.Resources>
+                                        <Viewbox>
+                                        <dp:CompletionRing VoidRegionForeground="LightGray" Margin="0,0,0,10"
+                                                   RingThickness="13" Diameter="105" PercentageComplete="{Binding Percentage}"></dp:CompletionRing>
+                                        </Viewbox>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <TextBlock Text="Attended "></TextBlock>
+                                            <TextBlock Margin="5,0,0,0" Text="{Binding AttendedClasses}"></TextBlock>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <TextBlock Text="Total "></TextBlock>
+                                            <TextBlock Margin="5,0,0,0" Text="{Binding TotalClasses}"></TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Internals Scored:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Text="{Binding InternalMarksScored, Mode=OneTime}" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
+                                        <TextBlock Text="Marks Tested:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Text="{Binding TotalMarksTested, Mode=OneTime}" Style="{StaticResource SingleItemSubHeaderStyle}"></TextBlock>
+                                    </StackPanel>
+                                </Grid>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="MarkInfoTemplate">
+                        <Grid Margin="0,8,3,0" CommonNavigationTransitionInfo.IsStaggerElement="True">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Width="60" Height="60" CornerRadius="3"
+                                    Background="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Text="{Binding Marks, Mode=OneTime, TargetNullValue='-'}"
+                                           Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                            </Border>
+
+                            <TextBlock Grid.Row="2" Style="{StaticResource SingleItemContentStyle}"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"
+                                       Text="{Binding Status}" FontSize="11.5"></TextBlock>
+
+                            <Grid Grid.Column="1" Margin="13,0,0,0" VerticalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Text="{Binding Title}" Style="{StaticResource SingleItemTitleStyle}"
+                                           TextLineBounds="TrimToCapHeight"></TextBlock>
+                                <TextBlock Grid.Row="1" Style="{StaticResource SingleItemContentStyle}"
+                                           LineStackingStrategy="BlockLineHeight" Pivot.SlideInAnimationGroup="GroupOne">
+                                    Max <Run Text="{Binding MaxMarks}"></Run>
+                                </TextBlock>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" 
+                                           HorizontalAlignment="Right" VerticalAlignment="Top"
+                                           TextLineBounds="Tight" Margin="0,1,0,0"
+                                           Text="weighted" Style="{StaticResource SingleItemContentStyle}"></TextBlock>
+                                <TextBlock Grid.Row="0" HorizontalAlignment="Right" LineStackingStrategy="BlockLineHeight"
+                                           Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Bottom"
+                                           Style="{StaticResource LabelTextBlockStyle}" Pivot.SlideInAnimationGroup="GroupOne">
+                                    <Run Text="{Binding WeightedMarks, TargetNullValue='-'}"></Run> / <Run Text="{Binding Weightage}"></Run>
+                                </TextBlock>
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="LtpCoursePivotTemplate">
+                        <Pivot Style="{StaticResource ContentPivotStyle}">
+                            
+                            <PivotItem Header="details" ContentTemplate="{StaticResource LtpCourseTemplate}"></PivotItem>
+                            
+                            <PivotItem Header="attendance" DataContext="{Binding Attendance}">
+                                <local:AttendanceControl></local:AttendanceControl>
+                            </PivotItem>
+                            
+                            <PivotItem Header="marks">
+                                <ScrollViewer>
+                                    <ItemsControl ItemsSource="{Binding MarksInfo}" ItemTemplate="{StaticResource MarkInfoTemplate}"></ItemsControl>    
+                                </ScrollViewer>
+                            </PivotItem>
+                        </Pivot>
+                    </DataTemplate>
+                    
+                    <DataTemplate x:Key="PBCPivotTemplate">
+                        <Pivot Style="{StaticResource ContentPivotStyle}">
+                            <PivotItem Header="details">
+                                <StackPanel Margin="10,0,0,0" Grid.Column="1">
+                                    <TextBlock Text="{Binding Title}" Grid.ColumnSpan="2" FontSize="25"
+                                               MaxLines="0" TextWrapping="WrapWholeWords"
+                                               Margin="0,0,0,10" Style="{StaticResource SingleItemHeaderStyle}"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Code:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding CourseCode}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Mode: " Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,1,0" Text="{Binding CourseMode}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                        <TextBlock Text="," Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding CourseOption}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Type:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding SubjectType}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="LTPJC:" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+                                        <TextBlock Margin="10,0,0,0" Text="{Binding Ltpjc}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>
+                                    </StackPanel>
+                                    <Border Background="WhiteSmoke" Margin="0,23,0,0" CornerRadius="3">
+                                        <StackPanel Margin="10,7,10,7">
+                                            <TextBlock Text="Additional Details" Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                                            <Grid Margin="0,13,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition></RowDefinition>
+                                                    <RowDefinition></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="Project Title:" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                                <TextBlock Grid.Column="1" Margin="10,0,0,7" Style="{StaticResource BodyTextBlockStyle}"
+                                                           TextWrapping="WrapWholeWords" MaxLines="0" Text="{Binding ProjectTitle, TargetNullValue='N/A'}"></TextBlock>
+                                                <TextBlock Text="Faculty:" Grid.Row="1" Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
+                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="10,0,0,0" Style="{StaticResource BodyTextBlockStyle}"
+                                                           TextWrapping="WrapWholeWords" MaxLines="0" Text="{Binding Faculty, TargetNullValue='N/A'}"></TextBlock>
+                                            </Grid>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                </Grid>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </PivotItem>
+                        </Pivot>
+                    </DataTemplate>
+                    
+                    <helpers:CourseTemplateSelector CBLTemplate="{StaticResource LtpCoursePivotTemplate}"
+                                                    LBCTemplate="{StaticResource LtpCoursePivotTemplate}"
+                                                    PBLTemplate="{StaticResource LtpCoursePivotTemplate}"
+                                                    RBLTemplate="{StaticResource LtpCoursePivotTemplate}"
+                                                    PBCTemplate="{StaticResource PBCPivotTemplate}"
+                                                    FallbackTemplate="{StaticResource CourseNotFoundTemplate}"
+                                                    x:Key="TemplateSelector"></helpers:CourseTemplateSelector>
+                    
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ContentControl Content="{Binding SelectedCourse, Mode=OneWay}"
+                    ContentTemplateSelector="{StaticResource TemplateSelector}"
+                    HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"></ContentControl>
+    
+</UserControl>
+

@@ -1,0 +1,65 @@
+﻿<Page
+    x:Class="VITacademics.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics"
+    xmlns:dp="using:DataPlotterTools"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    RequestedTheme="Dark"
+    Background="{ThemeResource AlternateDarkBrush}">
+    
+    <!-- Bottom App Bar -->
+    <Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Compact" Background="{StaticResource AlternateDarkBrush}">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Icon="Refresh" Label="refresh" Click="RefreshButton_Click"
+                              IsEnabled="{Binding IsIdle, Mode=OneWay}"></AppBarButton>
+                <AppBarButton Icon="AllApps" Label="menu" Click="MenuButton_Click"
+                              IsEnabled="{Binding IsContentAvailable, Mode=OneWay}"></AppBarButton>
+                <AppBarButton Icon="Calendar" Label="today" Click="ViewTodayButton_Click"
+                              IsEnabled="{Binding IsContentAvailable, Mode=OneWay}"></AppBarButton>
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="help" Click="HelpButton_Click"></AppBarButton>
+                <AppBarButton Label="settings &amp; feedback" Click="SettingsButton_Click"></AppBarButton>
+                <AppBarButton Label="about" Click="AboutButton_Click"></AppBarButton>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+    
+    <!-- Root Grid -->
+    <Grid RequestedTheme="Light" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <!-- Loading Screen Presenter -->
+        <ContentPresenter Grid.Row="1" x:Name="loadingScreenPresenter" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel>
+                <ProgressRing IsActive="True" Margin="0,0,0,5">
+                </ProgressRing>
+                <TextBlock Text="Getting your content ready" Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
+            </StackPanel>
+        </ContentPresenter>
+        
+        <!-- Content Presenter -->
+        <ContentPresenter Grid.Row="1" x:Name="contentPresenter">
+        </ContentPresenter>
+
+        <!-- Menu Presenter -->
+        <ContentPresenter Grid.Row="1" x:Name="menuPresenter">
+        </ContentPresenter>
+
+        <!-- Page Top Panel -->
+        <Grid Margin="0,-1,0,0" RequestedTheme="Dark" Background="{StaticResource AlternateDarkBrush}">
+            <TextBlock Margin="19,6,0,8" VerticalAlignment="Center"
+                       Text="{Binding TitleText, Mode=OneWay}" Style="{StaticResource TitleTextBlockStyle}"
+                       Foreground="{ThemeResource PhoneForegroundBrush}" LineStackingStrategy="MaxHeight"></TextBlock>
+        </Grid>
+        
+    </Grid>
+    
+</Page>

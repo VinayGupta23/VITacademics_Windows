@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AcademicsSupportLibrary</name>
+    </assembly>
+    <members>
+        <member name="T:Academics.ContentService.StatusCode">
+            <summary>
+            Status codes relating to network or parsing errors for the ContentService namespace.
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.Success">
+            <summary>
+            Successful execution.
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.NoInternet">
+            <summary>
+            Connectivity or network issues.
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.InvalidCredentials">
+            <summary>
+            Invalid credentials were provided.
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.TemporaryError">
+            <summary>
+            Temporary errors such as parsing fails.
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.ServerError">
+            <summary>
+            Server errors such as "Unavailable", "Database Error" or "Gateway Timeout".
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.SessionTimeout">
+            <summary>
+            The (running) session timed out.
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.InvalidData">
+            <summary>
+            The data was either in an invalid format or corrupted.
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.NoData">
+            <summary>
+            The requested resource does not exist or is unavailable.
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.UnknownError">
+            <summary>
+            An unknown error occured.
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.UnderMaintenance">
+            <summary>
+            The server or provider is undergoing maintenance.
+            </summary>
+        </member>
+        <member name="F:Academics.ContentService.StatusCode.InvalidRequest">
+            <summary>
+            The requested operation cannot be performed or is invalid.
+            </summary>
+        </member>
+        <member name="T:Academics.ContentService.Response`1">
+            <summary>
+            Stores the status and content of the response received for some request.
+            </summary>
+            <remarks>
+            This class is intended to be used as a return type for methods that process a request. Any instance of this class is read-only.
+            </remarks>
+            <typeparam name="T">
+            The type of content the response contains.
+            </typeparam>
+        </member>
+        <member name="T:Academics.ContentService.JsonParser">
+            <summary>
+            Provides static methods to parse and return objects from Json strings.
+            </summary>
+        </member>
+        <member name="M:Academics.ContentService.JsonParser.GetStatus(System.String)">
+            <summary>
+            Returns the status shown on the Json string passed, or a suitable error code.
+            </summary>
+            <param name="jsonString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Academics.ContentService.JsonParser.GetJsonStringOwner(System.String)">
+            <summary>
+            Returns a bare instance of the user whose content the json string contains. If the json string is invalid, returns null.
+            </summary>
+            <param name="jsonString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Academics.ContentService.JsonParser.TryParseData(System.String)">
+            <summary>
+            Parses the Json string and returns a new User instance populated with all details. On failure, the method returns null.
+            </summary>
+            <param name="jsonString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Academics.ContentService.JsonParser.TryParseGrades(System.String)">
+            <summary>
+            Parses the Json string and returns the complete academic history of the user. On failure, the method returns null.
+            </summary>
+            <param name="jsonString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Academics.ContentService.JsonParser.TryGetContributors(System.String)">
+            <summary>
+            Parses the system json string and returns the contributors associated with the project. On being passed invalid formats, the method returns null.
+            </summary>
+            <param name="systemJsonString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Academics.ContentService.JsonParser.TryParseAdvisorDetails(System.String)">
+            <summary>
+            Parses the Json string and returns the details of the faculty advisor assinged to the user. On failure, the method returns null.
+            </summary>
+            <param name="jsonString"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Academics.ContentService.NetworkService">
+            <summary>
+            Provides static methods to get raw response content along with status by sending HTTP/server requests.
+            </summary>
+        </member>
+        <member name="M:Academics.ContentService.NetworkService.GetContentAsync(System.String,Academics.DataModel.User)">
+            <summary>
+            Returns the content and status of the specified network request. Content is null if request fails.
+            </summary>
+            <param name="relUriFormat">
+            The (relative) uri format string into which user parameters will be introduced.
+            </param>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Academics.ContentService.NetworkService.TryLoginAsync(Academics.DataModel.User)">
+            <summary>
+            Attempts to login the passed user and returns the status of the operation.
+            </summary>
+            <remarks>
+            Note: On encountering an internal error, another attempt is made to login before the method returns.
+            </remarks>
+            <param name="user">
+            The user to login.
+            </param>
+            <returns>
+            Status code indicating result of the login attempt.
+            </returns>
+        </member>
+        <member name="M:Academics.ContentService.NetworkService.TryGetDataAsync(Academics.DataModel.User)">
+            <summary>
+            Get the data as a Json string along with status code for the specified user by sending a Http request.
+            </summary>
+            <param name="user">
+            The user whose data to request.
+            </param>
+            <remarks>
+            Note: This method attempts a login and a single retry upon receiving a SessionTimedOut error.
+            </remarks>
+            <returns>
+            A response containing status code and content. Returns the Json string as the content on success, otherwise the content is null.
+            </returns>
+        </member>
+        <member name="M:Academics.ContentService.NetworkService.TryGetGradesAsync(Academics.DataModel.User)">
+            <summary>
+             Get the academic history as a Json string along with status code for the specified user by sending a Http request.
+             </summary>
+             <param name="user">
+             The user whose data to request.
+             </param>
+             <remarks>
+             Note: This method attempts a login and a single retry upon receiving a SessionTimedOut error.
+             </remarks>
+             <returns>
+             A response containing status code and content. Returns the Json string as the content on success, otherwise the content is null.
+             </returns>
+        </member>
+        <member name="T:Academics.DataModel.Timetable">
+            <summary>
+            A timetable view of courses which provides easy access to day wise information such as class schedule and attendance.
+            </summary>
+        </member>
+        <member name="M:Academics.DataModel.Timetable.GetTimetable(System.Collections.Generic.IEnumerable{Academics.DataModel.Course})">
+            <summary>
+            Constructs the week's timetable for the specified courses and returns the timetable object on success.
+            </summary>
+            <param name="courses">
+            The list of courses for which to generate the timetable.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Academics.DataModel.Timetable.GetExactDayInfo(System.DateTimeOffset)">
+            <summary>
+            Gets complete information about an instruction day in terms of regular and extra classes along with attendance.
+            </summary>
+            <param name="instructionDayDate">
+            The date for which to get the details.
+            </param>
+            <returns>
+            A static copy of the day's information as a DayInfo object.
+            </returns>
+        </member>
+        <member name="P:Academics.DataModel.Timetable.Item(System.DayOfWeek)">
+            <summary>
+            Returns the class schedule for the requested day of the week.
+            </summary>
+            <param name="day"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

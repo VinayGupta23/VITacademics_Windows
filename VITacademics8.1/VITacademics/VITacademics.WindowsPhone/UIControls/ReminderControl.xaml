@@ -1,0 +1,58 @@
+﻿<UserControl
+    x:Class="VITacademics.UIControls.ReminderControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics.UIControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" RequestedTheme="Light"
+    d:DesignHeight="700"
+    d:DesignWidth="420">
+    
+    <Grid>
+        <StackPanel>
+
+            <TextBlock Text="set reminder" Style="{StaticResource GroupHeaderTextBlockStyle}"
+                       Margin="0,0,0,17"></TextBlock>
+            
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding ContextCourse.CourseCode}" Foreground="{ThemeResource PhoneAccentBrush}"
+                           Style="{StaticResource LabelTextBlockStyle}" Margin="0,0,10,0"></TextBlock>
+                <TextBlock Text="{Binding ContextCourse.Slot}" Foreground="{ThemeResource PhoneAccentBrush}"
+                           Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource LabelTextBlockStyle}"></TextBlock>
+            </Grid>
+            
+            <TextBlock Text="{Binding ContextCourse.Title}" Margin="0,0,0,20"
+                       Style="{StaticResource SingleItemHeaderStyle}" MaxLines="0" TextWrapping="WrapWholeWords"></TextBlock>
+            
+            <TextBlock Text="Subject" Style="{StaticResource ControlHeaderTextBlockStyle}"></TextBlock>
+
+            <ComboBox PlaceholderText="select an agenda" PickerFlyoutBase.Title="CHOOSE AN EVENT"
+                      x:Name="agendaComboBox" SelectionChanged="AgendaComboBox_SelectionChanged"></ComboBox>
+            
+            <TextBox x:Name="agendaTextBox" Visibility="Collapsed" PlaceholderText="type an agenda"
+                     InputScope="Search" KeyDown="AgendaTextBox_KeyDown"
+                     PreventKeyboardDisplayOnProgrammaticFocus="False" Text="{Binding Agenda, Mode=TwoWay}"></TextBox>
+            
+            <DatePicker Header="Date" YearVisible="False" x:Name="datePicker"
+                        Date="{Binding ContextDate, Mode=TwoWay}"></DatePicker>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TimePicker Header="From" Grid.Column="0" Margin="0,0,7,0"
+                            Time="{Binding StartTime, Mode=TwoWay}"></TimePicker>
+                <TimePicker Header="Duration (H:mm)" Grid.Column="1" Margin="7,0,0,0"
+                            Time="{Binding Duration, Mode=TwoWay}"></TimePicker>
+            </Grid>
+            <ComboBox Header="Reminder" x:Name="reminderComboBox" PickerFlyoutBase.Title="REMIND AHEAD BY"
+                      SelectionChanged="ReminderComboBox_SelectionChanged"></ComboBox>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

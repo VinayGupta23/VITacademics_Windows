@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Machine>VINAY-PC</Machine>
+    <WindowsUser>Vinay</WindowsUser>
+    <TargetPlatformIdentifier>WindowsPhoneApp</TargetPlatformIdentifier>
+    <SolutionConfiguration>Release|AnyCPU</SolutionConfiguration>
+    <PackageArchitecture>neutral</PackageArchitecture>
+    <PackageIdentityName>1092eed8-4d0a-4fd8-a23d-e08960c787e6</PackageIdentityName>
+    <IntermediateOutputPath>C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\obj\Release\</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppXManifest Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\AppxManifest.xml">
+      <PackagePath>AppxManifest.xml</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppXManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\VITacademics.WindowsPhone.exe">
+      <PackagePath>VITacademics.WindowsPhone.exe</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\AcademicsSupportLibrary\bin\Release\AcademicsSupportLibrary.dll">
+      <PackagePath>AcademicsSupportLibrary.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\DataPlotterTools\bin\Release\DataPlotterTools.dll">
+      <PackagePath>DataPlotterTools.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\packages\GoogleAnalyticsSDK.1.2.12\lib\wpa81\GoogleAnalytics.Core.winmd">
+      <PackagePath>GoogleAnalytics.Core.winmd</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\packages\GoogleAnalyticsSDK.1.2.12\lib\wpa81\GoogleAnalytics.winmd">
+      <PackagePath>GoogleAnalytics.winmd</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\analytics.xml">
+      <PackagePath>analytics.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\StoreManifest.xml">
+      <PackagePath>StoreManifest.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\AppLogo.png">
+      <PackagePath>Assets\AppLogo.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\HelpContent\Attendance1.png">
+      <PackagePath>Assets\HelpContent\Attendance1.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\HelpContent\DailyBuzz1.png">
+      <PackagePath>Assets\HelpContent\DailyBuzz1.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\HelpContent\DailyBuzz2.png">
+      <PackagePath>Assets\HelpContent\DailyBuzz2.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\HelpContent\DailyBuzz3.png">
+      <PackagePath>Assets\HelpContent\DailyBuzz3.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\HelpContent\Grades1.png">
+      <PackagePath>Assets\HelpContent\Grades1.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\Icons\GraphButton.scale-240.png">
+      <PackagePath>Assets\Icons\GraphButton.scale-240.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\Icons\TimetableButton.scale-240.png">
+      <PackagePath>Assets\Icons\TimetableButton.scale-240.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\SplashScreen.scale-240.png">
+      <PackagePath>Assets\SplashScreen.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\Square150x150Logo.scale-240.png">
+      <PackagePath>Assets\Square150x150Logo.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\square44x44logo.scale-240.png">
+      <PackagePath>Assets\square44x44logo.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\square71x71logo.scale-240.png">
+      <PackagePath>Assets\square71x71logo.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\Assets\storelogo.scale-240.png">
+      <PackagePath>Assets\storelogo.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\App.xbf">
+      <PackagePath>App.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\Resources\AttendanceResources.xbf">
+      <PackagePath>Resources\AttendanceResources.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\AboutPage.xbf">
+      <PackagePath>AboutPage.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\HelpPage.xbf">
+      <PackagePath>HelpPage.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\LoginPage.xbf">
+      <PackagePath>LoginPage.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\MainPage.xbf">
+      <PackagePath>MainPage.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\Resources\AppResources.xbf">
+      <PackagePath>Resources\AppResources.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\SettingsPage.xbf">
+      <PackagePath>SettingsPage.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\UIControls\AdvisorControl.xbf">
+      <PackagePath>UIControls\AdvisorControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\UIControls\AttendanceControl.xbf">
+      <PackagePath>UIControls\AttendanceControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\UIControls\BasicTimetableControl.xbf">
+      <PackagePath>UIControls\BasicTimetableControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\UIControls\CourseInfoControl.xbf">
+      <PackagePath>UIControls\CourseInfoControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\UIControls\EnhancedTimetableControl.xbf">
+      <PackagePath>UIControls\EnhancedTimetableControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\UIControls\GoMissAttendanceInfo.xbf">
+      <PackagePath>UIControls\GoMissAttendanceInfo.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\UIControls\GradesControl.xbf">
+      <PackagePath>UIControls\GradesControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\UIControls\MenuControl.xbf">
+      <PackagePath>UIControls\MenuControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\UIControls\ReminderControl.xbf">
+      <PackagePath>UIControls\ReminderControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\UIControls\UserOverviewControl.xbf">
+      <PackagePath>UIControls\UserOverviewControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\DataPlotterTools\bin\Release\Themes\Generic.xbf">
+      <PackagePath>DataPlotterTools\Themes\Generic.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\VITacademics.WindowsPhone.xr.xml">
+      <PackagePath>VITacademics.WindowsPhone.xr.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\DataPlotterTools\bin\Release\DataPlotterTools.xr.xml">
+      <PackagePath>DataPlotterTools\DataPlotterTools.xr.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\DataPlotterTools\Readme.txt">
+      <PackagePath>DataPlotterTools\Readme.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Vinay\Source\Repos\VITacademics_Windows\VITacademics\VITacademics.WindowsPhone\bin\Release\resources.pri">
+      <PackagePath>resources.pri</PackagePath>
+    </AppxPackagedFile>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

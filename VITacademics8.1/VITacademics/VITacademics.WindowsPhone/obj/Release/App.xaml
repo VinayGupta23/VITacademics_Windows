@@ -1,0 +1,28 @@
+﻿<Application
+    x:Class="VITacademics.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics"
+    xmlns:helpers="using:VITacademics.Helpers">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/AppResources.xaml"></ResourceDictionary>
+                <ResourceDictionary>
+
+                    <SolidColorBrush x:Key="AlternateDarkBrush"
+                     Color="#FF1B1E22"></SolidColorBrush>
+
+                    <SolidColorBrush x:Key="AlternateMediumBrush"
+                     Color="#FF323A41"></SolidColorBrush>
+
+                    <helpers:DateTimeToStringConverter x:Key="DateTimeToStringConverter"></helpers:DateTimeToStringConverter>
+
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+    
+</Application>
+

@@ -1,0 +1,35 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DataPlotterTools">
+
+    <Style TargetType="local:CompletionRing">
+        <Setter Property="InnerBackground" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"></Setter>
+        <Setter Property="FontSize" Value="23"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:CompletionRing">
+
+                    <Grid Height="{TemplateBinding Diameter}" Width="{TemplateBinding Diameter}"
+                          Background="{TemplateBinding Background}">
+                        <Ellipse Width="{TemplateBinding Diameter}" Height="{TemplateBinding Diameter}"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                 Fill="{TemplateBinding VoidRegionForeground}" StrokeThickness="0"></Ellipse>
+                        <Path x:Name="FillPath" Data="" StrokeThickness="0"></Path>
+                        <Ellipse x:Name="InnerCircle"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                 Fill="{TemplateBinding InnerBackground}" StrokeThickness="0"></Ellipse>
+                        <TextBlock x:Name="DataTextBlock" FontSize="{TemplateBinding FontSize}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   TextAlignment="Center" LineStackingStrategy="BlockLineHeight"></TextBlock>
+                    </Grid>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
+

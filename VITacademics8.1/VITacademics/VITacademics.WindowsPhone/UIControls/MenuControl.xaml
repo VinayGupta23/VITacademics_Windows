@@ -1,0 +1,66 @@
+﻿<UserControl
+    x:Class="VITacademics.UIControls.MenuControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VITacademics.UIControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    RequestedTheme="Light"
+    d:DesignHeight="720"
+    d:DesignWidth="420">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style TargetType="ListView">
+                <Setter Property="HeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Foreground="Gray"
+                                       Style="{StaticResource GroupHeaderTextBlockStyle}"></TextBlock>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="IsItemClickEnabled" Value="True"></Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Transitions>
+        <TransitionCollection>
+            <PaneThemeTransition Edge="Bottom"></PaneThemeTransition>
+        </TransitionCollection>
+    </UserControl.Transitions>
+
+    <ScrollViewer Background="{ThemeResource PhoneBackgroundBrush}">
+        <ListView Header="menu" Margin="19,17,19,10"
+                      ItemsSource="{Binding MenuItems, Mode=OneTime}"
+                      ItemClick="MenuList_ItemClick">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,20,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="55"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Viewbox Child="{Binding Icon}" Width="50" Height="50" Opacity="0.65"
+                                 HorizontalAlignment="Left" VerticalAlignment="Center"></Viewbox>
+                        
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Header, Mode=OneTime}" Style="{StaticResource MenuItemTextBlockStyle}"></TextBlock>
+                            <TextBlock Text="{Binding SubHeader, Mode=OneTime}" Style="{StaticResource SingleItemContentStyle}"
+                                       LineStackingStrategy="BlockLineHeight" Foreground="{ThemeResource PhoneAccentBrush}"></TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
+        </ListView>
+    </ScrollViewer>
+    
+</UserControl>

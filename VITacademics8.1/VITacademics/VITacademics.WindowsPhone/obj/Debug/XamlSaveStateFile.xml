@@ -1,0 +1,9 @@
+<XamlCompilerSaveState>
+  <ReferenceAssemblyList>
+    <LocalAssembly PathName="c:\users\vinay\source\repos\vitacademics_windows\vitacademics\vitacademics.windowsphone\obj\debug\intermediatexaml\vitacademics.windowsphone.exe" HashGuid="0b2bff63-55a9-ef40-4c26-36a1b30befb3" />
+    <ReferenceAssembly PathName="c:\users\vinay\source\repos\vitacademics_windows\academicssupportlibrary\bin\debug\academicssupportlibrary.dll" HashGuid="84d942af-5e89-c92b-3396-f36730cbc6ff" />
+    <ReferenceAssembly PathName="c:\users\vinay\source\repos\vitacademics_windows\dataplottertools\bin\debug\dataplottertools.dll" HashGuid="51fb9639-2bd5-a582-855a-3b1c97f65c82" />
+    <ReferenceAssembly PathName="c:\users\vinay\source\repos\vitacademics_windows\packages\googleanalyticssdk.1.2.12\lib\wpa81\googleanalytics.core.winmd" HashGuid="8124767c-c20d-634f-4bbb-68246f8ec1d7" />
+    <ReferenceAssembly PathName="c:\users\vinay\source\repos\vitacademics_windows\packages\googleanalyticssdk.1.2.12\lib\wpa81\googleanalytics.winmd" HashGuid="1b1c128e-fe97-de85-72a9-95c028700ef7" />
+  </ReferenceAssemblyList>
+</XamlCompilerSaveState>
