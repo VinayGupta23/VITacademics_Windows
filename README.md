@@ -5,6 +5,6 @@
 
 VITacademics is an open source project developed to assist students of VIT University track their attendance, marks and activity easily. This branch hosts the Windows 10 UWP version. The app relies on a REST API server which can be found [here](https://github.com/aneesh-neelam/VITacademics).
 
-##### Download VITacademics for Windows 10 devices
+##### Download VITacademics on Windows 10 devices
 
 Currently under development.
