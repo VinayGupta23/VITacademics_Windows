@@ -7,7 +7,7 @@
     <ProjectGuid>{C2AC9B6A-2FB3-47D0-9D52-BC83863A3C2E}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VITacademics10</RootNamespace>
+    <RootNamespace>VITacademics</RootNamespace>
     <AssemblyName>VITacademics10</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
