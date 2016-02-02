@@ -129,6 +129,12 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AcademicsLibrary\AcademicsLibrary.csproj">
+      <Project>{9c77940f-e0e0-4e34-87d0-f982dffcc536}</Project>
+      <Name>AcademicsLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
