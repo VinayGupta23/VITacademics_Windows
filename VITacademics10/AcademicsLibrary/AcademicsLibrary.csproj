@@ -7,7 +7,7 @@
     <ProjectGuid>{9C77940F-E0E0-4E34-87D0-F982DFFCC536}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AcademicsLibrary</RootNamespace>
+    <RootNamespace>Academics</RootNamespace>
     <AssemblyName>AcademicsLibrary</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
