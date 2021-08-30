@@ -5,7 +5,7 @@
 
 VITacademics is an open source project developed to assist students of VIT University track their attendance, marks and activity easily. This branch hosts the Windows 8.1 and Windows Phone 8.1 versions. The app relies on a REST API server which can be found [here](https://github.com/aneesh-neelam/VITacademics).
 
-##### VITacademics for Windows Phone 8.1
+#### VITacademics for Windows Phone 8.1
 
 Latest release version: v3.1.0.2, Get it from the store now!
 Download [here](http://www.windowsphone.com/s?appid=d6a9e028-4cc2-46ea-9f1b-84c02f4ae408).
@@ -14,12 +14,12 @@ Download [here](http://www.windowsphone.com/s?appid=d6a9e028-4cc2-46ea-9f1b-84c0
 
 ### Attendance
 
-![Attendance1](/VITacademics8.1/VITacademics/VITacademics.WindowsPhone/Assets/HelpContent/Attendance1.png)
+<img src="/VITacademics8.1/VITacademics/VITacademics.WindowsPhone/Assets/HelpContent/Attendance1.png" width="40%">
 
 ### Daily Schedule
 
-![DailyBuzz1](/VITacademics8.1/VITacademics/VITacademics.WindowsPhone/Assets/HelpContent/DailyBuzz1.png)
+<img src="/VITacademics8.1/VITacademics/VITacademics.WindowsPhone/Assets/HelpContent/DailyBuzz1.png" width="40%">
 
 ### Grades
 
-![Grades1](/VITacademics8.1/VITacademics/VITacademics.WindowsPhone/Assets/HelpContent/Grades1.png)
+<img src="/VITacademics8.1/VITacademics/VITacademics.WindowsPhone/Assets/HelpContent/Grades1.png" width="40%">
